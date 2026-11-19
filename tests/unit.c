@@ -201,8 +201,9 @@ static void test_expeditions(void)
         for (int area = 0; area < AREA_COUNT; area++) {
             scene_static(&mesh, &g);
             assert(mesh.count < mesh.capacity);
-            for (int task = 0; task < 4; task++) {
-                assert(g.task == task);
+            for (int objective = 0; objective < 5 && g.area == area && g.room == EXPEDITION;
+                 objective++) {
+                int task = g.task;
                 for (int part = 0; part < 2; part++) {
                     int kind = campaign_action(&g);
                     float x, z;

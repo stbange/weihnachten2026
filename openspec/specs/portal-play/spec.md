@@ -41,3 +41,12 @@ Each eligible arch SHALL admit the party to its dated expedition. Each expeditio
 #### Scenario: Shared navigation
 - **WHEN** either seat opens a sector map in the browser or follows the in-world floor guide
 - **THEN** the guidance identifies the active sector objective and a traversable next passage
+
+
+### Requirement: Field transmissions
+Selected sectors of each expedition SHALL include a two-part encounter tied to the source game's tools and the hall's story. The party SHALL share progress between its two stations.
+
+#### Scenario: Complete an interrupted dispatch
+- **GIVEN** the party has uncovered the service timetable in a night-shift transmission
+- **WHEN** either player sets the points cabinet to the indicated setting and confirms the signal
+- **THEN** the chapter recording plays as a caption and the sector exit becomes available

@@ -216,7 +216,7 @@ void game_step(Game *g, const Input in[2], float dt)
 /* A versioned numeric wire layout, independent of C structure packing. */
 void game_pack(const Game *g, float out[SNAP_WORDS])
 {
-    out[0] = 2;
+    out[0] = 3;
     out[22] = g->area;
     out[23] = g->task;
     out[24] = g->phase;
@@ -250,19 +250,19 @@ void game_pack(const Game *g, float out[SNAP_WORDS])
 
 int game_unpack(Game *g, const float in[SNAP_WORDS])
 {
-    const int limits[] = {2, EXPEDITION, 24, 1, 3, 1, 0xffffff, OBJECTIVE, 24, 2};
+    const int limits[] = {3, EXPEDITION, 24, 1, 3, 1, 0xffffff, SIGNAL_SENT, 24, 2};
     for (int i = 0; i < SNAP_WORDS; ++i)
         if (!isfinite(in[i]))
             return 0;
     for (int i = 0; i < 10; ++i)
         if (in[i] < 0 || in[i] > limits[i] || in[i] != floorf(in[i]))
             return 0;
-    const int extra_limits[] = {4, 3, 1, 3, 96, 96, 120, 6, 1, 1};
+    const int extra_limits[] = {4, TRANSMISSION, 1, 3, 96, 96, 120, 6, 1, 1};
     for (int i = 22; i < SNAP_WORDS; i++)
         if (in[i] < 0 || in[i] > extra_limits[i - 22] || (i < 26 && floorf(in[i]) != in[i]))
             return 0;
     int expedition = in[1] == EXPEDITION;
-    if (in[0] != 2 || in[9] < 1 || ((expedition || in[7] == TICKET) && in[8] < 1))
+    if (in[0] != 3 || in[9] < 1 || ((expedition || in[7] == TICKET) && in[8] < 1))
         return 0;
     for (int i = 0; i < 2; ++i) {
         const float *v = in + 10 + 6 * i;

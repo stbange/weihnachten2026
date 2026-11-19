@@ -16,11 +16,11 @@ The concept preserves the supplied order, from Duke Nukem 3D to the first Red Al
 
 Choose **Playtest Door 01** on the title screen for *House Lights*. Start at the tram terminus, collect and punch tickets, fold paper ushers, and lift reels to the raised booths. The **Cinema tutorial** button opens the original short auditorium exercise.
 
-**Portal almanac → a date → Playtest mission** opens any of the 24 expeditions before December. Each currently has five sectors, shared objectives, a route guide on the floor and a star gate. The browser's **Map** shows the destination and both players. Hold Pulse and release for charged tools. For escorts, stay within twelve metres and bring the follower to the dock. Returning to the same door resumes at the start of the last sector reached.
+**Portal almanac → a date → Playtest mission** opens any of the 24 expeditions before December. Each currently has five sectors, shared objectives, a route guide on the floor and a star gate. Field stations ask the party to recover and answer a transmission using two of the door’s tools. Their recordings explain why the hall’s clock stopped. The browser's **Map** shows the destination and both players. Hold Pulse and release for charged tools. For escorts, stay within twelve metres and bring the follower to the dock. Returning to the same door resumes at the start of the last sector reached.
 
 Walk through eligible arches in the hall to earn the 24 individual keepsakes. Practice and calendar checkpoints are separate. Read a returned keepsake's story in the almanac. Completing the final date opens the front doors even for someone playing their first evening.
 
-These are playable campaign prototypes. They share a procedural layout system and several encounter types. The almanac describes the intended bespoke missions. In the current build an automated player following the shortest marked passages clocks 17.4 simulated minutes for Door 01 and 17.1 for Door 03. The full set spans 11.9–19.4 minutes. First-time human solo and co-op timings are still outstanding.
+These are playable campaign prototypes. They share a procedural layout system and several encounter types. The almanac describes the intended bespoke missions. In the current build an automated player following the shortest marked passages clocks 17.6 simulated minutes for Door 01 and 17.7 for Door 03. The full set spans 17.2–21.1 minutes. First-time human solo and co-op timings are still outstanding.
 
 | Mode | Controls |
 | --- | --- |
@@ -71,7 +71,7 @@ python3 tests/web_game.py http://127.0.0.1:8571/
 
 Set `CHROMIUM` to use an existing Chromium executable. Add `--direct` to the browser test on a network that permits WebRTC ICE candidates. The ordinary suite starts a loopback WebSocket relay, connects two browser contexts through the visible room UI, folds an usher from the guest and checks the shared result. It also checks all 24 briefings, calendar rollover, split views, mobile controls and a simulated stereo XR session. The browser replays cover the short tutorial extraction and entry through the live December arch.
 
-GCC/gcov measured **97.33% native C unit line coverage (1,387/1,425)**. Separate normal-input replays cleared all 24 expeditions in solo calendar and split-screen practice. A native relay integration test exercises both host and guest. The browser suite also covers an actual two-peer relay session and a simulated stereo XR session. Physical phone and headset testing and first-time human pacing sessions remain release criteria. [Continuous verification](https://github.com/stbange/weihnachten2026/actions/workflows/verify.yml) · [OpenSpec capabilities](openspec/specs) · [Remaining campaign work](openspec/changes/complete-campaign/tasks.md)
+GCC/gcov measured **97.38% native C unit line coverage (1,413/1,451)**. Separate normal-input replays cleared all 24 expeditions in solo calendar and split-screen practice. A native relay integration test exercises both host and guest. The browser suite also covers an actual two-peer relay session and a simulated stereo XR session. Physical phone and headset testing and first-time human pacing sessions remain release criteria. [Continuous verification](https://github.com/stbange/weihnachten2026/actions/workflows/verify.yml) · [OpenSpec capabilities](openspec/specs) · [Remaining campaign work](openspec/changes/complete-campaign/tasks.md)
 
 ## Publishing and credits
 

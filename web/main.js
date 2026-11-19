@@ -576,6 +576,41 @@ function events() {
     if (event === 3 && s[6]) persist(1 << (s[8] - 1));
     chime([392, 494, 587, 784]);
   }
+  if (event === 9) {
+    const recordings = [
+      [
+        'I counted twenty-four plates. Who was holding the camera?',
+        'The ticket has a crooked mark. It matches the one on my chair.',
+        'The candle in the window was for the last tram.',
+        'Listen. Somebody is unfolding the spare table.',
+        'Leave one place free. We said it before the lights went out.',
+      ],
+      [
+        'This cable goes past the hall and back under the street.',
+        'We addressed every envelope. None of them left the building.',
+        'The relay kept asking for one more name.',
+        'The same instruction is on every routing slip.',
+        'Hold until everyone is here. That was our handwriting.',
+      ],
+      [
+        'We used to start the match while the kettle boiled.',
+        'There was always a way back in after the first round.',
+        'Someone wrote a correction in the margin.',
+        'It says: start anyway.',
+        'We saved the seat. The machine saved the whole evening.',
+      ],
+      [
+        'We can still send the invitations ourselves.',
+        'A light has come on beyond the front door.',
+        'The friends inside the recordings are answering.',
+        'That last address is for whoever comes late.',
+        'The clock can keep going now.',
+      ],
+    ];
+    chime([330, 440, 554]);
+    notify('Recording · ' + recordings[Math.floor((s[8] - 1) / 6)][s[22]]);
+    return;
+  }
   if (event === 2 || event === 1)
     chime(event === 1 ? [523, 659] : [330, 440, 554]);
   if ((event === 4 || event === 6) && !role && !xrActive) {

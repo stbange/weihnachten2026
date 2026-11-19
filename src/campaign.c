@@ -105,8 +105,20 @@ Cell campaign_next(const Game *g, Cell from, Cell to)
     }
     return field->next[from.z][from.x];
 }
+typedef struct {
+    unsigned sectors;
+    int first, second;
+    const char *message, *origin, *destination;
+} Transmission;
+static const Transmission transmissions[24] = {
+#include "transmissions.inc"
+};
 int campaign_kind(const Game *g)
 {
+    if (g->task == TRANSMISSION) {
+        const Transmission *t = &transmissions[g->door - 1];
+        return g->phase ? t->second : t->first;
+    }
     return expeditions[g->door - 1].tools[(g->task + g->area) % 3].kind;
 }
 typedef struct {
@@ -134,6 +146,11 @@ static const Combination combinations[24] = {
     [23] = {GRID, PUNCH, "Use the powered chrono pad to transmit the invitations"}};
 static const Combination *combination(const Game *g)
 {
+    if (g->door == 17 && g->task < 3 && campaign_kind(g) == FLY) {
+        static const Combination mirror = {FLY, PUNCH,
+                                           "Use the landing mirror to hold the light bridge open"};
+        return &mirror;
+    }
     if (g->door == 14 && g->task < 3) {
         static const Combination peg = {FLY, CHARGE,
                                         "Charge the pruning blade, release to sever the tether"};
@@ -178,7 +195,11 @@ void campaign_enter(Game *g, int day, int rehearsal, int area)
 }
 void campaign_target(const Game *g, float *x, float *z)
 {
-    Cell c = campaign_site(g, g->task == 3 ? 7 : 1 + 2 * g->task + (g->phase != 0));
+    static const Cell stations[2][5] = {{{3, 3}, {1, 15}, {3, 11}, {1, 5}, {5, 21}},
+                                        {{23, 21}, {23, 11}, {19, 23}, {17, 3}, {21, 13}}};
+    Cell c = g->task == TRANSMISSION
+                 ? stations[g->phase][(g->door + g->area + g->phase * 2) % 5]
+                 : campaign_site(g, g->task == EXIT_TASK ? 7 : 1 + 2 * g->task + (g->phase != 0));
     *x = c.x * CELL;
     *z = c.z * CELL;
 }
@@ -214,9 +235,9 @@ static int walkable(const Game *g, float x, float z)
 }
 void campaign_guard(const Game *g, float *x, float *z)
 {
-    Cell c = campaign_site(g, g->task == 3 ? 7 : 1 + 2 * g->task + !!g->phase);
-    *x = c.x * CELL + .95f * sinf(g->clock * 1.4f);
-    *z = c.z * CELL + .95f * cosf(g->clock * 1.4f);
+    campaign_target(g, x, z);
+    *x += .95f * sinf(g->clock * 1.4f);
+    *z += .95f * cosf(g->clock * 1.4f);
 }
 static int dial_code(const Game *g) { return 1 + (g->door + g->task + g->area) % 3; }
 static int operate(Game *g, int seat, Input in, int pressed, int released, float distance, float x,
@@ -225,7 +246,7 @@ static int operate(Game *g, int seat, Input in, int pressed, int released, float
     Player *p = &g->player[seat];
     int kind = campaign_kind(g);
     int nearby = distance < 2.7f && clear_path(g, p->x, p->z, x, z);
-    if (g->door == 1) {
+    if (g->door == 1 && g->task < EXIT_TASK) {
         if (kind == SHOT) {
             if (!(pressed & FIRE) || !aimed(g, p, in, x, z, 1.55f))
                 return 0;
@@ -259,7 +280,7 @@ static int operate(Game *g, int seat, Input in, int pressed, int released, float
         } else
             success = kind != ESCORT || hypotf(g->escort_x - x, g->escort_z - z) < 3.4f;
     }
-    if (success && c && !g->phase) {
+    if (success && (c || g->task == TRANSMISSION) && !g->phase) {
         g->phase = 1;
         g->event = OBJECTIVE;
         return 0;
@@ -355,9 +376,15 @@ void campaign_tick(Game *g, const Input in[2], float dt)
                 return;
             }
         } else if (operate(g, i, a, pressed, released, d, x, z)) {
-            g->task++;
+            int sent = g->task == TRANSMISSION;
+            if (sent)
+                g->task = EXIT_TASK;
+            else if (g->task == 2 && (transmissions[g->door - 1].sectors & (1u << g->area)))
+                g->task = TRANSMISSION;
+            else
+                g->task++;
             reset_tool(g);
-            g->event = OBJECTIVE;
+            g->event = sent ? SIGNAL_SENT : OBJECTIVE;
             return;
         }
         g->charge[i] = (a.buttons & FIRE) ? fminf(1, g->charge[i] + dt) : 0;
@@ -409,14 +436,19 @@ void campaign_prompt(const Game *g, int who, char *buf, int size)
     }
     if (g->phase && combination(g))
         action = combination(g)->instruction;
+    const Transmission *memory = &transmissions[g->door - 1];
+    if (g->task == TRANSMISSION)
+        action = g->phase ? memory->destination : memory->origin;
     k = campaign_action(g);
     snprintf(buf, size, "%s | %s | %s (%s, %.0f m)", e->areas[g->area],
-             g->task == 3 ? e->gift : e->tools[(g->task + g->area) % 3].name, action, direction,
-             hypotf(p->x - x, p->z - z));
+             g->task == TRANSMISSION ? memory->message
+             : g->task == EXIT_TASK  ? e->gift
+                                     : e->tools[(g->task + g->area) % 3].name,
+             action, direction, hypotf(p->x - x, p->z - z));
     int used = (int)strlen(buf);
     if (g->task < 3 && (g->door == 2 || g->door == 11) && k == FLY)
         snprintf(buf + used, size - used, " | look up or down while moving to fly");
-    if (k == GRID && g->task < 3)
+    if (k == GRID && g->task != EXIT_TASK)
         snprintf(buf + used, size - used, " | dial %d / need %d", g->dial, dial_code(g));
     if (k == ESCORT && g->phase)
         snprintf(buf + used, size - used, " | escort %.0f m away",

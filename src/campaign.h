@@ -2,6 +2,7 @@
 #define LANTERN_CAMPAIGN_H
 #include "hall.h"
 enum { MAP_SIZE = 25, AREA_COUNT = 5, CELL = 4 };
+enum { EXIT_TASK = 3, TRANSMISSION = 4 };
 enum { CITY, WILD, WORKS, VAULT, DOCK };
 enum { PUNCH, SHOT, FLY, ESCORT, BUILD, ROUTE, GRID, CARRY, CHARGE };
 typedef struct {

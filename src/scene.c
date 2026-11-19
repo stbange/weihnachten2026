@@ -645,6 +645,16 @@ void scene_actors(Mesh *m, const Game *g, int viewer, float time, int held_tool)
         campaign_guard(g, &gx, &gz);
         unsigned col = expeditions[g->door - 1].colour;
         int kind = campaign_action(g);
+        if (g->task == TRANSMISSION) {
+            /* A two-part field station: first recover the recording, then answer it. */
+            box(m, x, .01f, z, 2.65f, .09f, 2.65f, 0x3d6262, PAINT);
+            for (int sign = -1; sign <= 1; sign += 2) {
+                rod(m, xyz(x + sign * .96f, .1f, z), xyz(x + sign * .96f, 2.35f, z), .075f, .045f,
+                    6, 0xd4ae6f, PAINT);
+                box(m, x + sign * .96f, 2.35f, z, .16f, .21f, .16f, g->phase ? 0xaee6c0 : 0xeec192,
+                    GLOW);
+            }
+        }
         if (g->task == 3) {
             if (g->area == 4)
                 keepsake(m, g->door, x, 1.0f, z, .12f);
@@ -668,10 +678,15 @@ void scene_actors(Mesh *m, const Game *g, int viewer, float time, int held_tool)
             for (int i = 0; i < 4; i++)
                 box(m, x - .45f + i * .3f, 1.46f, z, .18f, .14f, .4f,
                     i == g->dial ? 0xffd962 : 0x524b47, i == g->dial ? GLOW : PAINT);
+            /* The rear row encodes the requested setting for stereo/headset players. */
+            int answer = 1 + (g->door + g->task + g->area) % 3;
+            for (int i = 0; i < answer; i++)
+                box(m, x - .28f + i * .28f, 1.72f, z - .3f, .14f, .12f, .12f, 0x96ddbc, GLOW);
         } else
             present(m, x, .07f, z, 1.2f, .85f, col);
-        star(m, xyz(x, (kind == FLY && g->task < 3 ? 4.4f : 3.9f) + .18f * sinf(time * 2), z), .57f,
-             6, 0xffde86, 0xcc9a50);
+        star(m,
+             xyz(x, (kind == FLY && g->task != EXIT_TASK ? 4.4f : 3.9f) + .18f * sinf(time * 2), z),
+             .57f, 6, 0xffde86, 0xcc9a50);
         if (kind == ESCORT && g->task < 3) {
             box(m, g->escort_x, .35f, g->escort_z, 1.25f, .8f, 1.7f, col, PAINT);
             box(m, g->escort_x, .11f, g->escort_z, 1.45f, .34f, 1.35f, 0x494647, STONE);

@@ -93,7 +93,7 @@ static void drive_campaign(int day, int seats, int practice)
     assert(g.room == EXPEDITION && g.door == day);
     journey_frames = 0;
     int count = 0;
-    while (g.room == EXPEDITION && count++ < 80) {
+    while (g.room == EXPEDITION && count++ < 100) {
         int seat = g.area % seats;
         drive_leg(&g, seat);
         drive_action(&g, seat);

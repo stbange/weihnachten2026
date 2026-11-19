@@ -13,7 +13,8 @@ enum {
     ENTERED,
     LOCKED,
     REHEARSAL_TICKET,
-    OBJECTIVE
+    OBJECTIVE,
+    SIGNAL_SENT
 };
 enum { SNAP_WORDS = 32 };
 typedef struct {

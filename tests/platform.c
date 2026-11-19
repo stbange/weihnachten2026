@@ -33,7 +33,7 @@ int main(void)
     assert(s[2] == 24 && s[12] != s[18]);
     s[0] = 8;
     assert(!lh_receive());
-    s[0] = 2;
+    s[0] = 3;
     assert(lh_receive());
     assert(lh_wire() == s && lh_near(0) == 0);
     lh_start(1, 1, 1, 0);
