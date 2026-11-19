@@ -777,3 +777,14 @@ kbd {
 #relay-status {
   color: var(--gold);
 }
+
+#meetday {
+  display: block;
+  max-width: 100%;
+  padding: 0.5rem;
+  margin: 0.4rem 0 1rem;
+  color: var(--cream);
+  background: var(--ink);
+  border: 1px solid var(--rule);
+  font: inherit;
+}

@@ -31,18 +31,24 @@ let focusSeat = 0;
 const coarse =
   matchMedia('(pointer:coarse)').matches || navigator.maxTouchPoints > 0;
 const state = () =>
-  Array.from(M.HEAPF32.subarray(M._lh_state() / 4, M._lh_wire() / 4 + 22));
+  Array.from(M.HEAPF32.subarray(M._lh_state() / 4, M._lh_wire() / 4 + 32));
 const currentDay = () => M._lh_today(Date.now() / 1000);
 const persisted = () => {
   try {
-    return localStorage.getItem('lantern-hall.ticket.v1') === '1' ? 1 : 0;
+    return (
+      (Number(localStorage.getItem('lantern-hall.keepsakes.v2')) & 0xffffff) |
+      Number(localStorage.getItem('lantern-hall.ticket.v1') === '1')
+    );
   } catch {
     return 0;
   }
 };
-const persist = () => {
+const persist = (bits) => {
   try {
-    localStorage.setItem('lantern-hall.ticket.v1', '1');
+    localStorage.setItem(
+      'lantern-hall.keepsakes.v2',
+      String(bits | persisted()),
+    );
   } catch {
     /* private session */
   }
@@ -132,6 +138,7 @@ function start(
   localSplit = false,
   online = '',
   lock = true,
+  preview = 0,
 ) {
   if (!M) return;
   if (!online) {
@@ -140,12 +147,15 @@ function start(
   }
   remote = { v: [0, 0, 0, 0, 0], at: 0, pulses: 0 };
   lastSend = 0;
+  visitSeconds = 0;
+  timingDoor = 0;
   role = online;
   split = localSplit;
   focusSeat = role === 'guest' ? 1 : 0;
   open = currentDay();
   if (dialog.open) closePanel();
   M._lh_start(split || role ? 2 : 1, open, rehearsal ? 1 : 0, persisted());
+  if (preview) M._lh_preview(preview);
   locationUI(true);
   canvas.focus();
   chime([294, 370, 440]);
@@ -165,18 +175,36 @@ function home() {
   $('enter').focus();
   if (document.pointerLockElement) document.exitPointerLock();
 }
+function hallStory(bits) {
+  const guests = Array.from({ length: 24 }, (_, i) => (bits >> i) & 1).reduce(
+    (a, b) => a + b,
+    0,
+  );
+  if (guests === 24)
+    return 'The second recording plays. Someone behind the camera whispers: start anyway. The clock strikes twelve.';
+  if (bits & (1 << 23))
+    return 'The last place card is blank. Pull up a chair for the friend who arrives after midnight.';
+  if ((bits & 0x3f000) === 0x3f000)
+    return 'A late tram rings outside. Someone sets another place.';
+  if ((bits & 0xfc0) === 0xfc0)
+    return 'Across the table, familiar voices are beginning to answer each other.';
+  if ((bits & 0x3f) === 0x3f)
+    return 'The first guests have taken their coats off. Candles burn beside their keepsakes.';
+  return 'There is room at the table for twenty-four memories.';
+}
 function almanac() {
   if (!cards.length) return;
   const count = M ? (role === 'guest' ? state()[2] : currentDay()) : 0;
+  const bits = playing ? state()[6] : persisted();
   const grid = cards
     .map(
       (c) =>
-        `<button class="day ${c.day <= count ? 'ready' : ''}" data-day="${c.day}" aria-label="Door ${c.day}, ${esc(c.title)}"><strong>${String(c.day).padStart(2, '0')}</strong><small>${c.day <= count ? 'open' : 'sealed'}</small></button>`,
+        `<button class="day ${c.day <= count ? 'ready' : ''}" data-day="${c.day}" aria-label="Door ${c.day}, ${esc(c.title)}"><strong>${String(c.day).padStart(2, '0')}</strong><small>${bits & (1 << (c.day - 1)) ? 'returned' : c.day <= count ? 'open' : 'sealed'}</small></button>`,
     )
     .join('');
   modal(
     'PORTAL ALMANAC',
-    `<h2>Twenty-four evenings</h2><p>One door opens at midnight in Warsaw each day, December 1–24. Every mission briefing is available to read now.</p><div class="grid">${grid}</div><a class="booklink" href="${sources}design/lantern-hall.md" target="_blank" rel="noopener">Read the campaign design →</a> &nbsp; <a class="booklink" href="${sources}ART-CREDITS.md" target="_blank" rel="noopener">Art credits</a>`,
+    `<h2>Twenty-four evenings</h2><p>One door opens at midnight in Warsaw each day, December 1–24. Select a door to playtest its route. Calendar clears return keepsakes to the hall.</p><p>${esc(hallStory(bits))}</p><div class="grid">${grid}</div><a class="booklink" href="${sources}design/lantern-hall.md" target="_blank" rel="noopener">Read the campaign design →</a> &nbsp; <a class="booklink" href="${sources}ART-CREDITS.md" target="_blank" rel="noopener">Art credits</a>`,
   );
   body
     .querySelectorAll('[data-day]')
@@ -191,10 +219,11 @@ function briefing(day) {
       '  /  ' +
       String(day).padStart(2, '0') +
       ' DECEMBER',
-    `<h2>${esc(c.title)}</h2><div class="source">${esc(c.reference)}</div><p>${esc(c.mission)}</p><ul>${c.kit.map((s) => '<li>' + esc(s) + '</li>').join('')}</ul><details><summary>Twenty-minute mission design</summary><p>${esc(c.place)}</p><p>${esc(c.route)}</p><p>${esc(c.coop)}</p></details><div class="buttons"><button id="backbook" class="choice">All 24 doors</button>${day === 1 && !role ? '<button id="trydoor" class="primary">Rehearse Door 01</button>' : ''}</div><p class="source">${day === 1 ? 'A short playable rehearsal is available.' : 'Campaign design · full mission in development.'}</p>`,
+    `<h2>${esc(c.title)}</h2><div class="source">${esc(c.reference)}</div><p>${esc(c.mission)}</p><ul>${c.kit.map((s) => '<li>' + esc(s) + '</li>').join('')}</ul><details><summary>Twenty-minute mission design</summary><p>${esc(c.place)}</p><p>${esc(c.route)}</p><p>${esc(c.coop)}</p></details><div class="buttons"><button id="backbook" class="choice">All 24 doors</button>${!role ? '<button id="trydoor" class="primary">Playtest mission →</button>' : ''}</div><p class="source">Five areas · practice is available before opening day.</p><p>${persisted() & (1 << (day - 1)) ? esc(c.gift) : ''}</p>`,
   );
   $('backbook').onclick = almanac;
-  if ($('trydoor')) $('trydoor').onclick = () => start(true, split);
+  if ($('trydoor'))
+    $('trydoor').onclick = () => start(false, split, '', true, day);
 }
 function controlsText() {
   return '<p><b>Player 1</b> · WASD move, mouse or arrows look, F or click pulses, E uses, Space lifts. Drag to look if your browser releases the mouse.</p><p><b>Player 2</b> · IJKL move, U/O turn, Y pulses, H uses, N lifts. On a touchscreen the first seat uses the on-screen controls.</p>';
@@ -211,11 +240,42 @@ function menu() {
 }
 $('enter').onclick = () => start();
 $('practice').onclick = () => start(true);
-$('featured').onclick = () => briefing(1);
+$('featured').onclick = () => start(false, false, '', true, 1);
 $('book').onclick = almanac;
 $('menu').onclick = menu;
+$('chart').onclick = () => {
+  const s = state();
+  if (s[1] !== 2) return;
+  modal(
+    cards[s[8] - 1].title,
+    '<h2>Sector map</h2><canvas id="chartmap" width="350" height="350" aria-label="Sector plan with player positions and objective" style="max-width:100%;height:auto"></canvas><p>Gold marks the objective. Green and blue mark the two player positions. The arrow shows which way you face.</p><button id="backgame" class="primary">Resume</button>',
+  );
+  const ctx = $('chartmap').getContext('2d'),
+    cell = 14;
+  for (let z = 0; z < 25; z++)
+    for (let x = 0; x < 25; x++) {
+      const tile = M._lh_chart(x, z);
+      ctx.fillStyle = ['#566d60', '#162c2b', '#f3c366'][tile];
+      ctx.fillRect(x * cell, z * cell, cell, cell);
+    }
+  for (let p = 0; p < s[9]; p++) {
+    const k = 10 + p * 6;
+    ctx.save();
+    ctx.translate((s[k] / 4 + 0.5) * cell, (s[k + 2] / 4 + 0.5) * cell);
+    ctx.rotate(s[k + 3]);
+    ctx.fillStyle = p ? '#9dbeef' : '#95f1be';
+    ctx.beginPath();
+    ctx.moveTo(0, -8);
+    ctx.lineTo(5, 5);
+    ctx.lineTo(-5, 5);
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+  }
+  $('backgame').onclick = closePanel;
+};
 function connected(newRole) {
-  start(friendsRehearse, false, newRole);
+  start(friendsRehearse, false, newRole, true, friendsDay);
   notify('Connected · two seats at the table');
 }
 function incoming(msg) {
@@ -239,7 +299,7 @@ function incoming(msg) {
       Math.max(-1, Math.min(1, yaw)),
       Math.max(-1, Math.min(1, pitch)),
     );
-  } else if (role === 'guest' && msg.length === 22) {
+  } else if (role === 'guest' && msg.length === 32) {
     M.HEAPF32.set(msg, M._lh_wire() / 4);
     if (M._lh_receive()) events();
   }
@@ -255,15 +315,18 @@ function disconnected() {
 }
 const link = new Link(connected, incoming, disconnected),
   relay = new Relay(connected, incoming, disconnected);
-let transport = link;
+let transport = link,
+  friendsDay = 0;
 function multiplayer() {
   if (!M) return;
   modal(
     'MULTIPLAYER',
-    `<h2>Pull up a chair</h2><p>Choose where to meet, then share a screen or connect two browsers.</p><label><input id="meetpractice" type="checkbox" ${friendsRehearse ? 'checked' : ''}> Meet in the Door 01 rehearsal</label><div class="buttons"><button id="splits" class="primary">Start split screen</button><button id="net" class="choice">Connect browsers</button></div><details><summary>Two-player controls</summary>${controlsText()}</details>`,
+    `<h2>Pull up a chair</h2><p>Choose where to meet, then share a screen or connect two browsers.</p><label><input id="meetpractice" type="checkbox" ${friendsRehearse ? 'checked' : ''}> Meet in the short cinema rehearsal</label><label>Campaign playtest <select id="meetday"><option value="0">Calendar hall or rehearsal</option>${cards.map((c) => '<option value="' + c.day + '" ' + (friendsDay === c.day ? 'selected' : '') + '>' + c.day + ' · ' + esc(c.title) + '</option>').join('')}</select></label><div class="buttons"><button id="splits" class="primary">Start split screen</button><button id="net" class="choice">Connect browsers</button></div><details><summary>Two-player controls</summary>${controlsText()}</details>`,
   );
   $('meetpractice').onchange = (e) => (friendsRehearse = e.target.checked);
-  $('splits').onclick = () => start(friendsRehearse, true);
+  $('meetday').onchange = (e) => (friendsDay = Number(e.target.value));
+  $('splits').onclick = () =>
+    start(friendsRehearse, true, '', true, friendsDay);
   $('net').onclick = netPanel;
 }
 function netPanel() {
@@ -487,7 +550,11 @@ function input(seat) {
     Math.max(-1, Math.min(1, k('KeyD') - k('KeyA') + touch.s)),
     k('ArrowRight') - k('ArrowLeft'),
     k('ArrowUp') - k('ArrowDown'),
-    k('KeyE') | (k('KeyF') * 2) | (k('Space') * 4) | touch.bits | taps[0],
+    k('KeyE') |
+      ((k('KeyF') || Number(dragging && !!document.pointerLockElement)) * 2) |
+      (k('Space') * 4) |
+      touch.bits |
+      taps[0],
   ];
 }
 const tips = [
@@ -496,16 +563,17 @@ const tips = [
   'The projector is running',
   'Ticket returned to the hall',
   '',
-  'Entered House Lights',
+  'Entered mission',
   'This portal is sealed',
-  'Rehearsal complete · ticket returned',
+  'Playtest complete · back at the hall',
+  'Objective complete',
 ];
 function events() {
   const event = M._lh_event();
   if (!event) return;
   const s = state();
   if (event === 3 || event === 7) {
-    if (event === 3 && s[6]) persist();
+    if (event === 3 && s[6]) persist(1 << (s[8] - 1));
     chime([392, 494, 587, 784]);
   }
   if (event === 2 || event === 1)
@@ -514,13 +582,30 @@ function events() {
     briefing(s[8]);
     return;
   }
-  if (tips[event]) notify(tips[event]);
+  if ((event === 3 || event === 7) && visitSeconds > 0) {
+    notify(
+      (event === 3 ? cards[s[8] - 1].gift : 'Playtest complete.') +
+        ' · This visit ' +
+        duration(visitSeconds),
+    );
+    visitSeconds = 0;
+  } else if (event === 3) notify(cards[s[8] - 1].gift);
+  else if (tips[event]) notify(tips[event]);
 }
 function hud(s) {
   const near = Array.from({ length: split ? 2 : 1 }, (_, i) =>
     M._lh_near(split ? i : focusSeat),
   );
+  $('chart').hidden = s[1] !== 2;
+  const prompts =
+    s[1] === 2
+      ? near.map((_, i) => M.UTF8ToString(M._lh_prompt(split ? i : focusSeat)))
+      : [];
   const hash = [
+    ...prompts,
+    s[8],
+    s[22],
+    s[23],
     s[1],
     s[2],
     s[3],
@@ -534,9 +619,13 @@ function hud(s) {
   if (hash === lastHud) return;
   lastHud = hash;
   $('location').textContent = s[1]
-    ? s[3]
-      ? 'Door 01 · rehearsal'
-      : 'Door 01 · live calendar'
+    ? 'Door ' +
+      String(s[8]).padStart(2, '0') +
+      (s[3]
+        ? s[1] === 2
+          ? ' · playtest'
+          : ' · rehearsal'
+        : ' · live calendar')
     : 'Lantern Hall · ' + s[2] + '/24 open';
   document.querySelectorAll('.viewinfo').forEach((info, i) => {
     const nearDay = near[i],
@@ -545,7 +634,9 @@ function hud(s) {
     const label = split
       ? 'PLAYER ' + (i + 1)
       : s[1]
-        ? 'HOUSE LIGHTS'
+        ? s[1] === 2
+          ? esc(cards[s[8] - 1].title.toUpperCase())
+          : 'HOUSE LIGHTS'
         : 'THE GREAT HALL';
     let goal, sub;
     if (!s[1]) {
@@ -557,10 +648,14 @@ function hud(s) {
         : 'Walk the runner and approach a numbered arch.';
       sub = nearDay
         ? (nearDay > s[2] ? 'Sealed · opens December ' + nearDay : 'Ready') +
-          ' · Use for briefing'
+          (nearDay > s[2] ? ' · Use for briefing' : ' · Walk through')
         : coarse
           ? 'Left stick moves · drag right to look · tap Use'
           : 'WASD moves · mouse or arrows look · E inspects';
+    } else if (s[1] === 2) {
+      const [area, tool, action, extra] = prompts[i].split(' | ');
+      goal = s[22] + 1 + '/5 · ' + area + ' · ' + tool;
+      sub = action + (extra ? ' · ' + extra : '');
     } else if (n < 2) {
       goal = 'Fold the two paper ushers · ' + n + '/2';
       sub = coarse
@@ -591,6 +686,27 @@ function hud(s) {
       '<small>' + label + '</small>' + esc(goal) + '<i>' + esc(sub) + '</i>';
   });
 }
+let visitSeconds = 0,
+  timingDoor = 0;
+function timeVisit(s, elapsed) {
+  if (s[1] !== 2) {
+    timingDoor = 0;
+    return;
+  }
+  if (timingDoor !== s[8]) {
+    timingDoor = s[8];
+    visitSeconds = 0;
+  }
+  if (!document.hidden && !dialog.open) visitSeconds += elapsed;
+}
+function duration(seconds) {
+  return (
+    Math.floor(seconds / 60) +
+    'm ' +
+    String(Math.floor(seconds % 60)).padStart(2, '0') +
+    's'
+  );
+}
 let xrSupported = false;
 async function goVR() {
   if (!M || role || split) return;
@@ -601,6 +717,7 @@ async function goVR() {
     await immersive(
       M,
       (dt) => {
+        timeVisit(state(), dt);
         M._lh_tick(dt, 1);
         events();
       },
@@ -616,6 +733,7 @@ async function goVR() {
   }
 }
 $('xr').onclick = goVR;
+let lastVisitFrame = 0;
 function render(t) {
   requestAnimationFrame(render);
   if (!M || xrActive) return;
@@ -651,6 +769,7 @@ function render(t) {
     }
     const steps = M._lh_tick(dt, role !== 'guest' && (!dialog.open || !!role));
     const s = state();
+    timeVisit(s, lastVisitFrame ? Math.min(1, (t - lastVisitFrame) / 1000) : 0);
     if (role === 'host' && (t - lastSend > 50 || s[7])) {
       transport.send(s);
       lastSend = t;
@@ -662,6 +781,7 @@ function render(t) {
       taps[0] = taps[1] = remote.pulses = 0;
     }
   } else M._lh_tick(dt, 0);
+  lastVisitFrame = t;
   M._lh_draw(!playing, split, focusSeat);
 }
 async function boot() {
