@@ -186,6 +186,43 @@ static void test_geometry(void)
     camera_matrix(b, (Vec){0, 1, 3}, .3f, .1f, 1.5f);
     assert(!approximately(a[0], b[0]) && a[11] < 0 && a[15] > 0);
 }
+static void test_active_encounter(Game *g)
+{
+    int stage = g->phase;
+    const Encounter *beat = campaign_encounter(g);
+    float x, z;
+    campaign_target(g, &x, &z);
+    Player *p = &g->player[1];
+    p->x = x;
+    p->z = z + 1.75f;
+    p->y = 0;
+    p->fuel = 1;
+    char prompt[320];
+    for (int frame = 0; frame < 280 && g->task == SET_PIECE && g->phase == stage; frame++) {
+        float tx, y, tz;
+        campaign_sight(g, &tx, &y, &tz);
+        p->yaw = atan2f(tx - p->x, p->z - tz);
+        p->pitch = atan2f(y - p->y - 1.55f, hypotf(tx - p->x, tz - p->z));
+        campaign_prompt(g, 1, prompt, sizeof(prompt));
+        assert(strstr(prompt, beat->name));
+        Input in = {0};
+        if (beat->action == HIGH)
+            in.buttons = BOOST;
+        else if (beat->action == LOW)
+            in.forward = .25f;
+        else if (beat->action == BEAM)
+            in.buttons = FIRE;
+        else if (frame % 2) {
+            if (beat->action == PLACE ||
+                (beat->action == POWER && g->dial != 1 + (g->door + g->area + g->task) % 3))
+                in.buttons = USE;
+            else
+                in.buttons = FIRE;
+        }
+        once(g, 1, in);
+    }
+    assert(g->task != SET_PIECE || g->phase != stage);
+}
 static void test_expeditions(void)
 {
     static Vertex vertices[150000];
@@ -201,15 +238,22 @@ static void test_expeditions(void)
         for (int area = 0; area < AREA_COUNT; area++) {
             scene_static(&mesh, &g);
             assert(mesh.count < mesh.capacity);
-            for (int objective = 0; objective < 5 && g.area == area && g.room == EXPEDITION;
+            for (int objective = 0; objective < 9 && g.area == area && g.room == EXPEDITION;
                  objective++) {
                 int task = g.task;
+                if (task == SET_PIECE) {
+                    scene_actors(&mesh, &g, 0, 1, 1);
+                    game_pack(&g, wire);
+                    assert(game_unpack(&copy, wire));
+                    test_active_encounter(&g);
+                    continue;
+                }
                 for (int part = 0; part < 2; part++) {
                     int kind = campaign_action(&g);
                     float x, z;
                     campaign_target(&g, &x, &z);
                     Cell target = {(int)x / CELL, (int)z / CELL};
-                    Cell adjacent = campaign_next(&g, target, (Cell){1, 23});
+                    Cell adjacent = campaign_next(&g, target, campaign_site(&g, 0));
                     assert(!campaign_wall(&g, adjacent.x, adjacent.z));
                     Player *p = &g.player[1];
                     p->x = x + (adjacent.x - target.x) * 1.95f;
@@ -282,6 +326,122 @@ static void test_expeditions(void)
     wire[8] = 0;
     assert(!game_unpack(&copy, wire));
 }
+/* Flood the actual collision field, including alternate paths beyond the timed replay. */
+static unsigned verify_plan(Game *g)
+{
+    int extent = campaign_extent(g);
+    assert(extent <= MAP_SIZE);
+    int walkable = 0, tail = 1;
+    unsigned char seen[MAP_SIZE][MAP_SIZE] = {{0}};
+    Cell queue[MAP_SIZE * MAP_SIZE];
+    queue[0] = campaign_site(g, 0);
+    seen[queue[0].z][queue[0].x] = 1;
+    unsigned fingerprint = 2166136261u;
+    for (int z = 0; z < extent; z++)
+        for (int x = 0; x < extent; x++) {
+            int surface = campaign_surface(g, x, z);
+            walkable += surface != BARRIER;
+            fingerprint = (fingerprint ^ (unsigned)surface) * 16777619u;
+        }
+    static const Cell dir[] = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+    for (int i = 0; i < tail; i++)
+        for (int d = 0; d < 4; d++) {
+            Cell c = {queue[i].x + dir[d].x, queue[i].z + dir[d].z};
+            if (!campaign_wall(g, c.x, c.z) && !seen[c.z][c.x]) {
+                seen[c.z][c.x] = 1;
+                queue[tail++] = c;
+            }
+        }
+    assert(tail == walkable);
+    for (int i = 0; i < 10; i++) {
+        Cell c = campaign_site(g, i);
+        assert(seen[c.z][c.x]);
+    }
+    for (int i = 0; i < 2; i++) {
+        Cell c = campaign_pad(g, i);
+        assert(seen[c.z][c.x]);
+    }
+    return fingerprint;
+}
+static void test_floorplans(void)
+{
+    Game g;
+    game_start(&g, 2, 24, 0, 0);
+    unsigned fingerprints[24 * AREA_COUNT];
+    int count = 0;
+    for (int door = 1; door <= 24; door++)
+        for (int area = 0; area < AREA_COUNT; area++) {
+            campaign_enter(&g, door, 1, area);
+            unsigned fingerprint = verify_plan(&g);
+            for (int i = 0; i < count; i++)
+                assert(fingerprints[i] != fingerprint);
+            fingerprints[count++] = fingerprint;
+            assert(campaign_brief(&g)[0]);
+            g.task = EXIT_TASK;
+            verify_plan(&g);
+            g.task = SET_PIECE;
+            g.phase = 3;
+            assert(!campaign_valid_step(&g));
+        }
+}
+static void test_route_facilities(void)
+{
+    Game g;
+    game_start(&g, 2, 24, 0, 0);
+    for (int door = 1; door <= 24; door++) {
+        campaign_enter(&g, door, 1, 0);
+        g.task = EXIT_TASK;
+        Cell a = campaign_pad(&g, 0), b = campaign_pad(&g, 1);
+        Player *p = &g.player[1];
+        p->x = a.x * CELL;
+        p->z = a.z * CELL;
+        p->previous = 0;
+        int f = districts[door - 1].feature;
+        if (f == AIRLOCK) {
+            once(&g, 1, (Input){.buttons = USE});
+            assert(approximately(p->x, a.x * CELL) && approximately(p->z, a.z * CELL));
+            once(&g, 1, (Input){0});
+            p->y = 3;
+        }
+        if (f == AIRLOCK || f == TRAM || f == FERRY || f == RIFT || f == CHRONO) {
+            /* Board from the end that does not share the extraction point. */
+            Cell exit = campaign_site(&g, 7);
+            if (exit.x == a.x && exit.z == a.z) {
+                Cell swap = a;
+                a = b;
+                b = swap;
+                p->x = a.x * CELL;
+                p->z = a.z * CELL;
+            }
+            once(&g, 1, (Input){.buttons = USE});
+            assert(approximately(p->x, b.x * CELL) && approximately(p->z, b.z * CELL));
+        } else if (f == WIND || f == SKI) {
+            p->yaw = 0;
+            p->fuel = .5f;
+            once(&g, 1, (Input){.forward = 1, .buttons = BOOST});
+            assert(a.z * CELL - p->z > .095f);
+            if (f == WIND)
+                assert(p->fuel > .9f);
+        } else if (f == FLARE) {
+            once(&g, 1, (Input){.buttons = FIRE});
+            assert(g.stun > 5);
+        } else if (f == COOLANT) {
+            once(&g, 1, (Input){.buttons = FIRE});
+            assert(g.charge[1] > .04f);
+        }
+    }
+    /* The final mail van and its driver arrive together. The second seat can stay behind. */
+    campaign_enter(&g, 24, 1, 1);
+    g.task = 2;
+    g.phase = 1;
+    assert(campaign_kind(&g) == ESCORT && campaign_feature_active(&g));
+    Cell a = campaign_pad(&g, 0), b = campaign_pad(&g, 1);
+    g.player[1].previous = 0;
+    g.escort_x = g.player[1].x = a.x * CELL;
+    g.escort_z = g.player[1].z = a.z * CELL;
+    once(&g, 1, (Input){.buttons = USE});
+    assert(approximately(g.escort_x, b.x * CELL) && approximately(g.escort_z, b.z * CELL));
+}
 static void test_chamber_gates(void)
 {
     Game g;
@@ -290,8 +450,8 @@ static void test_chamber_gates(void)
         for (int area = 0; area < AREA_COUNT; area++) {
             campaign_enter(&g, day, 1, area);
             int gates = 0;
-            for (int z = 0; z < MAP_SIZE; z++)
-                for (int x = 0; x < MAP_SIZE; x++)
+            for (int z = 0; z < campaign_extent(&g); z++)
+                for (int x = 0; x < campaign_extent(&g); x++)
                     if (campaign_chamber_tile(&g, x, z) == '+') {
                         assert(campaign_wall(&g, x, z));
                         g.task = 1;
@@ -307,6 +467,8 @@ static void test_chamber_gates(void)
 }
 int main(void)
 {
+    test_floorplans();
+    test_route_facilities();
     test_chamber_gates();
     test_expeditions();
     test_calendar();

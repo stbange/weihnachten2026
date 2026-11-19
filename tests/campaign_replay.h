@@ -39,8 +39,53 @@ static void drive_leg(Game *g, int seat)
     }
     assert(0 && "Compass loop");
 }
+static void perform_set_piece(Game *g, int seat)
+{
+    int stage = g->phase;
+    Player *p = &g->player[seat];
+    for (int i = 0; i < 210 && g->task == SET_PIECE && g->phase == stage; i++) {
+        float x, y, z;
+        campaign_sight(g, &x, &y, &z);
+        float pitch = atan2f(y - p->y - 1.55f, hypotf(x - p->x, z - p->z));
+        game_look(g, seat, atan2f(x - p->x, p->z - z) - p->yaw, pitch - p->pitch);
+        Input in = {0};
+        switch (campaign_encounter(g)->action) {
+        case HIGH:
+            in.buttons = BOOST;
+            break;
+        case LOW:
+            /* Free-flight pods descend by flying forward with a downward pitch. */
+            game_look(g, seat, 0, -1.0f - p->pitch);
+            in.forward = .25f;
+            break;
+        case BEAM:
+            in.buttons = FIRE;
+            break;
+        case PLACE:
+            in.buttons = (i % 2) ? USE : 0;
+            break;
+        case POWER:
+            in.buttons =
+                (i % 2) ? (g->dial == 1 + (g->door + g->area + g->task) % 3 ? FIRE : USE) : 0;
+            break;
+        default:
+            in.buttons = (i % 2) ? FIRE : 0;
+            break;
+        }
+        drive_frame(g, seat, in);
+    }
+    if (g->task == SET_PIECE && g->phase == stage) {
+        fprintf(stderr, "Stalled at door %d area %d encounter %s: %.1f %.1f %.1f\n", g->door,
+                g->area, campaign_encounter(g)->name, p->x, p->y, p->z);
+        assert(0);
+    }
+}
 static void drive_action(Game *g, int seat)
 {
+    if (g->task == SET_PIECE) {
+        perform_set_piece(g, seat);
+        return;
+    }
     int kind = campaign_action(g);
     float x, z;
     campaign_target(g, &x, &z);
@@ -98,16 +143,20 @@ static void drive_campaign(int day, int seats, int practice)
     assert(g.room == EXPEDITION && g.door == day);
     journey_frames = 0;
     int count = 0;
-    while (g.room == EXPEDITION && count++ < 100) {
+    while (g.room == EXPEDITION && count++ < 150) {
         int seat = g.area % seats;
+        int before = g.task, stage = g.phase;
         drive_leg(&g, seat);
-        drive_action(&g, seat);
+        if (before == g.task && stage == g.phase)
+            drive_action(&g, seat);
     }
     if (g.room != HALL)
         fprintf(stderr, "Unfinished day %d area %d task %d phase %d\n", day, g.area, g.task,
                 g.phase);
     assert(g.room == HALL && g.event == (practice ? REHEARSAL_TICKET : TICKET));
-    if (seats == 1)
-        printf("Door %02d direct-route simulation: %.1f minutes\n", day, journey_frames / 1800.0);
+    double minutes = journey_frames / 1800.0;
+    printf("Door %02d %s input replay: %.1f simulated minutes\n", day,
+           seats == 1 ? "solo" : "split", minutes);
+    assert(minutes >= 17 && minutes <= 23);
     assert(g.completed == (practice ? 0 : 1 << (day - 1)));
 }

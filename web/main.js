@@ -1,4 +1,5 @@
 import { PlaytestLog } from './playtest.mjs';
+import { missionAtlas } from './atlas.js';
 import { fieldGuide } from './field-guide.js';
 import { Link } from './network.js';
 import { Relay } from './relay.js';
@@ -249,6 +250,17 @@ function almanac() {
     .querySelectorAll('[data-day]')
     .forEach((b) => (b.onclick = () => briefing(+b.dataset.day)));
 }
+function openAtlas(day) {
+  missionAtlas({
+    cards,
+    day,
+    modal,
+    esc,
+    engine: M,
+    back: briefing,
+    play: role ? null : (n) => start(false, split, '', true, n),
+  });
+}
 function briefing(day) {
   const c = cards[day - 1];
   if (!c) return;
@@ -258,9 +270,10 @@ function briefing(day) {
       '  /  ' +
       String(day).padStart(2, '0') +
       ' DECEMBER',
-    `<h2>${esc(c.title)}</h2><div class="source">${esc(c.reference)}</div><p>${esc(c.mission)}</p><ul>${c.kit.map((s) => '<li>' + esc(s) + '</li>').join('')}</ul><details><summary>Twenty-minute mission design</summary><p>${esc(c.place)}</p><p>${esc(c.route)}</p><p>${esc(c.coop)}</p></details><div class="buttons"><button id="backbook" class="choice">All 24 doors</button>${!role ? '<button id="trydoor" class="primary">Playtest mission →</button>' : ''}</div><p class="source">Five areas · practice is available before opening day.</p><p>${persisted() & (1 << (day - 1)) ? esc(c.gift) : ''}</p>`,
+    `<h2>${esc(c.title)}</h2><div class="source">${esc(c.reference)}</div><p>${esc(c.mission)}</p><ul>${c.encounters.map((beat) => '<li><strong>' + esc(beat.name) + '</strong> · ' + esc(beat.instruction) + '</li>').join('')}</ul><details><summary>Twenty-minute mission design</summary><p>${esc(c.place)}</p><p>${esc(c.route)}</p><p>${esc(c.coop)}</p></details><div class="buttons"><button id="backbook" class="choice">All 24 doors</button><button id="atlas" class="choice">View floor plans</button>${!role ? '<button id="trydoor" class="primary">Playtest mission →</button>' : ''}</div><p class="source">Five areas · practice is available before opening day.</p><p>${persisted() & (1 << (day - 1)) ? esc(c.gift) : ''}</p>`,
   );
   $('backbook').onclick = almanac;
+  $('atlas').onclick = () => openAtlas(day);
   if ($('trydoor'))
     $('trydoor').onclick = () => start(false, split, '', true, day);
 }
@@ -300,15 +313,20 @@ $('chart').onclick = () => {
   if (s[1] !== 2) return;
   modal(
     cards[s[8] - 1].title,
-    '<h2>Sector map</h2><canvas id="chartmap" width="350" height="350" aria-label="Sector plan with player positions and objective" style="max-width:100%;height:auto"></canvas><p>Gold marks the objective. Green and blue mark the two player positions. The arrow shows which way you face.</p><button id="backgame" class="primary">Resume</button>',
+    '<h2>Sector map</h2><p>' +
+      esc(M.UTF8ToString(M._lh_sector_brief())) +
+      '</p><canvas id="chartmap" width="350" height="350" aria-label="Sector plan with player positions and objective" style="max-width:100%;height:auto"></canvas><p>Gold marks the objective. Copper marks the special route and its two stations. Green and blue mark the two player positions. The arrow shows which way you face.</p><button id="backgame" class="primary">Resume</button>',
   );
   const ctx = $('chartmap').getContext('2d'),
-    cell = 14;
-  for (let z = 0; z < 25; z++)
-    for (let x = 0; x < 25; x++) {
+    extent = M._lh_extent(),
+    cell = 350 / extent;
+  for (let z = 0; z < extent; z++)
+    for (let x = 0; x < extent; x++) {
       const tile = M._lh_chart(x, z);
-      ctx.fillStyle = ['#566d60', '#162c2b', '#f3c366'][tile];
-      ctx.fillRect(x * cell, z * cell, cell, cell);
+      ctx.fillStyle = ['#566d60', '#162c2b', '#f3c366', '#e59e7a', '#967661'][
+        tile
+      ];
+      ctx.fillRect(x * cell, z * cell, Math.ceil(cell), Math.ceil(cell));
     }
   for (let p = 0; p < s[9]; p++) {
     const k = 10 + p * 6;
@@ -760,9 +778,9 @@ function hud(s) {
           ? 'Left stick moves · drag right to look · tap Use'
           : 'WASD moves · mouse or arrows look · E inspects';
     } else if (s[1] === 2) {
-      const [area, tool, action, extra] = prompts[i].split(' | ');
+      const [area, tool, action, ...extra] = prompts[i].split(' | ');
       goal = s[22] + 1 + '/5 · ' + area + ' · ' + tool;
-      sub = action + (extra ? ' · ' + extra : '');
+      sub = [action, ...extra].join(' · ');
     } else if (n < 2) {
       goal = 'Fold the two paper ushers · ' + n + '/2';
       sub = coarse
@@ -990,6 +1008,13 @@ async function boot() {
     );
     if (Number.isInteger(seedDoor) && seedDoor >= 1 && seedDoor <= 24)
       showFieldLog(seedDoor);
+    else {
+      const atlasDoor = Number(
+        new URLSearchParams(location.search).get('atlas'),
+      );
+      if (Number.isInteger(atlasDoor) && atlasDoor >= 1 && atlasDoor <= 24)
+        openAtlas(atlasDoor);
+    }
   } catch (e) {
     $('loading').textContent = 'Game could not start · ' + e.message;
     console.error(e);

@@ -37,7 +37,7 @@ The web playtest SHALL provide a fresh timed session, durable per-sector active 
 
 #### Scenario: A friend imports recorded results
 - **WHEN** a tester imports the same JSON export twice
-- **THEN** each party session appears once, with its original door, play mode, five sector times and comfort notes
+- **THEN** each party session appears once, with its original door, play mode, five sector times and comfort notes. First-clear medians include the current layout edition only
 
 ### Requirement: Headset guidance and field evidence
 Immersive play SHALL render a readable objective panel in each eye, support snap turns, and allow a tester to record tracking and control observations.

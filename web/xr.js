@@ -143,7 +143,12 @@ export async function immersive(M, update, state, finish, caption, settings) {
       if (!pose) previous = 0;
       if (pose) {
         const s = state(),
-          body = bodyView(s[10], s[11] + offset, s[12], s[13]);
+          body = bodyView(
+            s[10],
+            M._lh_elevation(0) + s[11] + offset,
+            s[12],
+            s[13],
+          );
         if (shown && time >= nextCaption) {
           guide.update(...caption(s));
           nextCaption = time + 150;

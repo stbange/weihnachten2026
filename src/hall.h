@@ -16,7 +16,7 @@ enum {
     OBJECTIVE,
     SIGNAL_SENT
 };
-enum { SNAP_WORDS = 32, WIRE_VERSION = 4 };
+enum { SNAP_WORDS = 32, WIRE_VERSION = 5 };
 typedef struct {
     float x, y, z, yaw, pitch, fuel;
     int previous;

@@ -13,11 +13,63 @@ static const Chamber chambers[24] = {
 #include "chambers.inc"
 };
 const char *campaign_chamber_name(const Game *g) { return chambers[g->door - 1].name; }
+typedef struct {
+    const char *spine, *branches, *courts, *link, *order, *staging, *brief;
+} SectorPlan;
+static const SectorPlan plans[24][AREA_COUNT] = {
+#include "floorplans.inc"
+};
+static const Encounter encounters[24][3] = {
+#include "encounters.inc"
+};
+const District districts[24] = {
+#include "districts.inc"
+};
+static const SectorPlan *plan(const Game *g) { return &plans[g->door - 1][g->area]; }
+int campaign_valid_step(const Game *g)
+{
+    if (g->task == SET_PIECE)
+        return 2 * (unsigned)g->phase < strlen(plan(g)->staging);
+    return g->phase <= 1 && (g->task >= EXIT_TASK || (unsigned)g->task < strlen(plan(g)->order));
+}
+const char *campaign_brief(const Game *g) { return plan(g)->brief; }
+int campaign_extent(const Game *g) { return 17 + 4 * districts[g->door - 1].stride; }
+static const struct Relief {
+    float step;
+    const char *levels;
+} relief[24] = {
+#include "relief.inc"
+};
+float campaign_ground(const Game *g, float x, float z)
+{
+    if (g->room != EXPEDITION)
+        return 0;
+    const struct Relief *r = &relief[g->door - 1];
+    float stride = districts[g->door - 1].stride;
+    float u = fminf(4, fmaxf(0, (x / CELL - 8) / stride)),
+          v = fminf(4, fmaxf(0, (z / CELL - 8) / stride));
+    int i = (int)fminf(3, u), j = (int)fminf(3, v);
+    const char *h = r->levels + i + 5 * j;
+    float north = (h[0] - '0') + (h[1] - h[0]) * (u - i),
+          south = (h[5] - '0') + (h[6] - h[5]) * (u - i);
+    return (north + (south - north) * (v - j)) * r->step;
+}
+static Cell anchor(const Game *g, char label)
+{
+    int i = label - 'a', stride = districts[g->door - 1].stride;
+    return (Cell){8 + i % 5 * stride, 8 + i / 5 * stride};
+}
+Cell campaign_site(const Game *g, int i)
+{
+    /* The wire task IDs reserve exit before the two optional transmission stops. */
+    int index = i == 7 ? 9 : i >= 8 ? i - 1 : i;
+    return anchor(g, plan(g)->spine[index]);
+}
+Cell campaign_pad(const Game *g, int end) { return anchor(g, plan(g)->link[end]); }
 static Cell chamber_origin(const Game *g)
 {
-    Cell site = campaign_site(g, 1);
-    /* Leave a whole walkable ring and keep the authored pillars on even coordinates. */
-    return (Cell){(int)fminf(21, fmaxf(3, site.x)) - 2, (int)fminf(21, fmaxf(3, site.z)) - 2};
+    Cell c = campaign_site(g, 1);
+    return (Cell){c.x - 2, c.z - 2};
 }
 char campaign_chamber_tile(const Game *g, int x, int z)
 {
@@ -28,77 +80,82 @@ char campaign_chamber_tile(const Game *g, int x, int z)
         return 0;
     return chambers[g->door - 1].rows[z][x];
 }
-static unsigned char walls[MAP_SIZE][MAP_SIZE];
-static int cached = -1;
 static const Cell dirs[] = {{0, -1}, {1, 0}, {0, 1}, {-1, 0}};
-static unsigned random_step(unsigned *seed)
+static unsigned char terrain[MAP_SIZE][MAP_SIZE];
+static int cached = -1;
+static int tool_slot(const Game *g, int task) { return plan(g)->order[task] - '0'; }
+int campaign_feature_active(const Game *g)
 {
-    *seed = *seed * 1664525u + 1013904223u;
-    return *seed >> 8;
+    const District *d = &districts[g->door - 1];
+    if (d->feature == WIND || d->feature == SKI || d->feature == FERRY || d->feature == COOLANT ||
+        d->feature == REFUGE || d->feature == FLARE || d->feature == AIRLOCK)
+        return 1;
+    const char *order = plan(g)->order;
+    for (int i = 0; order[i]; i++)
+        if (expeditions[g->door - 1].tools[tool_slot(g, i)].kind == d->unlock)
+            return (g->task == SET_PIECE ? 1 : g->task) > i;
+    /* An earlier sector commissioned this route. */
+    return 1;
+}
+static void stamp(Cell c, int radius, int surface)
+{
+    for (int z = -radius; z <= radius; z++)
+        for (int x = -radius; x <= radius; x++)
+            if (x * x + z * z <= radius * radius + radius)
+                terrain[c.z + z][c.x + x] = surface;
+}
+static void passage(Cell a, Cell b, int radius, int surface)
+{
+    int dx = b.x - a.x, dz = b.z - a.z, steps = abs(dx) + abs(dz);
+    for (int i = 0; i <= steps; i++) {
+        float t = steps ? (float)i / steps : 0;
+        stamp((Cell){a.x + (int)roundf(dx * t), a.z + (int)roundf(dz * t)}, radius, surface);
+    }
+}
+static void trace(const Game *g, const char *path, int width, int surface)
+{
+    for (int i = 1; path[i]; i++)
+        if (path[i] != ' ' && path[i - 1] != ' ')
+            passage(anchor(g, path[i - 1]), anchor(g, path[i]), width, surface);
 }
 static void layout(const Game *g)
 {
-    int key = g->door * 7 + g->area;
-    int layout_key = key * 2 + (g->task != 0);
-    if (cached == layout_key)
+    const SectorPlan *p = plan(g);
+    const District *d = &districts[g->door - 1];
+    int key = (g->door * AREA_COUNT + g->area) * 6 + g->task;
+    if (cached == key)
         return;
-    cached = layout_key;
-    unsigned seed = 7919u * key + 117u;
-    memset(walls, 1, sizeof(walls));
-    Cell stack[MAP_SIZE * MAP_SIZE];
-    int count = 1;
-    stack[0] = (Cell){1, MAP_SIZE - 2};
-    walls[MAP_SIZE - 2][1] = 0;
-    while (count) {
-        Cell p = stack[count - 1], choices[4];
-        int n = 0;
-        for (int j = 0; j < 4; j++) {
-            Cell q = {p.x + 2 * dirs[j].x, p.z + 2 * dirs[j].z};
-            if (q.x > 0 && q.z > 0 && q.x < MAP_SIZE - 1 && q.z < MAP_SIZE - 1 && walls[q.z][q.x])
-                choices[n++] = q;
+    cached = key;
+    int active = campaign_feature_active(g);
+    memset(terrain, BARRIER, sizeof(terrain));
+    trace(g, p->spine, d->width, PASSAGE);
+    trace(g, p->branches, d->width > 2 ? 2 : 1, PASSAGE);
+    for (const char *c = p->courts; *c; c++)
+        stamp(anchor(g, *c), d->court, COURT);
+    Cell start = campaign_site(g, 0), booth = campaign_site(g, 1);
+    stamp(start, 4, COURT);
+    stamp(booth, 4, COURT);
+    if (active && (d->feature == BACKSTAGE || d->feature == CAUSEWAY || d->feature == SKI ||
+                   d->feature == WIND || d->feature == COOLANT || d->feature == REFUGE))
+        trace(g, p->link, 1, FEATURE_LANE);
+    for (int i = 0; i < 2; i++)
+        stamp(campaign_pad(g, i), 1, FEATURE_PAD);
+    for (int z = -2; z <= 2; z++)
+        for (int x = -2; x <= 2; x++) {
+            char t = chambers[g->door - 1].rows[z + 2][x + 2];
+            if ((t >= 'A' && t <= 'Z') || (t == '+' && !g->task))
+                terrain[booth.z + z][booth.x + x] = BARRIER;
         }
-        if (!n) {
-            count--;
-            continue;
-        }
-        Cell q = choices[random_step(&seed) % n];
-        walls[q.z][q.x] = walls[(q.z + p.z) / 2][(q.x + p.x) / 2] = 0;
-        stack[count++] = q;
-    }
-    /* Courtyards break up narrow passages and give each landmark clear sightlines. */
-    for (int i = 0; i < 10; i++) {
-        int x = 2 + random_step(&seed) % (MAP_SIZE - 5),
-            z = 2 + random_step(&seed) % (MAP_SIZE - 5);
-        for (int dz = -1; dz <= 1; dz++)
-            for (int dx = -1; dx <= 1; dx++)
-                walls[z + dz][x + dx] = 0;
-    }
-    Cell origin = chamber_origin(g);
-    for (int z = 0; z < 5; z++)
-        for (int x = 0; x < 5; x++) {
-            char tile = chambers[g->door - 1].rows[z][x];
-            walls[origin.z + z][origin.x + x] =
-                (tile >= 'A' && tile <= 'Z') || (tile == '+' && g->task == 0);
-        }
-    /* Reserve a walkable arrival court around the two solid landmark tiles. */
-    for (int z = 19; z <= 23; z++)
-        for (int x = 1; x <= 5; x++)
-            walls[z][x] = 0;
-    walls[21][3] = walls[21][4] = 1;
+    terrain[start.z - 2][start.x] = terrain[start.z - 2][start.x + 1] = BARRIER;
 }
-int campaign_wall(const Game *g, int x, int z)
+int campaign_surface(const Game *g, int x, int z)
 {
+    if ((unsigned)x >= MAP_SIZE || (unsigned)z >= MAP_SIZE)
+        return BARRIER;
     layout(g);
-    return x < 0 || z < 0 || x >= MAP_SIZE || z >= MAP_SIZE || walls[z][x];
+    return terrain[z][x];
 }
-Cell campaign_site(const Game *g, int i)
-{
-    static const Cell sites[] = {{1, 23},  {17, 21}, {5, 7},  {23, 3},
-                                 {15, 13}, {3, 17},  {11, 3}, {23, 15}};
-    if (i == 0)
-        return sites[0];
-    return sites[1 + ((i - 1 + g->area * 2 + g->door - 1) % 7)];
-}
+int campaign_wall(const Game *g, int x, int z) { return campaign_surface(g, x, z) == BARRIER; }
 static Cell tile(float x, float z)
 {
     return (Cell){(int)floorf(x / CELL + .5f), (int)floorf(z / CELL + .5f)};
@@ -118,15 +175,16 @@ Cell campaign_next(const Game *g, Cell from, Cell to)
     if (field->key != cached || !same(field->goal, to)) {
         field->key = cached;
         field->goal = to;
-        Cell queue[MAP_SIZE * MAP_SIZE];
-        unsigned char seen[MAP_SIZE][MAP_SIZE] = {{0}};
+        static Cell queue[MAP_SIZE * MAP_SIZE];
+        static unsigned char seen[MAP_SIZE][MAP_SIZE];
+        memset(seen, 0, sizeof(seen));
         int tail = 1;
         queue[0] = to;
         seen[to.z][to.x] = 1;
         for (int k = 0; k < tail; k++)
             for (int d = 0; d < 4; d++) {
                 Cell p = queue[k], q = {p.x + dirs[d].x, p.z + dirs[d].z};
-                if (!campaign_wall(g, q.x, q.z) && !seen[q.z][q.x]) {
+                if (terrain[q.z][q.x] && !seen[q.z][q.x]) {
                     seen[q.z][q.x] = 1;
                     field->next[q.z][q.x] = p;
                     queue[tail++] = q;
@@ -143,13 +201,21 @@ typedef struct {
 static const Transmission transmissions[24] = {
 #include "transmissions.inc"
 };
+const Encounter *campaign_encounter(const Game *g)
+{
+    return &encounters[g->door - 1][plan(g)->staging[2 * g->phase] - '0'];
+}
 int campaign_kind(const Game *g)
 {
+    static const int controls[] = {SHOT, SHOT, PUNCH, FLY, ROUTE, GRID, CHARGE, SHOT};
+    if (g->task == SET_PIECE)
+        return controls[campaign_encounter(g)->action];
     if (g->task == TRANSMISSION) {
         const Transmission *t = &transmissions[g->door - 1];
         return g->phase ? t->second : t->first;
     }
-    return expeditions[g->door - 1].tools[(g->task + g->area) % 3].kind;
+    return g->task == EXIT_TASK ? PUNCH
+                                : expeditions[g->door - 1].tools[tool_slot(g, g->task)].kind;
 }
 typedef struct {
     int first, second;
@@ -213,7 +279,7 @@ int campaign_action(const Game *g)
 }
 static void reset_tool(Game *g)
 {
-    Cell c = campaign_site(g, 1 + 2 * g->task);
+    Cell c = campaign_site(g, g->task < EXIT_TASK ? 1 + 2 * g->task : 7);
     g->phase = 0;
     g->dial = 0;
     g->charge[0] = g->charge[1] = 0;
@@ -232,17 +298,23 @@ void campaign_enter(Game *g, int day, int rehearsal, int area)
     g->clock = 0;
     reset_tool(g);
     Cell c = campaign_site(g, 0);
+    Cell facing = campaign_site(g, 1);
+    float yaw = atan2f(facing.x - c.x, c.z - facing.z);
     for (int i = 0; i < 2; i++)
         g->player[i] = (Player){
-            .x = c.x * CELL + i * .65f, .z = c.z * CELL, .yaw = .67f, .fuel = 1, .previous = USE};
+            .x = c.x * CELL + i * .65f, .z = c.z * CELL, .yaw = yaw, .fuel = 1, .previous = USE};
 }
 void campaign_target(const Game *g, float *x, float *z)
 {
-    static const Cell stations[2][5] = {{{3, 3}, {1, 15}, {3, 11}, {1, 5}, {5, 21}},
-                                        {{23, 21}, {23, 11}, {19, 23}, {17, 3}, {21, 13}}};
-    Cell c = g->task == TRANSMISSION
-                 ? stations[g->phase][(g->door + g->area + g->phase * 2) % 5]
-                 : campaign_site(g, g->task == EXIT_TASK ? 7 : 1 + 2 * g->task + (g->phase != 0));
+    if (g->task == SET_PIECE) {
+        Cell site = anchor(g, plan(g)->staging[2 * g->phase + 1]);
+        *x = site.x * CELL;
+        *z = site.z * CELL;
+        return;
+    }
+    Cell c = campaign_site(g, g->task == TRANSMISSION ? 8 + g->phase
+                              : g->task == EXIT_TASK  ? 7
+                                                      : 1 + 2 * g->task + (g->phase != 0));
     *x = c.x * CELL;
     *z = c.z * CELL;
 }
@@ -264,7 +336,10 @@ static int aimed(const Game *g, const Player *p, Input in, float x, float z, flo
     float yaw = p->yaw + (in.spatial_aim ? in.aim_yaw : 0),
           pitch = in.spatial_aim ? in.aim_pitch : p->pitch;
     return d < 15 && fabsf(remainderf(atan2f(dx, -dz) - yaw, 6.2831853f)) < .1f + atan2f(.8f, d) &&
-           fabsf(atan2f(height - p->y - 1.55f, d) - pitch) < .2f + atan2f(1, d) &&
+           fabsf(atan2f(height + campaign_ground(g, x, z) - campaign_ground(g, p->x, p->z) - p->y -
+                            1.55f,
+                        d) -
+                 pitch) < .2f + atan2f(1, d) &&
            clear_path(g, p->x, p->z, x, z);
 }
 static int walkable(const Game *g, float x, float z)
@@ -283,6 +358,67 @@ void campaign_guard(const Game *g, float *x, float *z)
     *z += .95f * cosf(g->clock * 1.4f);
 }
 static int dial_code(const Game *g) { return 1 + (g->door + g->task + g->area) % 3; }
+int campaign_cue(const Game *g)
+{
+    if (campaign_encounter(g)->action == ORB)
+        return g->dial && g->clock >= .6f && g->clock <= 2.25f;
+    return fmodf(g->clock + .4f * g->phase, 2.4f) >= 1.5f;
+}
+void campaign_sight(const Game *g, float *x, float *y, float *z)
+{
+    campaign_target(g, x, z);
+    int action = campaign_encounter(g)->action;
+    *y = 1.55f;
+    if (action == VOLLEY) {
+        *x += cosf(g->clock * 1.2f + 2 * g->dial) * 1.15f;
+        *z += sinf(g->clock * 1.2f + 2 * g->dial) * 1.15f;
+        *y += .35f * sinf(g->clock * 1.5f);
+    }
+    if (action == ORB && g->dial) {
+        *y += .55f * fminf(g->clock, 2);
+        *x += .8f * sinf(fminf(g->clock, 2) * 1.5f);
+    }
+}
+static int play_encounter(Game *g, int seat, Input in, int pressed, float distance, float dt)
+{
+    Player *p = &g->player[seat];
+    float x, y, z;
+    campaign_sight(g, &x, &y, &z);
+    int hit = (pressed & FIRE) && aimed(g, p, in, x, z, y);
+    int action = campaign_encounter(g)->action;
+    switch (action) {
+    case HIGH:
+        return distance < 3.0f && p->y >= 2.4f;
+    case LOW:
+        return distance < 3.0f && p->y < 1.f && (fabsf(in.forward) + fabsf(in.side) > .1f);
+    case PLACE:
+        return distance < 2.7f && (pressed & USE);
+    case LENS:
+        return hit && campaign_cue(g);
+    case VOLLEY:
+        if (hit)
+            g->dial++;
+        return g->dial == 3;
+    case BEAM:
+        if ((in.buttons & FIRE) && aimed(g, p, in, x, z, y))
+            g->charge[seat] = fminf(1, g->charge[seat] + dt * .7f);
+        else
+            g->charge[seat] = 0;
+        return g->charge[seat] >= 1;
+    case ORB:
+        if (hit && campaign_cue(g))
+            return 1;
+        if (hit && (!g->dial || g->clock > 2.25f)) {
+            g->dial = 1;
+            g->clock = 0;
+        }
+        return 0;
+    default: /* A load dial beside the actual supply or machine. */
+        if (distance < 2.7f && (pressed & USE))
+            g->dial = (g->dial + 1) % 4;
+        return distance < 2.7f && hit && g->dial == dial_code(g);
+    }
+}
 static int operate(Game *g, int seat, Input in, int pressed, int released, float distance, float x,
                    float z)
 {
@@ -364,6 +500,33 @@ static void follow(Game *g, float dt)
     g->escort_x += (x - g->escort_x) * t;
     g->escort_z += (z - g->escort_z) * t;
 }
+static int transit(const Game *g)
+{
+    int f = districts[g->door - 1].feature;
+    return f == TRAM || f == FERRY || f == CHRONO || f == RIFT || f == AIRLOCK;
+}
+static int use_transit(Game *g, Player *p)
+{
+    if (!transit(g) || !campaign_feature_active(g))
+        return 0;
+    int feature = districts[g->door - 1].feature;
+    if (feature == AIRLOCK && p->y < 2.4f)
+        return 0;
+    for (int end = 0; end < 2; end++) {
+        Cell a = campaign_pad(g, end), b = campaign_pad(g, 1 - end);
+        if (hypotf(p->x - a.x * CELL, p->z - a.z * CELL) >= 3.5f)
+            continue;
+        if (g->task < EXIT_TASK && campaign_kind(g) == ESCORT && g->phase &&
+            hypotf(p->x - g->escort_x, p->z - g->escort_z) < 12) {
+            g->escort_x = b.x * CELL;
+            g->escort_z = b.z * CELL;
+        }
+        p->x = b.x * CELL;
+        p->z = b.z * CELL;
+        return 1;
+    }
+    return 0;
+}
 void campaign_tick(Game *g, const Input in[2], float dt)
 {
     g->clock = fmodf(g->clock + dt, 120);
@@ -378,6 +541,18 @@ void campaign_tick(Game *g, const Input in[2], float dt)
         game_look(g, i, a.turn * dt * 1.9f, a.tilt * dt * 1.45f);
         float speed = (g->phase && campaign_kind(g) == CARRY ? 3.7f : 4.6f) * dt /
                       fmaxf(1, hypotf(a.side, a.forward));
+        Cell standing = tile(p->x, p->z);
+        int surface = campaign_surface(g, standing.x, standing.z);
+        int on_feature = surface == FEATURE_LANE || surface == FEATURE_PAD;
+        int feature = districts[g->door - 1].feature;
+        if (on_feature && (a.buttons & BOOST)) {
+            if (feature == SKI)
+                speed *= 1.85f;
+            if (feature == WIND) {
+                speed *= 1.45f;
+                p->fuel = 1;
+            }
+        }
         float x = p->x + (sinf(p->yaw) * a.forward + cosf(p->yaw) * a.side) * speed;
         float z = p->z + (-cosf(p->yaw) * a.forward + sinf(p->yaw) * a.side) * speed;
         if (walkable(g, x, p->z))
@@ -400,12 +575,12 @@ void campaign_tick(Game *g, const Input in[2], float dt)
         campaign_guard(g, &gx, &gz);
         if (pressed & FIRE) {
             g->flash[i] = .2f;
-            if (aimed(g, p, a, gx, gz, 1.5f))
+            if ((on_feature && feature == FLARE) || aimed(g, p, a, gx, gz, 1.5f))
                 g->stun = 6;
         } else
             g->flash[i] = fmaxf(0, g->flash[i] - dt);
-        if (g->stun == 0 &&
-            !(g->door == 3 && g->task > 0 && expeditions[2].tools[g->area % 3].kind == GRID) &&
+        if (g->task != SET_PIECE && g->stun == 0 && !(on_feature && feature == REFUGE) &&
+            !(g->door == 3 && g->task > 0 && expeditions[2].tools[tool_slot(g, 0)].kind == GRID) &&
             p->y < 1.2f && hypotf(gx - p->x, gz - p->z) < .8f) {
             Cell safe = campaign_site(g, g->task == 0 ? 0 : 2 * g->task - 1);
             p->x = safe.x * CELL;
@@ -414,6 +589,24 @@ void campaign_tick(Game *g, const Input in[2], float dt)
         }
         campaign_target(g, &x, &z);
         float d = hypotf(p->x - x, p->z - z);
+        /* A mission action at a shared berth takes priority over boarding. */
+        if ((pressed & USE) && on_feature && d >= 2.7f && use_transit(g, p))
+            continue;
+        if (g->task == SET_PIECE) {
+            if (play_encounter(g, i, a, pressed, d, dt)) {
+                g->dial = 0;
+                g->charge[0] = g->charge[1] = 0;
+                if (plan(g)->staging[2 * g->phase + 2])
+                    g->phase++;
+                else {
+                    g->task = 1;
+                    reset_tool(g);
+                }
+                g->event = OBJECTIVE;
+                return;
+            }
+            continue;
+        }
         if (g->task == 3) {
             if (d < 2.7f && (pressed & USE)) {
                 if (g->area < 4)
@@ -431,15 +624,21 @@ void campaign_tick(Game *g, const Input in[2], float dt)
             int sent = g->task == TRANSMISSION;
             if (sent)
                 g->task = EXIT_TASK;
-            else if (g->task == 2 && (transmissions[g->door - 1].sectors & (1u << g->area)))
-                g->task = TRANSMISSION;
+            else if (g->task == 0)
+                g->task = SET_PIECE;
+            else if (!plan(g)->order[g->task + 1])
+                g->task = (transmissions[g->door - 1].sectors & (1u << g->area)) ? TRANSMISSION
+                                                                                 : EXIT_TASK;
             else
                 g->task++;
             reset_tool(g);
             g->event = sent ? SIGNAL_SENT : OBJECTIVE;
             return;
         }
-        g->charge[i] = (a.buttons & FIRE) ? fminf(1, g->charge[i] + dt) : 0;
+        g->charge[i] =
+            (a.buttons & FIRE)
+                ? fminf(1, g->charge[i] + dt * (on_feature && feature == COOLANT ? 3 : 1))
+                : 0;
     }
 }
 void campaign_prompt(const Game *g, int who, char *buf, int size)
@@ -475,6 +674,34 @@ void campaign_prompt(const Game *g, int who, char *buf, int size)
                             : angle < 0            ? "left"
                                                    : "right";
     int k = campaign_kind(g);
+    if (g->task == SET_PIECE) {
+        const Encounter *beat = campaign_encounter(g);
+        char state[45] = "";
+        switch (beat->action) {
+        case VOLLEY:
+            snprintf(state, sizeof(state), " | %d/3", g->dial);
+            break;
+        case LENS:
+            snprintf(state, sizeof(state), " | %s",
+                     campaign_cue(g) ? "GREEN - pulse" : "wait for green");
+            break;
+        case ORB:
+            snprintf(state, sizeof(state), " | %s",
+                     !g->dial || g->clock > 2.25f ? "ready to tag"
+                     : campaign_cue(g)            ? "BLOOM - pulse"
+                                                  : "orb forming");
+            break;
+        case BEAM:
+            snprintf(state, sizeof(state), " | %.0f%%", 100 * g->charge[who]);
+            break;
+        case POWER:
+            snprintf(state, sizeof(state), " | dial %d / need %d", g->dial, dial_code(g));
+            break;
+        }
+        snprintf(buf, size, "%s | %s | %s (%s, %.0f m)%s", e->areas[g->area], beat->name,
+                 beat->instruction, direction, hypotf(p->x - x, p->z - z), state);
+        return;
+    }
     const char *action = g->task == 3 ? "Use the star gate" : g->phase ? second[k] : verbs[k];
     if (g->door == 1 && g->task < 3) {
         if (k == PUNCH)
@@ -502,7 +729,7 @@ void campaign_prompt(const Game *g, int who, char *buf, int size)
              g->task == 0 ? " · " : "", g->task == 0 ? campaign_chamber_name(g) : "",
              g->task == TRANSMISSION ? memory->message
              : g->task == EXIT_TASK  ? e->gift
-                                     : e->tools[(g->task + g->area) % 3].name,
+                                     : e->tools[tool_slot(g, g->task)].name,
              action, direction, hypotf(p->x - x, p->z - z));
     int used = (int)strlen(buf);
     if (g->task < 3 && (g->door == 2 || g->door == 11) && k == FLY)
@@ -512,4 +739,11 @@ void campaign_prompt(const Game *g, int who, char *buf, int size)
     if (k == ESCORT && g->phase)
         snprintf(buf + used, size - used, " | escort %.0f m away",
                  hypotf(p->x - g->escort_x, p->z - g->escort_z));
+    int surface = campaign_surface(g, from.x, from.z);
+    if (surface == FEATURE_LANE || surface == FEATURE_PAD) {
+        const District *district = &districts[g->door - 1];
+        used = (int)strlen(buf);
+        snprintf(buf + used, size - used, " | %s%s", district->name,
+                 transit(g) && campaign_feature_active(g) ? " (Use at centre)" : "");
+    }
 }

@@ -1,7 +1,7 @@
 ## 1. Content
 
 - [ ] 1.1 Time a full cinema and harvester first clear in solo and co-op.
-- [ ] 1.2 Author and benchmark the remaining doors in four six-door batches.
+- [x] 1.2 Author and benchmark five playable sectors for each of the 24 doors.
 - [ ] 1.3 Implement the guestbook, four hall transformations and the latecomer ending.
 
 ## 2. Platform and co-op
@@ -12,7 +12,7 @@
 
 ## 3. Acceptance
 
-- [x] 3.1 Run seeded solo and party clears for all 24 doors.
+- [x] 3.1 Run normal-input solo and party clears for all 24 doors.
 - [ ] 3.2 Gate release on coverage, all civil-date boundaries, connection recovery and observed 17–23 minute median first clears.
 
 

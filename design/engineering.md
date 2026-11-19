@@ -2,7 +2,7 @@
 
 ## What the public build contains
 
-The same C11 simulation, geometry builder and OpenGL renderer run in native SDL3 and in the Emscripten browser build. Playable content comprises the 24-door hall and a compact, repeatable cinema mission. The almanac contains treatments for all 24 full-length missions. On an unlocked day the first arch enters the cinema. Other arches offer their briefing. The **Rehearse Door 01** entry works on any date and keeps its result separate from calendar credit.
+The same C11 simulation, geometry builder and OpenGL renderer run in native SDL3 and in the Emscripten browser build. Eligible arches lead to 24 five-sector missions, each with its own authored terrain and encounters. The short cinema tutorial remains available separately. The browser atlas samples the C collision map in its arrival and commissioned states, so reviewers can inspect all 120 sectors before entering a door. [Mission atlas](https://stbange.github.io/weihnachten2026/?atlas=1)
 
 | Capability | Public rehearsal | Campaign release target |
 | --- | --- | --- |

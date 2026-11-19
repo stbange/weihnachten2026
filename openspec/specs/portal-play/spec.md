@@ -26,7 +26,7 @@ The cinema SHALL require folding both paper ushers, reaching the raised projecto
 - **THEN** both return to the hall with one completion event
 
 ### Requirement: Playable expedition routes
-Each eligible arch SHALL admit the party to its dated expedition. Each expedition SHALL provide five reachable sectors, three shared tool objectives per sector, a navigable exit, and a distinct keepsake. An explicitly selected playtest SHALL allow the same route on any date.
+Each eligible arch SHALL admit the party to its dated expedition. Each expedition SHALL provide five reachable sectors, two or three scheduled tool objectives and a staged encounter in each sector, a navigable exit, and a distinct keepsake. An explicitly selected playtest SHALL allow the same route on any date.
 
 #### Scenario: Recover a keepsake without earlier dates
 - **GIVEN** door 24 is eligible and the hall ledger is empty
@@ -57,3 +57,20 @@ Each dated mission SHALL have a navigable authored chamber and a shared shortcut
 #### Scenario: Cinema shutter and harvester weighbridge
 - **WHEN** one player pulses the booth shutter or the weighbridge relay
 - **THEN** the lit apparatus allows either player to load the reel at booth height or unload the harvester when it reaches the scale
+
+
+### Requirement: Individual mission floor plans
+Each of the 120 sectors SHALL specify its own entrance, passages, courts, objective sites, encounter sequence and exit. The map, collision and path guidance SHALL use that sector's plan. Terrain elevation SHALL apply to the players, objectives and stereo views.
+
+#### Scenario: Review a sector before playing
+- **WHEN** a player selects a door and sector in the atlas and switches between arrival and commissioned routes
+- **THEN** the atlas displays the corresponding production floor plan, source-game reference and encounter locations without altering campaign progress
+
+#### Scenario: Use a location-specific mechanic
+- **GIVEN** the final mission's coil feed is powered and the mail van is following within boarding distance
+- **WHEN** its driver uses an available chrono pad
+- **THEN** the driver and van arrive at the matching pad and the other seat can stay behind
+
+#### Scenario: First-pass pacing
+- **WHEN** normal-input solo and split replays take each expedition from arrival through extraction
+- **THEN** every clear takes 17 to 23 simulated minutes and the test reports each measured duration separately from human first-clear observations

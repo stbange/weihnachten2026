@@ -20,6 +20,8 @@ The numbered sequence matches the December calendar. Each research note concerns
 
 **Twenty-minute route.** 0–4 punch into the foyer. 4–9 shrink the ushers at the counter. 9–15 boost from pit to booth. 15–20 run the film and carry the ticket out through the lit theatre.
 
+**Playable layout.** Follow the tram street into a cinema that folds back on itself. The staff passage opens after the tickets are punched, and the projector changeover takes a shot on the lit frame. [Explore the five floor plans](https://stbange.github.io/weihnachten2026/?atlas=1)
+
 **Solo and co-op.** A partner folds the balcony usher while the operator climbs. Alone, clear the balcony from below.
 
 **Back in the hall.** A punched ticket sets the first place. There is a twenty-fifth seat number on the back.
@@ -41,6 +43,8 @@ The numbered sequence matches the December calendar. Each research note concerns
 **Art and opposition.** Dusk-blue heightfield dunes enter a violet cavern. The collection balloon keeps its round silhouette against either sky.
 
 **Twenty-minute route.** 0–4 glide through a wind arch. 4–9 tag embers around ice mites. 9–15 raise a ridge against a rival kite. 15–20 escort the loaded balloon through the vent.
+
+**Playable layout.** Fly from the wind arches over a basin of ember dunes to the balloon mooring. High ember rings and low collection hoops ask for different approaches, and the marked thermal replenishes lift. [Explore the five floor plans](https://stbange.github.io/weihnachten2026/?atlas=2)
 
 **Solo and co-op.** One player spots thermal lanes while another protects the balloon. A solo pilot uses visible mooring points.
 
@@ -64,6 +68,8 @@ The numbered sequence matches the December calendar. Each research note concerns
 
 **Twenty-minute route.** 0–4 survey two seams. 4–9 guide the first load past scrap beetles. 9–15 build a loading bay. 15–20 switch power between the fence and the returning convoy.
 
+**Playable layout.** Survey the flank of a glass field, send the harvester along the cleared haul road, and power the weighbridge at the refinery. The route crosses between the extraction and delivery sides of the yard. [Explore the five floor plans](https://stbange.github.io/weihnachten2026/?atlas=3)
+
 **Solo and co-op.** Two players can scout and operate the substation separately. A solo player recalls the sled to a holding point.
 
 **Back in the hall.** A brass loading token carries the same punch as the cinema ticket.
@@ -85,6 +91,8 @@ The numbered sequence matches the December calendar. Each research note concerns
 **Art and opposition.** Sunken limestone, blue reflections, triangular stone faces. Handholds cast a fixed lip shadow in first person.
 
 **Twenty-minute route.** 0–4 read a practice jump. 4–9 move the first weight above a dry basin. 9–15 traverse the rising water. 15–20 find a new route down to ring the exposed bell.
+
+**Playable layout.** Descend a terraced cistern with side galleries overlooking the same water basin. Catch the raised stone brows, move the counterweights and take the exposed ledge out of the vault. [Explore the five floor plans](https://stbange.github.io/weihnachten2026/?atlas=4)
 
 **Solo and co-op.** A partner can call landing spots from a gallery. A missed grab drops into a shallow recovery pool.
 
@@ -108,6 +116,8 @@ The numbered sequence matches the December calendar. Each research note concerns
 
 **Twenty-minute route.** 0–4 learn the pennant at the sawmill. 4–9 restart the oil run. 9–15 map bells through fog gulls. 15–20 steer the barges out as wooden raiders close in.
 
+**Playable layout.** Timber roads give way to long piers and a horseshoe harbour. Plant the repair pennant, take low soundings and board a skiff with a nearby tanker to cross between berths. [Explore the five floor plans](https://stbange.github.io/weihnachten2026/?atlas=5)
+
 **Solo and co-op.** One player pilots while another signals from shore. Solo orders remain active after leaving the pier.
 
 **Back in the hall.** A little wooden ship gives the first table its centrepiece. Its manifest lists guests as cargo.
@@ -129,6 +139,8 @@ The numbered sequence matches the December calendar. Each research note concerns
 **Art and opposition.** A low-poly horizon is framed by bolted cockpit mullions. A damaged limb changes the instrument silhouette.
 
 **Twenty-minute route.** 0–4 calibrate feet and torso. 4–9 escort the chair crate. 9–15 rotate between ice vents as rival salvage rigs close. 15–20 send the companion to brace the bridge and cross.
+
+**Playable layout.** Walk a loaded salvage machine around the rim of a salt sink, between cooling manifolds and across a windcut trestle. The cooling grates shorten the heat beam’s charge cycle. [Explore the five floor plans](https://stbange.github.io/weihnachten2026/?atlas=6)
 
 **Solo and co-op.** A friend pilots the second walker. Solo orders give the same two-vehicle bridge solution.
 
@@ -152,6 +164,8 @@ The numbered sequence matches the December calendar. Each research note concerns
 
 **Twenty-minute route.** 0–4 learn a rescue route. 4–9 earn vouchers on platform one. 9–15 choose a second approach after gates change. 15–20 bring the last porter out through the clock hall.
 
+**Playable layout.** Two parallel platforms, a blind luggage aisle and an exposed signal crossing give the rescue escort different sightlines. Open a kit cache and use the cordoned lane to protect the return trip. [Explore the five floor plans](https://stbange.github.io/weihnachten2026/?atlas=7)
+
 **Solo and co-op.** A spectator can mark a porter. A failed solo round restarts at the kiosk and retains rescued groups.
 
 **Back in the hall.** A station timetable gives the first address of the machine that held the invitations.
@@ -173,6 +187,8 @@ The numbered sequence matches the December calendar. Each research note concerns
 **Art and opposition.** Sodium light, hazard paint and thick condensation frame a little ecological drama. Heat-loving moths gather at working pipes.
 
 **Twenty-minute route.** 0–4 ride an uneventful tram. 4–9 free a technician after a cold breach. 9–15 move heat between pumps to draw moths away. 15–20 restart the tram and ride it out.
+
+**Playable layout.** The outward tram line and the service trench wind around the same machinery. Pry the access panels, sequence the pumps and recruit a technician to run the service tram. [Explore the five floor plans](https://stbange.github.io/weihnachten2026/?atlas=8)
 
 **Solo and co-op.** A partner watches a gauge from the gantry. A solo operator reads the mirrored dial beside the pump.
 
@@ -196,6 +212,8 @@ The numbered sequence matches the December calendar. Each research note concerns
 
 **Twenty-minute route.** 0–4 learn the bowl below home. 4–9 open a ridge route past kite sentries. 9–15 steal the windsock. 15–20 improvise a fast return as the valley gates swing.
 
+**Playable layout.** Ski the low line through the home bowl, jet through crest rings, then bring the pennant down the far ridge. The open slopes leave the opposing flag masts visible. [Explore the five floor plans](https://stbange.github.io/weihnachten2026/?atlas=9)
+
 **Solo and co-op.** A partner clears the crest or takes a dropped flag. Solo falls return the pennant to the last wind gate.
 
 **Back in the hall.** The windsock’s cloth is cut from one of the old hall curtains.
@@ -217,6 +235,8 @@ The numbered sequence matches the December calendar. Each research note concerns
 **Art and opposition.** Rain-black voxels, lilac adverts and identical chrome wardens. Hand-painted exit signs are the only trustworthy ones.
 
 **Twenty-minute route.** 0–4 identify a false sign. 4–9 win the couriers’ trust. 9–15 split them to open the tram depot. 15–20 lower a facade and walk everyone out.
+
+**Playable layout.** A narrow courier alley meets neon shopping arcades and broad depot streets. Rally the messengers and hold the stamp on a condemned sign to open a passage through its frontage. [Explore the five floor plans](https://stbange.github.io/weihnachten2026/?atlas=10)
 
 **Solo and co-op.** Partners can lead different groups. A solo leader leaves a persistent rally marker.
 
@@ -240,6 +260,8 @@ The numbered sequence matches the December calendar. Each research note concerns
 
 **Twenty-minute route.** 0–4 learn translation in a spherical dock. 4–9 free miners from side chambers. 9–15 trace the core route past drill drones. 15–20 trigger shutdown and fly the marked escape.
 
+**Playable layout.** Radial mine bores lead into an inverted shaft and a separate return airway. Alternate between high hatches and low vents, mark the rescue route and fly up to use paired airlocks. [Explore the five floor plans](https://stbange.github.io/weihnachten2026/?atlas=11)
+
 **Solo and co-op.** A navigator can mark junctions. Solo and VR have horizon-lock and a forgiving escape reset at the switch.
 
 **Back in the hall.** A miner returns an ornament that always points toward the hall, even when upside down.
@@ -254,13 +276,15 @@ The numbered sequence matches the December calendar. Each research note concerns
 
 **Three signatures**
 
-- Explore a seeded crypt assembled from authored rooms.
+- Explore connected burial cells, side chapels and a village return route.
 - Identify a dropped relic to learn its effect.
 - Place a return scroll linking the crypt to the village.
 
 **Art and opposition.** Candlelit charcoal stone, stained glass on damp floors and wax chandler-knights. Drops have distinct silhouettes.
 
 **Twenty-minute route.** 0–4 hear the sexton’s request. 4–9 descend to find an unnamed relic. 9–15 identify it and use its light on a sealed nave. 15–20 carry the register past its wax guardian.
+
+**Playable layout.** A village cloister gives way to burial cells, an undercroft and a nave with side chapels. Identify the relic at its shrine and bind a pair of scroll circles for the return trip. [Explore the five floor plans](https://stbange.github.io/weihnachten2026/?atlas=12)
 
 **Solo and co-op.** A shared scroll lets friends resupply together. Solo and co-op seeds guarantee the relic and the exit.
 
@@ -284,6 +308,8 @@ The numbered sequence matches the December calendar. Each research note concerns
 
 **Twenty-minute route.** 0–4 learn to circle a cold grate. 4–9 recover two keys on a looping walk. 9–15 bring opposing choirs into the mixing room. 15–20 turn the last valve during a moving-floor fight.
 
+**Playable layout.** Boiler jackets divide the floor into key alcoves and long firing lanes. Deliver the shape key, pulse moving furnace mouths and time the shot through the crossfire grate. [Explore the five floor plans](https://stbange.github.io/weihnachten2026/?atlas=13)
+
 **Solo and co-op.** Friends can divide keys or draw different choirs. Solo encounters include cover pillars and space to keep moving.
 
 **Back in the hall.** A choirbook margin says the lights once stayed on for somebody who was late.
@@ -305,6 +331,8 @@ The numbered sequence matches the December calendar. Each research note concerns
 **Art and opposition.** Painted green canopies, raspberry snow and sprite seedlings that visibly lean toward the next note.
 
 **Twenty-minute route.** 0–4 practice the recharge in a nursery. 4–9 swing between frozen boughs. 9–15 find notes by answering root sprites. 15–20 combine a clear cut and the right note at the heartwood.
+
+**Playable layout.** Nursery paths spread into branches above a root hollow. Cut a knotted ribbon with a held charge, lift through the ribbon peg and answer the elemental bell on its beat. [Explore the five floor plans](https://stbange.github.io/weihnachten2026/?atlas=14)
 
 **Solo and co-op.** Friends queue different notes while the world runs. Solo note queues persist while the player changes tools.
 
@@ -328,6 +356,8 @@ The numbered sequence matches the December calendar. Each research note concerns
 
 **Twenty-minute route.** 0–4 inspect a safe landing tile. 4–9 light two barns. 9–15 conserve reactions through a mimic ambush. 15–20 recover the surveyor and extract a live snow mimic.
 
+**Playable layout.** Sweep farm hedges, a barn and the dark edge of an orchard from the shuttle landing. Mark the last footprint, watch for a reaction flash and secure the recovery capsule. [Explore the five floor plans](https://stbange.github.io/weihnachten2026/?atlas=15)
+
 **Solo and co-op.** Everyone plans in the same short phase and commits independently. Solo has a commandable lantern drone.
 
 **Back in the hall.** The surveyor’s notebook records a successful rescue after the official deadline.
@@ -349,6 +379,8 @@ The numbered sequence matches the December calendar. Each research note concerns
 **Art and opposition.** Tea-brown stone and patinated iron silhouettes surround a lime-lit shaft. Iron gargoyles make their home under walkways.
 
 **Twenty-minute route.** 0–4 swap a stair with a gate. 4–9 pin two counterweights. 9–15 cross the shaft during a gargoyle attack. 15–20 unlock the bell room from above and descend by a new route.
+
+**Playable layout.** A broken stair wraps around a foundry shaft with offset landings. Rivet the moving ratchets, take the impulse lip and link paired slipgates between the balconies. [Explore the five floor plans](https://stbange.github.io/weihnachten2026/?atlas=16)
 
 **Solo and co-op.** Partners can hold opposite sightlines. A ratchet and a longer stair route support solo and comfort play.
 
@@ -372,6 +404,8 @@ The numbered sequence matches the December calendar. Each research note concerns
 
 **Twenty-minute route.** 0–4 learn the staff in a gallery. 4–9 pull weights along the ravine crossing. 9–15 leap between moving lenses. 15–20 release the apprentice by disarming the keeper or realigning the dome.
 
+**Playable layout.** Two observatory escarpments face each other across a ravine. Deflect the bright prism pulse, draw the hanging counterweight and leap to the suspended lens. [Explore the five floor plans](https://stbange.github.io/weihnachten2026/?atlas=17)
+
 **Solo and co-op.** A friend holds a beam while another leaps. A locking gimbal keeps the solo route open.
 
 **Back in the hall.** The apprentice remembers the rest of the correction and writes ANYWAY below START.
@@ -393,6 +427,8 @@ The numbered sequence matches the December calendar. Each research note concerns
 **Art and opposition.** Ivory lattice, berry-red root mats and riveted blue shelters make the three rules visible from street level.
 
 **Twenty-minute route.** 0–4 restore an isolated relay. 4–9 grow a route across the cut. 9–15 route resource deliveries while frost mites strip the roof. 15–20 overlap all three shelter systems to transmit.
+
+**Playable layout.** Three settlement lobes converge on an evacuation mast. Commission the ivory relay, mark the living mat across the cut and hold the repair beam on the industrial shelter. [Explore the five floor plans](https://stbange.github.io/weihnachten2026/?atlas=18)
 
 **Solo and co-op.** Partners can tend different shelters. A solo player leaves one queued order per fabricator.
 
@@ -416,6 +452,8 @@ The numbered sequence matches the December calendar. Each research note concerns
 
 **Twenty-minute route.** 0–4 climb out of a wrecked lift. 4–9 translate the aqueduct’s route signs. 9–15 use orb bursts to lift distant sluices. 15–20 escort the keeper while opening the waterfall path.
 
+**Playable layout.** Emerge from a bent lift into the valley, then follow the glyph wall and aqueduct behind the falls. Translate the crossing and shoot a travelling light orb as it blooms at the sluice. [Explore the five floor plans](https://stbange.github.io/weihnachten2026/?atlas=19)
+
 **Solo and co-op.** A partner can strike a teammate’s orb. Solo orbs linger briefly when aimed at puzzle sockets.
 
 **Back in the hall.** The keeper’s letter asks the hall for a route in, the first invitation written from outside.
@@ -437,6 +475,8 @@ The numbered sequence matches the December calendar. Each research note concerns
 **Art and opposition.** Teal maintenance tiles, watching lenses and dim monitors give way to an open, magenta wireframe space. The station’s silhouette recurs as a circuit diagram.
 
 **Twenty-minute route.** 0–4 hear a contradictory log. 4–9 trace a message through two decks. 9–15 lower surveillance while repair spiders interfere. 15–20 enter the network to release the dispatcher.
+
+**Playable layout.** Service corridors and camera bays converge on a network circuit with radial spokes. Blind the tracking eyes, tune the security loop and use the live jacks to cross the deck. [Explore the five floor plans](https://stbange.github.io/weihnachten2026/?atlas=20)
 
 **Solo and co-op.** A partner can guide the diver from a physical map. A solo diver carries a copy of the same diagram.
 
@@ -460,6 +500,8 @@ The numbered sequence matches the December calendar. Each research note concerns
 
 **Twenty-minute route.** 0–4 feed the hearth. 4–9 staff forest and quarry. 9–15 advance an age to repair a flood crossing. 15–20 complete a feast house as boars scatter the supply carts.
 
+**Playable layout.** Village lanes radiate from a hearth to timber, quarry and granary before returning around the feast-house market. Assign workers, set the food allocation and finish the ford foundation. [Explore the five floor plans](https://stbange.github.io/weihnachten2026/?atlas=21)
+
 **Solo and co-op.** Friends lay different foundations. Solo villagers remember jobs and use a bell to regroup after raids.
 
 **Back in the hall.** A loaf carved from alder wood marks a place for anyone who arrives hungry.
@@ -481,6 +523,8 @@ The numbered sequence matches the December calendar. Each research note concerns
 **Art and opposition.** Painted crimson railcars, ink-black sky and flickering handbill sprites. Wax and papier-mâché underpin the scares.
 
 **Twenty-minute route.** 0–4 board the rear carriage. 4–9 tag the wax ticket-takers. 9–15 light mirrored signals at the midway. 15–20 direct the train back through a procession of false silhouettes.
+
+**Playable layout.** Long, narrow carriages spill out onto sideshow platforms and a doubling mirror walk. Tag a wax signal with a delayed flare, then take the twin-caster gallery on the way back to the train. [Explore the five floor plans](https://stbange.github.io/weihnachten2026/?atlas=22)
 
 **Solo and co-op.** A partner can identify reflections from the opposite platform. Solo uses scorch marks to distinguish the real signal.
 
@@ -504,6 +548,8 @@ The numbered sequence matches the December calendar. Each research note concerns
 
 **Twenty-minute route.** 0–4 reclaim a fallen chassis. 4–9 find a wind source for the grid. 9–15 complete two relay arms under recycler pressure. 15–20 repurpose the last rival hulk as an aerial.
 
+**Playable layout.** A wreck basin lies below the wind farm and two branching relay arms. Reclaim a hulk, balance the power bus and use the constructor order to span the basin. [Explore the five floor plans](https://stbange.github.io/weihnachten2026/?atlas=23)
+
 **Solo and co-op.** A partner balances power while the builder works. Solo can pause a queue to restore throughput.
 
 **Back in the hall.** A transmitter aerial rises from the hall roof. Its first reply is a knock at tomorrow’s door.
@@ -525,6 +571,8 @@ The numbered sequence matches the December calendar. Each research note concerns
 **Art and opposition.** A snowbound signal yard seen through analogue monitors, with red bulbs, scalloped coil towers and a clock visible from every pad.
 
 **Twenty-minute route.** 0–4 receive the Steward’s final dispatch. 4–9 fund the frozen convoy. 9–15 choose which coils protect its route. 15–20 shift the mail van into the hall and manually release the minute hand.
+
+**Playable layout.** The ore siding and mail road converge at staggered coils. Divert their power, bring the van onto a chrono pad and shift it with its driver before releasing the clock. [Explore the five floor plans](https://stbange.github.io/weihnachten2026/?atlas=24)
 
 **Solo and co-op.** Friends coordinate relay, convoy and clock. Every relay latches for solo. Earlier clears restore extra voices in the ending; all players can send the invitations.
 

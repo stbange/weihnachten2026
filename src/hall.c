@@ -257,17 +257,24 @@ int game_unpack(Game *g, const float in[SNAP_WORDS])
     for (int i = 0; i < 10; ++i)
         if (in[i] < 0 || in[i] > limits[i] || in[i] != floorf(in[i]))
             return 0;
-    const int extra_limits[] = {4, TRANSMISSION, 1, 3, 96, 96, 120, 6, 1, 1};
+    int world = (MAP_SIZE - 1) * CELL;
+    const int extra_limits[] = {4, SET_PIECE, 2, 3, world, world, 120, 6, 1, 1};
     for (int i = 22; i < SNAP_WORDS; i++)
         if (in[i] < 0 || in[i] > extra_limits[i - 22] || (i < 26 && floorf(in[i]) != in[i]))
             return 0;
     int expedition = in[1] == EXPEDITION;
     if (in[0] != WIRE_VERSION || in[9] < 1 || ((expedition || in[7] == TICKET) && in[8] < 1))
         return 0;
+    if (expedition) {
+        Game route = {
+            .door = (int)in[8], .area = (int)in[22], .task = (int)in[23], .phase = (int)in[24]};
+        if (!campaign_valid_step(&route))
+            return 0;
+    }
     for (int i = 0; i < 2; ++i) {
         const float *v = in + 10 + 6 * i;
-        if ((expedition ? (v[0] < 0 || v[0] > 96) : fabsf(v[0]) > 8) || v[1] < 0 || v[1] > 5 ||
-            (expedition ? (v[2] < 0 || v[2] > 96) : fabsf(v[2]) > 30) || fabsf(v[3]) > 3.15f ||
+        if ((expedition ? (v[0] < 0 || v[0] > world) : fabsf(v[0]) > 8) || v[1] < 0 || v[1] > 5 ||
+            (expedition ? (v[2] < 0 || v[2] > world) : fabsf(v[2]) > 30) || fabsf(v[3]) > 3.15f ||
             fabsf(v[4]) > 1.13f || v[5] < 0 || v[5] > 1)
             return 0;
     }

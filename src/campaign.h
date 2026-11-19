@@ -1,8 +1,8 @@
 #ifndef LANTERN_CAMPAIGN_H
 #define LANTERN_CAMPAIGN_H
 #include "hall.h"
-enum { MAP_SIZE = 25, AREA_COUNT = 5, CELL = 4 };
-enum { EXIT_TASK = 3, TRANSMISSION = 4 };
+enum { MAP_SIZE = 97, AREA_COUNT = 5, CELL = 4 };
+enum { EXIT_TASK = 3, TRANSMISSION = 4, SET_PIECE = 5 };
 enum { CITY, WILD, WORKS, VAULT, DOCK };
 enum { PUNCH, SHOT, FLY, ESCORT, BUILD, ROUTE, GRID, CARRY, CHARGE };
 typedef struct {
@@ -19,6 +19,30 @@ typedef struct {
 typedef struct {
     int x, z;
 } Cell;
+enum { BACKSTAGE, WIND, CAUSEWAY, FERRY, COOLANT, REFUGE, TRAM, SKI, AIRLOCK, RIFT, FLARE, CHRONO };
+enum { BARRIER, PASSAGE, COURT, FEATURE_LANE, FEATURE_PAD };
+typedef struct {
+    int stride, width, court, skyline;
+    unsigned ground, boundary;
+    int feature, unlock;
+    const char *name, *hint;
+} District;
+enum { VOLLEY, LENS, PLACE, HIGH, LOW, POWER, BEAM, ORB };
+typedef struct {
+    int action;
+    const char *name, *instruction;
+} Encounter;
+const Encounter *campaign_encounter(const Game *g);
+void campaign_sight(const Game *g, float *x, float *y, float *z);
+int campaign_cue(const Game *g);
+extern const District districts[24];
+int campaign_valid_step(const Game *g);
+float campaign_ground(const Game *g, float x, float z);
+int campaign_extent(const Game *g);
+int campaign_surface(const Game *g, int x, int z);
+int campaign_feature_active(const Game *g);
+Cell campaign_pad(const Game *g, int end);
+const char *campaign_brief(const Game *g);
 extern const Expedition expeditions[24];
 void campaign_enter(Game *g, int day, int rehearsal, int area);
 void campaign_tick(Game *g, const Input in[2], float dt);

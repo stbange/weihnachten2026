@@ -108,13 +108,35 @@ static void resume_sector(void)
     if (area > 0 && area < AREA_COUNT)
         campaign_enter(&game, game.door, game.rehearsal, area);
 }
+/* The almanac samples the production map without touching either seat or its checkpoint. */
+API int lh_blueprint(int door, int area, int unlocked, int x, int z)
+{
+    if (door < 1 || door > 24 || (unsigned)area >= AREA_COUNT)
+        return 0;
+    Game view = {.room = EXPEDITION, .door = door, .area = area, .task = unlocked ? EXIT_TASK : 0};
+    int surface = campaign_surface(&view, x, z);
+    return surface + 8 * (int)campaign_ground(&view, x * CELL, z * CELL);
+}
+API float lh_elevation(int seat)
+{
+    return (unsigned)seat < 2 ? campaign_ground(&game, game.player[seat].x, game.player[seat].z)
+                              : 0;
+}
+API int lh_extent(void) { return game.room == EXPEDITION ? campaign_extent(&game) : 0; }
+API const char *lh_sector_brief(void)
+{
+    return game.room == EXPEDITION ? campaign_brief(&game) : "";
+}
 API int lh_chart(int x, int z)
 {
     if (game.room != EXPEDITION || campaign_wall(&game, x, z))
         return 1;
     float tx, tz;
     campaign_target(&game, &tx, &tz);
-    return tx == x * CELL && tz == z * CELL ? 2 : 0;
+    if (tx == x * CELL && tz == z * CELL)
+        return 2;
+    int surface = campaign_surface(&game, x, z);
+    return surface == FEATURE_PAD ? 3 : surface == FEATURE_LANE ? 4 : 0;
 }
 API int lh_trial(int day)
 {
@@ -229,7 +251,7 @@ API void lh_draw(int title, int split, int viewer)
                 h = height - y;
         }
         const Player *p = &game.player[seat];
-        Vec eye = {p->x, p->y + 1.55f, p->z};
+        Vec eye = {p->x, p->y + lh_elevation(seat) + 1.55f, p->z};
         float yaw = p->yaw, pitch = p->pitch;
         if (title) {
             eye = (Vec){4.85f, 2.45f, 3.45f};

@@ -54,7 +54,13 @@ assert.equal(other.import(payload), 0);
 assert.throws(() =>
   other.import({ format: 1, runs: [{ ...first, sectors: [-1] }] }),
 );
-assert.equal(other.rows().length, 4);
+const legacy = { ...first, id: 'prior-layout', edition: 'chambers-1' };
+assert.equal(other.import({ format: 1, runs: [legacy] }), 1);
+assert.equal(
+  firstClearMedians(other.rows()).find((r) => r.label === '1 / Solo').count,
+  1,
+);
+assert.equal(other.rows().length, 5);
 console.log(
   'Field timings, paused intervals, first-clear populations, notes and imports passed.',
 );

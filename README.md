@@ -20,7 +20,9 @@ Choose **Playtest Door 01** on the title screen for *House Lights*. Start at the
 
 Walk through eligible arches in the hall to earn the 24 individual keepsakes. Practice and calendar checkpoints are separate. Read a returned keepsake's story in the almanac. Completing the final date opens the front doors even for someone playing their first evening.
 
-These are playable campaign prototypes. Each door now combines an authored chamber and working shortcut with connecting procedural passages. The cinema and harvester missions have distinct machinery and arrival landmarks across all five sectors. The almanac describes the intended bespoke missions. In the current build an automated player following the shortest marked passages clocks 19.2 simulated minutes for Door 01 and 21.0 for Door 03. The full set spans 17.1–21.0 minutes. First-time human solo and co-op timings are still outstanding.
+All 24 missions have five individually drawn floor plans. Open **View floor plans** in any mission briefing to inspect the playable terrain, entrances, exits, encounter sites and commissioned routes. The levels use three signature encounters per door in different combinations across the sectors. Sector checkpoints from earlier builds still resume at the corresponding sector entrance. [Explore the mission atlas](https://stbange.github.io/weihnachten2026/?atlas=1)
+
+Normal-input solo replays measured 19.3–20.6 simulated minutes across the 24 doors. The replay follows the walking guide and takes one active seat at a time. Players can use ferries, slipgates and other shortcuts, split up or spend time exploring. First-time human pacing remains to be measured. The playtest log keeps earlier layout editions and calculates its first-clear medians from the current edition.
 
 | Mode | Controls |
 | --- | --- |
@@ -79,7 +81,7 @@ python3 tests/web_game.py http://127.0.0.1:8571/
 
 Set `CHROMIUM` to use an existing Chromium executable. Add `--direct` to the browser test on a network that permits WebRTC ICE candidates. The ordinary suite starts a loopback WebSocket relay, connects two browser contexts through the visible room UI, folds an usher from the guest and checks the shared result. It also checks all 24 briefings, calendar rollover, split views, mobile controls and a simulated stereo XR session. The browser replays cover the short tutorial extraction and entry through the live December arch.
 
-GCC/gcov measured **97.80% native C unit line coverage (1,689/1,727)**. Separate normal-input replays cleared all 24 expeditions in solo calendar and split-screen practice. A native relay integration test exercises both host and guest. The browser suite also covers an actual two-peer relay session and a simulated stereo XR session. Physical phone and headset testing and first-time human pacing sessions remain release criteria. [Continuous verification](https://github.com/stbange/weihnachten2026/actions/workflows/verify.yml) · [OpenSpec capabilities](openspec/specs) · [Remaining campaign work](openspec/changes/complete-campaign/tasks.md)
+GCC/gcov measured **98.03% native C unit line coverage (2,240 of 2,285 lines)**. Separate normal-input replays cleared all 24 expeditions in solo calendar and split-screen practice. A native relay integration test exercises both host and guest. The browser suite also covers an actual two-peer relay session and a simulated stereo XR session. Physical phone and headset testing and first-time human pacing sessions remain release criteria. [Continuous verification](https://github.com/stbange/weihnachten2026/actions/workflows/verify.yml) · [OpenSpec capabilities](openspec/specs) · [Remaining campaign work](openspec/changes/complete-campaign/tasks.md)
 
 ## Publishing and credits
 

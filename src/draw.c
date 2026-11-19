@@ -61,7 +61,8 @@ static const char *vert =
               "void main(){p=pos;n=norm;c=colour;gl_Position=camera*vec4(pos,1.0);}";
 
 static const char *frag = VERSION_F
-    "varying vec3 p,n; varying vec4 c; uniform float clock,room,flash; uniform vec3 hand,mate,beacon,watcher;"
+    "varying vec3 p,n; varying vec4 c; uniform float clock,room,flash; uniform vec3 "
+    "hand,mate,beacon,watcher;"
     "float hash(vec2 a){return fract(sin(dot(a,vec2(12.9898,78.233)))*4375.5453);}"
     "float shade(vec2 point,vec2 caster,float height,float rad,vec3 light){"
     " vec2 a=caster-light.xz; vec2 end=caster+a*height/max(1.0,light.y-height);"
@@ -76,6 +77,16 @@ static const char *frag = VERSION_F
     " tile.x+=mod(floor(tile.y),2.)*.5;vec2 seam=min(fract(tile),1.-fract(tile));"
     " base*=.92+.09*hash(floor(tile));base*=mix(.78,1.,smoothstep(.004,.023,min(seam.x,seam.y)));}"
     " if(mat>.12&&mat<.23)base*=.96+.04*sin((p.x+p.z*.32+p.y*.15)*36.);"
+    " float material=floor(mat*255.+.5);vec2 texel=floor(p.xz*7.);"
+    " if(material==164.){float grass=hash(texel);base*=.82+.26*grass;"
+    " base+=vec3(.09,.065,.005)*step(.94,grass);}"
+    " if(material==176.){float "
+    "dune=sin(p.x*.65+p.z*.25+sin(p.z*.75));base*=.9+.10*dune+.05*hash(texel);}"
+    " if(material==188.){float drift=sin(p.x*.42+sin(p.z*.3));base*=.94+.06*drift;"
+    " base+=vec3(.075)*step(.97,hash(texel));}"
+    " if(material==200.)base*=.83+.21*hash(texel);"
+    " if(material==212.){vec2 q=fract(p.xz*.85);base*=.78+.20*step(.07,min(q.x,q.y));"
+    " base+=vec3(.08)*step(.92,q.x)*step(.92,q.y);}"
     " float face=.74+.19*abs(normal.y)+max(0.,dot(normal,normalize(vec3(-.55,.85,.30))))*.18;"
     " vec3 lit=base*vec3(.85,.91,.92)*face;"
     " vec3 lamp=vec3(1.8*sin(clock*.41),4.9,-17.0+cos(clock*.32));"
@@ -85,14 +96,16 @@ static const char *frag = VERSION_F
     " float pool=1./(1.+.38*dot(toSconce,toSconce));"
     " lit+=base*vec3(.54,.26,.065)*(local+.4*aisle)+vec3(.17,.086,.022)*pool;"
     " float torch=(.13+flash*3.4)/(1.+.27*dot(hand-p,hand-p));lit+=vec3(1.,.65,.27)*torch;"
-    " if(room>1.5){vec3 d=beacon-p;lit+=vec3(.36,.22,.085)*(1.+.16*sin(clock*2.5))/(1.+.09*dot(d,d));}"
-    " if(p.y<.08&&normal.y>.55){float s=shade(p.xz,mate.xz,1.4,.30,hand+vec3(.35,1.6,.25));"
+    " if(room>1.5){vec3 "
+    "d=beacon-p;lit+=vec3(.36,.22,.085)*(1.+.16*sin(clock*2.5))/(1.+.09*dot(d,d));}"
+    " if((p.y<.08||room>1.5)&&normal.y>.55){float "
+    "s=shade(p.xz,mate.xz,1.4,.30,hand+vec3(.35,1.6,.25));"
     " if(room<.5)s=max(s,shade(p.xz,vec2(0.,-20.5),2.6,1.75,lamp));"
     " if(room>.5&&room<1.5){s=max(s,shade(p.xz,vec2(-2.2,.2),1.2,.48,vec3(-4.,4.5,2.2)));"
     " s=max(s,shade(p.xz,vec2(2.4,-4.4),1.2,.48,vec3(4.,4.5,-2.)));}"
     " if(room>1.5)s=max(s,shade(p.xz,watcher.xz,watcher.y,.41,hand+vec3(.4,2.1,.6)));"
     " lit*=1.-.38*s;}"
-    " if(mat>.9)lit=base*(1.04+.035*sin(clock*2.3+p.z));"
+    " if(material==234.)lit=base;else if(mat>.95)lit=base*(1.04+.035*sin(clock*2.3+p.z));"
     " float grain=(hash(floor(gl_FragCoord.xy))-.5)*.017;"
     " gl_FragColor=vec4(clamp(lit+grain,0.,1.),1.);}";
 
@@ -169,11 +182,16 @@ void draw_view(const Game *g, int viewer, float time, const float matrix[16], in
                int h, int held_tool)
 {
     if (g->room != prev_room || g->open != prev_open || g->completed != prev_done ||
-        g->projected != prev_projected || (g->room==EXPEDITION && (g->area!=prev_area || g->door!=prev_day || (g->task!=0)!=prev_gate))) {
+        g->projected != prev_projected ||
+        (g->room == EXPEDITION &&
+         (g->area != prev_area || g->door != prev_day || g->task != prev_gate))) {
         scene_static(&solid, g);
         G(BindBuffer)(GL_ARRAY_BUFFER, buffers[0]);
         G(BufferData)(GL_ARRAY_BUFFER, solid.count * sizeof(Vertex), solid.v, GL_STATIC_DRAW);
-        prev_room = g->room; prev_area=g->area;prev_gate=g->task!=0;prev_day=g->door;
+        prev_room = g->room;
+        prev_area = g->area;
+        prev_gate = g->task;
+        prev_day = g->door;
         prev_open = g->open;
         prev_done = g->completed;
         prev_projected = g->projected;
@@ -199,11 +217,15 @@ void draw_view(const Game *g, int viewer, float time, const float matrix[16], in
     G(Uniform1f)(room_id, (float)g->room);
     const Player *p = &g->player[viewer], *other = &g->player[1 - viewer];
     G(Uniform1f)(flash_id, g->flash[viewer]);
-    G(Uniform3f)(hand_id, p->x, p->y + 1.15f, p->z);
-    G(Uniform3f)(mate_id, g->seats == 2 ? other->x : 60, other->y, other->z);
+    G(Uniform3f)(hand_id, p->x, campaign_ground(g, p->x, p->z) + p->y + 1.15f, p->z);
+    G(Uniform3f)(mate_id, g->seats == 2 ? other->x : 60,
+                 campaign_ground(g, other->x, other->z) + other->y, other->z);
     if(g->room==EXPEDITION){
-        float x,z;campaign_target(g,&x,&z);G(Uniform3f)(beacon_id,x,3.1f,z);
-        campaign_guard(g,&x,&z);G(Uniform3f)(watcher_id,x,g->stun>0?.45f:1.5f,z);
+        float x, z;
+        campaign_target(g, &x, &z);
+        G(Uniform3f)(beacon_id, x, campaign_ground(g, x, z) + 3.1f, z);
+        campaign_guard(g, &x, &z);
+        G(Uniform3f)(watcher_id, x, campaign_ground(g, x, z) + (g->stun > 0 ? .45f : 1.5f), z);
     }
     batch(buffers[0], &solid);
     batch(buffers[1], &moving);

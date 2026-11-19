@@ -13,8 +13,8 @@ static void extract_sector(void)
     float *s = lh_state();
     s[23] = 3;
     assert(lh_receive());
-    for (int z = 0; z < 25; z++)
-        for (int x = 0; x < 25; x++)
+    for (int z = 0; z < lh_extent(); z++)
+        for (int x = 0; x < lh_extent(); x++)
             if (lh_chart(x, z) == 2) {
                 s[10] = x * 4;
                 s[12] = z * 4;
@@ -59,7 +59,10 @@ int main(void)
     camera_matrix(lh_matrix(), (Vec){0, 1.6f, 5}, 0, 0, 1);
     lh_xr_eye(0, 0, 0, 160, 320);
     assert(lh_preview(24) && !lh_preview(25) && lh_prompt(0)[0]);
-    assert(lh_chart(-1, 0) == 1 && lh_chart(1, 23) == 0);
+    assert(lh_chart(-1, 0) == 1 && lh_extent() > 25 && lh_sector_brief()[0]);
+    assert(lh_blueprint(0, 0, 0, 0, 0) == 0 && lh_blueprint(1, 5, 0, 0, 0) == 0);
+    assert(lh_blueprint(4, 0, 0, 8, 8) % 8 && lh_blueprint(4, 0, 1, 8, 8) % 8);
+    assert(lh_elevation(2) == 0 && lh_elevation(0) >= 0);
     lh_draw(0, 0, 0);
     /* Use the actual sector exit, restart, and verify independent practice and live slots. */
     extract_sector();
