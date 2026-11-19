@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#142c2b"><link rel="icon" href="star.png"><title>Lantern Hall · Advent 2026</title><link rel="stylesheet" href="style.css"></head>
+<body>
+<main id="stage">
+  <canvas id="canvas" aria-label="First-person view of Lantern Hall" tabindex="-1"></canvas>
+  <div id="shade" aria-hidden="true"></div>
+  <header id="mast"><a class="brand" href="./" aria-label="Lantern Hall home"><span class="seal" aria-hidden="true">✷</span> ADVENT ARCADE <i></i> 2026</a>
+    <nav><button id="sound" aria-pressed="false">Sound off</button><button id="book">▦ &nbsp; Portal almanac</button></nav>
+  </header>
+  <section id="welcome" aria-labelledby="game-title">
+    <div class="kicker"><span></span> A FIRST-PERSON ADVENT CALENDAR</div>
+    <h1 id="game-title">Lantern<br><em>Hall</em><span class="title-star" aria-hidden="true">✧</span></h1>
+    <p>Twenty-five years after your last LAN party, the lights in the old hall have come on again.</p>
+    <div class="launch"><button id="enter" class="primary" disabled>Enter the hall <b>→</b></button><button id="practice" class="quiet" disabled>Rehearse Door 01 <b>→</b></button></div>
+    <div class="utility"><button id="together">♧ &nbsp; Play together</button><button id="xr" hidden>Enter VR</button><span id="loading" role="status">Lighting the hall…</span></div>
+  </section>
+  <footer id="strip"><div class="date"><strong>01 <i>—</i> 24</strong><small>DECEMBER 2026</small></div><span class="line"></span><div class="feature"><small>FIRST PORTAL</small><strong>House Lights</strong></div><button id="featured" aria-label="Read the House Lights briefing">Read briefing <span>→</span></button></footer>
+  <div id="hud" hidden><div id="hudbar"><span id="location"></span><button id="menu">Menu <kbd>Esc</kbd></button></div><div id="views"></div><div id="toast" role="status"></div></div>
+  <div id="touch" hidden><div id="stick" aria-label="Move joystick"><i></i></div><div id="lookpad" aria-label="Drag to look"></div><div class="actions"><button data-bit="4">Lift</button><button data-bit="2">Pulse</button><button data-bit="1">Use</button></div></div>
+</main>
+<dialog id="panel"><div class="panel-head"><span class="eyebrow" id="section">FIELD GUIDE</span><button id="close" aria-label="Close panel">×</button></div><div id="panelbody"></div></dialog>
+<script src="lantern.js"></script><script type="module" src="main.js"></script>
+</body></html>

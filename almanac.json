@@ -1,0 +1,338 @@
+[
+  {
+    "day": 1,
+    "title": "House Lights",
+    "reference": "Duke Nukem 3D · 1996",
+    "mission": "Start a snowed-in cinema’s projector and recover the last ticket in the roll.",
+    "kit": [
+      "Pocket projector folds oversized paper ushers.",
+      "Lift pack burns short bursts of fuel.",
+      "Practical switches operate the actual show machinery."
+    ],
+    "place": "Snowy plum brick, gilt marquee letters and pleated billboard ushers. Every lit sign is attached to a real place.",
+    "route": "0–4 punch into the foyer. 4–9 shrink the ushers at the counter. 9–15 boost from pit to booth. 15–20 run the film and carry the ticket out through the lit theatre.",
+    "coop": "A partner folds the balcony usher while the operator climbs. Alone, clear the balcony from below."
+  },
+  {
+    "day": 2,
+    "title": "Weather for a Balloon",
+    "reference": "Magic Carpet 2: The Netherworlds · 1995",
+    "mission": "Guide a balloon carrying the hall’s first candle through an underground weather system.",
+    "kit": [
+      "Steer a woven glider in three dimensions.",
+      "Tag loose embers for a collection balloon.",
+      "Spend banked embers on an earth-raising rune."
+    ],
+    "place": "Dusk-blue heightfield dunes enter a violet cavern. The collection balloon keeps its round silhouette against either sky.",
+    "route": "0–4 glide through a wind arch. 4–9 tag embers around ice mites. 9–15 raise a ridge against a rival kite. 15–20 escort the loaded balloon through the vent.",
+    "coop": "One player spots thermal lanes while another protects the balloon. A solo pilot uses visible mooring points."
+  },
+  {
+    "day": 3,
+    "title": "The Glass Convoy",
+    "reference": "Command & Conquer · 1995 · Tiberian Dawn",
+    "mission": "Bring a glass harvester through the frozen allotments and power the hall’s loading dock.",
+    "kit": [
+      "Plant route stakes for the harvester.",
+      "Deploy a construction sled on a marked foundation.",
+      "Steer the base’s limited power between a gate and a defence lamp."
+    ],
+    "place": "View the field from beside the treads. Green bottle-glass seams and chevrons let you read a route through drifting snow.",
+    "route": "0–4 survey two seams. 4–9 guide the first load past scrap beetles. 9–15 build a loading bay. 15–20 switch power between the fence and the returning convoy.",
+    "coop": "Two players can scout and operate the substation separately. A solo player recalls the sled to a holding point."
+  },
+  {
+    "day": 4,
+    "title": "The Bell Under Ice",
+    "reference": "Tomb Raider · 1996 · original",
+    "mission": "Drain a cistern and ring a bell that has been underwater since the last reunion.",
+    "kit": [
+      "Align a run-up and catch a marked ledge.",
+      "Push counterweight blocks along channels.",
+      "Use paired spark pistols to clear clockwork bats from the crossing."
+    ],
+    "place": "Sunken limestone, blue reflections, triangular stone faces. Handholds cast a fixed lip shadow in first person.",
+    "route": "0–4 read a practice jump. 4–9 move the first weight above a dry basin. 9–15 traverse the rising water. 15–20 find a new route down to ring the exposed bell.",
+    "coop": "A partner can call landing spots from a gallery. A missed grab drops into a shallow recovery pool."
+  },
+  {
+    "day": 5,
+    "title": "The Candle Fleet",
+    "reference": "Warcraft II: Tides of Darkness · 1995",
+    "mission": "Launch three lantern barges before harbour ice closes the channel.",
+    "kit": [
+      "Assign dockhands to timber or repairs with a pennant.",
+      "Route a tanker between platform and pier.",
+      "Board a scout skiff to reveal safe water for the convoy."
+    ],
+    "place": "Ice-blue channels, tar-black piers and red canvas sails. Fog lifts in patches around the skiff’s lantern.",
+    "route": "0–4 learn the pennant at the sawmill. 4–9 restart the oil run. 9–15 map bells through fog gulls. 15–20 steer the barges out as wooden raiders close in.",
+    "coop": "One player pilots while another signals from shore. Solo orders remain active after leaving the pier."
+  },
+  {
+    "day": 6,
+    "title": "A Giant Carries Supper",
+    "reference": "MechWarrior · 1989 · original PC game",
+    "mission": "Pilot a salvage walker across a salt flat carrying a crate of borrowed chairs.",
+    "kit": [
+      "Steer the walker’s legs while aiming the torso independently.",
+      "Budget heat between a beam and cooling stops.",
+      "Give a companion walker hold or follow orders."
+    ],
+    "place": "A low-poly horizon is framed by bolted cockpit mullions. A damaged limb changes the instrument silhouette.",
+    "route": "0–4 calibrate feet and torso. 4–9 escort the chair crate. 9–15 rotate between ice vents as rival salvage rigs close. 15–20 send the companion to brace the bridge and cross.",
+    "coop": "A friend pilots the second walker. Solo orders give the same two-vehicle bridge solution."
+  },
+  {
+    "day": 7,
+    "title": "The Waiting Room",
+    "reference": "Counter-Strike · classic mod / 1.0 era, 1999–2000",
+    "mission": "Escort three stranded night porters out of the station in short, replayable shifts.",
+    "kit": [
+      "Pick a radio, light shield or extra rescue whistle in a shared buy phase.",
+      "Escort porters to marked exits.",
+      "A tagged player spectates until the next short round."
+    ],
+    "place": "Ochre station tiles, frosted service glass and three unmistakable platform clocks. Opponents are wind-up ticket inspectors.",
+    "route": "0–4 learn a rescue route. 4–9 earn vouchers on platform one. 9–15 choose a second approach after gates change. 15–20 bring the last porter out through the clock hall.",
+    "coop": "A spectator can mark a porter. A failed solo round restarts at the kiosk and retains rescued groups."
+  },
+  {
+    "day": 8,
+    "title": "Night Shift at Brineworks",
+    "reference": "Half-Life · 1998",
+    "mission": "Get the last maintenance tram past a breach in the municipal cold store.",
+    "kit": [
+      "Use a pry bar on jammed access panels.",
+      "Recruit a technician who can authorise sealed doors.",
+      "Sequence pump and tram controls while standing inside the machinery."
+    ],
+    "place": "Sodium light, hazard paint and thick condensation frame a little ecological drama. Heat-loving moths gather at working pipes.",
+    "route": "0–4 ride an uneventful tram. 4–9 free a technician after a cold breach. 9–15 move heat between pumps to draw moths away. 15–20 restart the tram and ride it out.",
+    "coop": "A partner watches a gauge from the gantry. A solo operator reads the mirrored dial beside the pump."
+  },
+  {
+    "day": 9,
+    "title": "Flag in the Whiteout",
+    "reference": "Starsiege: Tribes · 1998",
+    "mission": "Carry a pennant from the windward tower home across an open snow valley.",
+    "kit": [
+      "Chain downhill skiing into jet-assisted climbs.",
+      "Lead moving targets with a slow disc.",
+      "Carry a flag whose return powers the home beacon."
+    ],
+    "place": "Wide cobalt ridges, orange sails, a distant tower on each skyline and visible streamer trails.",
+    "route": "0–4 learn the bowl below home. 4–9 open a ridge route past kite sentries. 9–15 steal the windsock. 15–20 improvise a fast return as the valley gates swing.",
+    "coop": "A partner clears the crest or takes a dropped flag. Solo falls return the pennant to the last wind gate."
+  },
+  {
+    "day": 10,
+    "title": "People Under Neon",
+    "reference": "Syndicate Wars · 1996",
+    "mission": "Lead a group of night-shift messengers out of a district that keeps rewriting its street signs.",
+    "kit": [
+      "A consent beacon invites freed couriers to follow.",
+      "A wrist selector splits the group between hold and rally.",
+      "A demolition stamp folds a condemned facade into a new passage."
+    ],
+    "place": "Rain-black voxels, lilac adverts and identical chrome wardens. Hand-painted exit signs are the only trustworthy ones.",
+    "route": "0–4 identify a false sign. 4–9 win the couriers’ trust. 9–15 split them to open the tram depot. 15–20 lower a facade and walk everyone out.",
+    "coop": "Partners can lead different groups. A solo leader leaves a persistent rally marker."
+  },
+  {
+    "day": 11,
+    "title": "The Mine That Lost Down",
+    "reference": "Descent · 1995 · original full release",
+    "mission": "Guide a rescue pod into an inverted ornament mine and bring its trapped workers home.",
+    "kit": [
+      "Pilot a six-axis rescue pod.",
+      "Read a wireframe automap with breadcrumb anchors.",
+      "Trip the faulty core and retrace the route before the mine closes."
+    ],
+    "place": "Rust-red polygon passages fold into mint-green shafts. Each junction has a distinct shape visible from either end.",
+    "route": "0–4 learn translation in a spherical dock. 4–9 free miners from side chambers. 9–15 trace the core route past drill drones. 15–20 trigger shutdown and fly the marked escape.",
+    "coop": "A navigator can mark junctions. Solo and VR have horizon-lock and a forgiving escape reset at the switch."
+  },
+  {
+    "day": 12,
+    "title": "The Parish Below",
+    "reference": "Diablo · 1996/97 · original PC release",
+    "mission": "Recover a parish register from under a snowbound village before its ink freezes.",
+    "kit": [
+      "Explore a seeded crypt assembled from authored rooms.",
+      "Identify a dropped relic to learn its effect.",
+      "Place a return scroll linking the crypt to the village."
+    ],
+    "place": "Candlelit charcoal stone, stained glass on damp floors and wax chandler-knights. Drops have distinct silhouettes.",
+    "route": "0–4 hear the sexton’s request. 4–9 descend to find an unnamed relic. 9–15 identify it and use its light on a sealed nave. 15–20 carry the register past its wax guardian.",
+    "coop": "A shared scroll lets friends resupply together. Solo and co-op seeds guarantee the relic and the exit."
+  },
+  {
+    "day": 13,
+    "title": "Boiler Choir",
+    "reference": "Doom · 1993 · original",
+    "mission": "Restore the boiler house by getting three unruly furnace choirs to sing out of phase.",
+    "kit": [
+      "Use a single-barrel bellows gun with a deliberate pump rhythm.",
+      "Read three shape-coded boiler keys.",
+      "Bait crossfire between rival furnace sprites."
+    ],
+    "place": "Oxide steel gives way to hot-red brick. Strobing effects have a steady-light substitute. Sprite silhouettes announce different attacks.",
+    "route": "0–4 learn to circle a cold grate. 4–9 recover two keys on a looping walk. 9–15 bring opposing choirs into the mixing room. 15–20 turn the last valve during a moving-floor fight.",
+    "coop": "Friends can divide keys or draw different choirs. Solo encounters include cover pillars and space to keep moving."
+  },
+  {
+    "day": 14,
+    "title": "Orchard of Small Wishes",
+    "reference": "Secret of Mana · 1993 · SNES original",
+    "mission": "Wake a winter orchard with a song that only ripe seed bells can carry.",
+    "kit": [
+      "Let a pruning blade recharge before its next full swing.",
+      "Cross gaps with a ribbon whip on marked pegs.",
+      "Pick elemental notes from a personal ring menu."
+    ],
+    "place": "Painted green canopies, raspberry snow and sprite seedlings that visibly lean toward the next note.",
+    "route": "0–4 practice the recharge in a nursery. 4–9 swing between frozen boughs. 9–15 find notes by answering root sprites. 15–20 combine a clear cut and the right note at the heartwood.",
+    "coop": "Friends queue different notes while the world runs. Solo note queues persist while the player changes tools."
+  },
+  {
+    "day": 15,
+    "title": "Footprints at Dusk",
+    "reference": "X-COM: UFO Defense / UFO: Enemy Unknown · 1994 · MicroProse original",
+    "mission": "Find a vanished survey crew in a farmyard and take the living evidence home.",
+    "kit": [
+      "Spend action points in short planning pulses inside marked search zones.",
+      "Reserve points for a reaction flash.",
+      "Throw electro-flares to reveal hidden tracks."
+    ],
+    "place": "In first person, grid marks appear on frosted ground while planning. Barns have blue shadows and the lost suits left enormous footprints.",
+    "route": "0–4 inspect a safe landing tile. 4–9 light two barns. 9–15 conserve reactions through a mimic ambush. 15–20 recover the surveyor and extract a live snow mimic.",
+    "coop": "Everyone plans in the same short phase and commits independently. Solo has a commandable lantern drone."
+  },
+  {
+    "day": 16,
+    "title": "The Nailwright’s Stair",
+    "reference": "Quake · 1996 · first game",
+    "mission": "Climb a bell foundry built around a shaft whose staircases can exchange places.",
+    "kit": [
+      "Pin rotating wooden stops with a rivet caster.",
+      "Read paired transit gates by their matching runes.",
+      "Take a shock-pad impulse jump to an optional or upper route."
+    ],
+    "place": "Tea-brown stone and patinated iron silhouettes surround a lime-lit shaft. Iron gargoyles make their home under walkways.",
+    "route": "0–4 swap a stair with a gate. 4–9 pin two counterweights. 9–15 cross the shaft during a gargoyle attack. 15–20 unlock the bell room from above and descend by a new route.",
+    "coop": "Partners can hold opposite sightlines. A ratchet and a longer stair route support solo and comfort play."
+  },
+  {
+    "day": 17,
+    "title": "Apprentice of the Aurora",
+    "reference": "Jedi Knight: Dark Forces II · 1997 · original Jedi Knight",
+    "mission": "Choose how to free an apprentice from an observatory built on two sides of a ravine.",
+    "kit": [
+      "Deflect coloured pulses with a prism staff.",
+      "Draw loose counterweights toward the reticle.",
+      "Spend focus on a high leap."
+    ],
+    "place": "Tall aquamarine towers and amber lenses frame a low winter sun. Masked lens-keepers have long readable windups.",
+    "route": "0–4 learn the staff in a gallery. 4–9 pull weights along the ravine crossing. 9–15 leap between moving lenses. 15–20 release the apprentice by disarming the keeper or realigning the dome.",
+    "coop": "A friend holds a beam while another leaps. A locking gimbal keeps the solo route open."
+  },
+  {
+    "day": 18,
+    "title": "Three Kinds of Shelter",
+    "reference": "StarCraft · 1998 · original",
+    "mission": "Keep three very different settlements connected until their evacuation signal gets through.",
+    "kit": [
+      "Place a relay inside a powered radius.",
+      "Grow a path of living mat to extend a shelter.",
+      "Assign a fabricator to build or repair from a shared mineral/gas budget."
+    ],
+    "place": "Ivory lattice, berry-red root mats and riveted blue shelters make the three rules visible from street level.",
+    "route": "0–4 restore an isolated relay. 4–9 grow a route across the cut. 9–15 route resource deliveries while frost mites strip the roof. 15–20 overlap all three shelter systems to transmit.",
+    "coop": "Partners can tend different shelters. A solo player leaves one queued order per fabricator."
+  },
+  {
+    "day": 19,
+    "title": "Letters in the Falls",
+    "reference": "Unreal · 1998 · original campaign",
+    "mission": "Read a valley’s stone correspondence and guide its keeper home through a broken aqueduct.",
+    "kit": [
+      "Translate pictographs with a hand lens.",
+      "Launch a slow light orb and strike it with a beam.",
+      "Read evasive guardians’ sidesteps before choosing which shot to take."
+    ],
+    "place": "Leaving a dark pipe reveals violet cliffs under an immense waterfall. Jade stone wardens move against warm sky.",
+    "route": "0–4 climb out of a wrecked lift. 4–9 translate the aqueduct’s route signs. 9–15 use orb bursts to lift distant sluices. 15–20 escort the keeper while opening the waterfall path.",
+    "coop": "A partner can strike a teammate’s orb. Solo orbs linger briefly when aimed at puzzle sockets."
+  },
+  {
+    "day": 20,
+    "title": "Dead Air on Deck Nine",
+    "reference": "System Shock · 1994 · Looking Glass original",
+    "mission": "Trace a missing night dispatcher through a station that insists the deck is empty.",
+    "kit": [
+      "Piece together a route from captioned log fragments.",
+      "Blind surveillance eyes to lower a local security meter.",
+      "Jack into a floating abstract circuit and reconnect two nodes."
+    ],
+    "place": "Teal maintenance tiles, watching lenses and dim monitors give way to an open, magenta wireframe space. The station’s silhouette recurs as a circuit diagram.",
+    "route": "0–4 hear a contradictory log. 4–9 trace a message through two decks. 9–15 lower surveillance while repair spiders interfere. 15–20 enter the network to release the dispatcher.",
+    "coop": "A partner can guide the diver from a physical map. A solo diver carries a copy of the same diagram."
+  },
+  {
+    "day": 21,
+    "title": "A Village Before Snow",
+    "reference": "Age of Empires · 1997 · first game",
+    "mission": "Build a winter feast site before the pass closes, starting with a hearth and three villagers.",
+    "kit": [
+      "Assign villagers among visible resources.",
+      "Bank a food threshold to advance the settlement’s age.",
+      "Lay building foundations and watch workers finish them."
+    ],
+    "place": "Wattle huts give way to fired-clay halls. A half-built roof and piles of cut timber reveal progress without a menu.",
+    "route": "0–4 feed the hearth. 4–9 staff forest and quarry. 9–15 advance an age to repair a flood crossing. 15–20 complete a feast house as boars scatter the supply carts.",
+    "coop": "Friends lay different foundations. Solo villagers remember jobs and use a bell to regroup after raids."
+  },
+  {
+    "day": 22,
+    "title": "Last Train to the Midway",
+    "reference": "Blood · 1997 · original",
+    "mission": "Take the midnight carnival train back from a troupe of wax figures playing at being ghosts.",
+    "kit": [
+      "Tag wax figures with delayed lantern flares.",
+      "Use the flare caster’s alternate burst for a wide target.",
+      "Carry a temporary twin-caster token through the hall of mirrors."
+    ],
+    "place": "Painted crimson railcars, ink-black sky and flickering handbill sprites. Wax and papier-mâché underpin the scares.",
+    "route": "0–4 board the rear carriage. 4–9 tag the wax ticket-takers. 9–15 light mirrored signals at the midway. 15–20 direct the train back through a procession of false silhouettes.",
+    "coop": "A partner can identify reflections from the opposite platform. Solo uses scorch marks to distinguish the real signal."
+  },
+  {
+    "day": 23,
+    "title": "What the Winter Leaves",
+    "reference": "Total Annihilation · 1997 · original",
+    "mission": "Turn a battlefield of broken clockwork into the transmitter that can reach every missing guest.",
+    "kit": [
+      "Reclaim hulls with a constructor beam.",
+      "Balance streaming metal and energy while construction runs.",
+      "Queue a helper’s build, repair and reclaim orders."
+    ],
+    "place": "Gunmetal wrecks half buried in white, turning windmills and bright copper construction beams. Salvage value is visible in a hull’s intact parts.",
+    "route": "0–4 reclaim a fallen chassis. 4–9 find a wind source for the grid. 9–15 complete two relay arms under recycler pressure. 15–20 repurpose the last rival hulk as an aerial.",
+    "coop": "A partner balances power while the builder works. Solo can pause a queue to restore throughput."
+  },
+  {
+    "day": 24,
+    "title": "One Minute to Midnight",
+    "reference": "Command & Conquer: Red Alert · 1996 · first Red Alert",
+    "mission": "Borrow one minute from the frozen clock, deliver every invitation, and leave a way in for the latecomers.",
+    "kit": [
+      "Route ore credits to a mobile relay convoy.",
+      "Switch a finite grid between coil defences and the clock.",
+      "Chronoshift one convoy vehicle between marked pads."
+    ],
+    "place": "A snowbound signal yard seen through analogue monitors, with red bulbs, scalloped coil towers and a clock visible from every pad.",
+    "route": "0–4 receive the Steward’s final dispatch. 4–9 fund the frozen convoy. 9–15 choose which coils protect its route. 15–20 shift the mail van into the hall and manually release the minute hand.",
+    "coop": "Friends coordinate relay, convoy and clock. Every relay latches for solo. Earlier clears restore extra voices in the ending; all players can send the invitations."
+  }
+]
