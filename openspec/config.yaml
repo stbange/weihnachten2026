@@ -1,0 +1,6 @@
+schema: spec-driven
+context: |
+  Lantern Hall is a first-person co-op Advent calendar set in a 2001 LAN reunion.
+  Use C11, SDL3 and OpenGL for the shared game, Emscripten for browser builds.
+  December 2026 unlocks use Europe/Warsaw. Rehearsal progress is separate.
+  Code is MIT and original game art and sound are CC BY 4.0.
