@@ -7,13 +7,13 @@ export const comfortRatings = [
   'Mild discomfort',
   'Stopped for discomfort',
 ];
-export const edition = 'chambers-1';
+export const edition = 'floorplans-1';
 function valid(row) {
   return (
     row &&
     typeof row.id === 'string' &&
     /^[a-zA-Z0-9-]{1,64}$/.test(row.id) &&
-    row.edition === edition &&
+    [edition, 'chambers-1'].includes(row.edition) &&
     Number.isInteger(row.door) &&
     row.door >= 1 &&
     row.door <= 24 &&
@@ -47,7 +47,7 @@ function valid(row) {
 export function firstClearMedians(rows) {
   const groups = new Map();
   for (const r of rows.filter(
-    (r) => r.firstVisit && r.status === 'Completed',
+    (r) => r.edition === edition && r.firstVisit && r.status === 'Completed',
   )) {
     const key = r.door + ' / ' + r.mode;
     if (!groups.has(key)) groups.set(key, []);

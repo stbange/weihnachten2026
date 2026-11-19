@@ -42,6 +42,8 @@ export function fieldGuide({
         ' · ' +
         time(r.sectors.reduce((a, b) => a + b, 0)) +
         '</summary><p>' +
+        esc(r.edition) +
+        ' · ' +
         esc(r.started.slice(0, 16).replace('T', ' ')) +
         ' UTC · ' +
         (r.firstVisit ? 'First visit' : 'Repeat') +

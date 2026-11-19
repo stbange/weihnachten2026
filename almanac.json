@@ -12,7 +12,151 @@
     "place": "Snowy plum brick, gilt marquee letters and pleated billboard ushers. Every lit sign is attached to a real place.",
     "gift": "A punched ticket sets the first place. There is a twenty-fifth seat number on the back.",
     "route": "0–4 punch into the foyer. 4–9 shrink the ushers at the counter. 9–15 boost from pit to booth. 15–20 run the film and carry the ticket out through the lit theatre.",
-    "coop": "A partner folds the balcony usher while the operator climbs. Alone, clear the balcony from below."
+    "coop": "A partner folds the balcony usher while the operator climbs. Alone, clear the balcony from below.",
+    "feature": "Backstage shutter",
+    "featureHint": "Punch the tickets to open the staff passage.",
+    "stride": 14,
+    "encounters": [
+      {
+        "name": "Balcony ushers",
+        "instruction": "Fold the three moving paper ushers"
+      },
+      {
+        "name": "Projector changeover",
+        "instruction": "Pulse on the lit frame to change reels"
+      },
+      {
+        "name": "Stage door",
+        "instruction": "Use the brass latch to let the audience downstairs"
+      }
+    ],
+    "sectors": [
+      {
+        "name": "Tram terminus",
+        "brief": "Follow the tram rails to the ticket office. The service alley comes back behind the marquee.",
+        "start": "u",
+        "exit": "y",
+        "link": "qn",
+        "tools": [
+          "Ticket punch",
+          "Pleated usher",
+          "Booth lift"
+        ],
+        "encounters": [
+          {
+            "name": "Balcony ushers",
+            "at": "l",
+            "instruction": "Fold the three moving paper ushers"
+          },
+          {
+            "name": "Projector changeover",
+            "at": "g",
+            "instruction": "Pulse on the lit frame to change reels"
+          }
+        ]
+      },
+      {
+        "name": "Marquee foyer",
+        "brief": "Two ticket aisles wrap the island kiosk. The staff corridor cuts behind both turnstiles.",
+        "start": "a",
+        "exit": "l",
+        "link": "cn",
+        "tools": [
+          "Pleated usher",
+          "Ticket punch",
+          "Booth lift"
+        ],
+        "encounters": [
+          {
+            "name": "Stage door",
+            "at": "b",
+            "instruction": "Use the brass latch to let the audience downstairs"
+          },
+          {
+            "name": "Balcony ushers",
+            "at": "h",
+            "instruction": "Fold the three moving paper ushers"
+          }
+        ]
+      },
+      {
+        "name": "Orchestra pit",
+        "brief": "The side aisles climb around the orchestra pit. Cross the stalls to reach the fly rig.",
+        "start": "k",
+        "exit": "m",
+        "link": "lr",
+        "tools": [
+          "Pleated usher",
+          "Booth lift",
+          "Ticket punch"
+        ],
+        "encounters": [
+          {
+            "name": "Projector changeover",
+            "at": "g",
+            "instruction": "Pulse on the lit frame to change reels"
+          },
+          {
+            "name": "Stage door",
+            "at": "l",
+            "instruction": "Use the brass latch to let the audience downstairs"
+          }
+        ]
+      },
+      {
+        "name": "Projection booth",
+        "brief": "Follow the film upstairs, around the reel cages and across the projection gallery.",
+        "start": "y",
+        "exit": "r",
+        "link": "ih",
+        "tools": [
+          "Booth lift",
+          "Ticket punch",
+          "Pleated usher"
+        ],
+        "encounters": [
+          {
+            "name": "Balcony ushers",
+            "at": "n",
+            "instruction": "Fold the three moving paper ushers"
+          },
+          {
+            "name": "Projector changeover",
+            "at": "i",
+            "instruction": "Pulse on the lit frame to change reels"
+          }
+        ]
+      },
+      {
+        "name": "The final screening",
+        "brief": "The backlot wraps around the screen. Return along the illuminated centre aisle for the final frame.",
+        "start": "p",
+        "exit": "m",
+        "link": "cm",
+        "tools": [
+          "Booth lift",
+          "Pleated usher",
+          "Ticket punch"
+        ],
+        "encounters": [
+          {
+            "name": "Stage door",
+            "at": "q",
+            "instruction": "Use the brass latch to let the audience downstairs"
+          },
+          {
+            "name": "Balcony ushers",
+            "at": "c",
+            "instruction": "Fold the three moving paper ushers"
+          },
+          {
+            "name": "Projector changeover",
+            "at": "m",
+            "instruction": "Pulse on the lit frame to change reels"
+          }
+        ]
+      }
+    ]
   },
   {
     "day": 2,
@@ -27,7 +171,150 @@
     "place": "Dusk-blue heightfield dunes enter a violet cavern. The collection balloon keeps its round silhouette against either sky.",
     "gift": "The candle is still warm. Someone paid for the return journey in advance.",
     "route": "0–4 glide through a wind arch. 4–9 tag embers around ice mites. 9–15 raise a ridge against a rival kite. 15–20 escort the loaded balloon through the vent.",
-    "coop": "One player spots thermal lanes while another protects the balloon. A solo pilot uses visible mooring points."
+    "coop": "One player spots thermal lanes while another protects the balloon. A solo pilot uses visible mooring points.",
+    "feature": "Thermal current",
+    "featureHint": "Hold Lift in the amber current to climb and sail faster.",
+    "stride": 15,
+    "encounters": [
+      {
+        "name": "Ember on the wind",
+        "instruction": "Fly through the high ember ring"
+      },
+      {
+        "name": "Lee-side collector",
+        "instruction": "Skim through the low collection hoop"
+      },
+      {
+        "name": "Earth rune",
+        "instruction": "Press Use to bank the embers and raise the mooring"
+      }
+    ],
+    "sectors": [
+      {
+        "name": "Wind arches",
+        "brief": "Three wind arches feed a broad thermal bowl. Skim the rim for the balloon or ride the centre lift.",
+        "start": "u",
+        "exit": "m",
+        "link": "gm",
+        "tools": [
+          "Thermal sail",
+          "Ember balloon",
+          "Earth rune"
+        ],
+        "encounters": [
+          {
+            "name": "Ember on the wind",
+            "at": "g",
+            "instruction": "Fly through the high ember ring"
+          },
+          {
+            "name": "Lee-side collector",
+            "at": "m",
+            "instruction": "Skim through the low collection hoop"
+          }
+        ]
+      },
+      {
+        "name": "Ember dunes",
+        "brief": "A crescent of dunes shelters the ember beds. Fly over the lee side to reach the mooring.",
+        "start": "a",
+        "exit": "e",
+        "link": "mw",
+        "tools": [
+          "Earth rune",
+          "Thermal sail"
+        ],
+        "encounters": [
+          {
+            "name": "Lee-side collector",
+            "at": "m",
+            "instruction": "Skim through the low collection hoop"
+          },
+          {
+            "name": "Earth rune",
+            "at": "r",
+            "instruction": "Press Use to bank the embers and raise the mooring"
+          }
+        ]
+      },
+      {
+        "name": "Balloon mooring",
+        "brief": "Outlying collectors circle the balloon anchor. The updraft is inside the ring.",
+        "start": "w",
+        "exit": "m",
+        "link": "rm",
+        "tools": [
+          "Ember balloon",
+          "Thermal sail",
+          "Earth rune"
+        ],
+        "encounters": [
+          {
+            "name": "Ember on the wind",
+            "at": "h",
+            "instruction": "Fly through the high ember ring"
+          },
+          {
+            "name": "Earth rune",
+            "at": "r",
+            "instruction": "Press Use to bank the embers and raise the mooring"
+          }
+        ]
+      },
+      {
+        "name": "Basalt throat",
+        "brief": "A bent basalt throat splits the sail route from the sheltered balloon passage.",
+        "start": "e",
+        "exit": "o",
+        "link": "hg",
+        "tools": [
+          "Earth rune",
+          "Ember balloon",
+          "Thermal sail"
+        ],
+        "encounters": [
+          {
+            "name": "Lee-side collector",
+            "at": "h",
+            "instruction": "Skim through the low collection hoop"
+          },
+          {
+            "name": "Ember on the wind",
+            "at": "g",
+            "instruction": "Fly through the high ember ring"
+          }
+        ]
+      },
+      {
+        "name": "The candle vent",
+        "brief": "Bank the last ember in the caldera, then take a rising diagonal out of the vent.",
+        "start": "m",
+        "exit": "e",
+        "link": "mn",
+        "tools": [
+          "Thermal sail",
+          "Earth rune",
+          "Ember balloon"
+        ],
+        "encounters": [
+          {
+            "name": "Ember on the wind",
+            "at": "n",
+            "instruction": "Fly through the high ember ring"
+          },
+          {
+            "name": "Lee-side collector",
+            "at": "m",
+            "instruction": "Skim through the low collection hoop"
+          },
+          {
+            "name": "Earth rune",
+            "at": "r",
+            "instruction": "Press Use to bank the embers and raise the mooring"
+          }
+        ]
+      }
+    ]
   },
   {
     "day": 3,
@@ -42,7 +329,151 @@
     "place": "View the field from beside the treads. Green bottle-glass seams and chevrons let you read a route through drifting snow.",
     "gift": "A brass loading token carries the same punch as the cinema ticket.",
     "route": "0–4 survey two seams. 4–9 guide the first load past scrap beetles. 9–15 build a loading bay. 15–20 switch power between the fence and the returning convoy.",
-    "coop": "Two players can scout and operate the substation separately. A solo player recalls the sled to a holding point."
+    "coop": "Two players can scout and operate the substation separately. A solo player recalls the sled to a holding point.",
+    "feature": "Staked haul road",
+    "featureHint": "Complete the survey stakes to clear the cross-field road.",
+    "stride": 16,
+    "encounters": [
+      {
+        "name": "Power allocation",
+        "instruction": "Tune the requested load and pulse to reroute the grid"
+      },
+      {
+        "name": "Construction sled",
+        "instruction": "Use to deploy the sled at the slab"
+      },
+      {
+        "name": "Glass seam",
+        "instruction": "Hold the beam on the seam until the ore breaks free"
+      }
+    ],
+    "sectors": [
+      {
+        "name": "Survey camp",
+        "brief": "Survey the western boundary before sending the harvester over the service road to the east.",
+        "start": "u",
+        "exit": "y",
+        "link": "km",
+        "tools": [
+          "Route stakes",
+          "Substation",
+          "Glass harvester"
+        ],
+        "encounters": [
+          {
+            "name": "Glass seam",
+            "at": "l",
+            "instruction": "Hold the beam on the seam until the ore breaks free"
+          },
+          {
+            "name": "Construction sled",
+            "at": "m",
+            "instruction": "Use to deploy the sled at the slab"
+          }
+        ]
+      },
+      {
+        "name": "Bottle-glass seam",
+        "brief": "The glass seam hooks around the field. Empty vehicles can cut across the inner belt.",
+        "start": "e",
+        "exit": "a",
+        "link": "ol",
+        "tools": [
+          "Glass harvester",
+          "Route stakes",
+          "Substation"
+        ],
+        "encounters": [
+          {
+            "name": "Glass seam",
+            "at": "n",
+            "instruction": "Hold the beam on the seam until the ore breaks free"
+          },
+          {
+            "name": "Power allocation",
+            "at": "m",
+            "instruction": "Tune the requested load and pulse to reroute the grid"
+          }
+        ]
+      },
+      {
+        "name": "Refinery road",
+        "brief": "Stake the refinery bypass. The returning harvester needs the scale at the foot of the silos.",
+        "start": "k",
+        "exit": "w",
+        "link": "ln",
+        "tools": [
+          "Glass harvester",
+          "Substation",
+          "Route stakes"
+        ],
+        "encounters": [
+          {
+            "name": "Construction sled",
+            "at": "l",
+            "instruction": "Use to deploy the sled at the slab"
+          },
+          {
+            "name": "Power allocation",
+            "at": "n",
+            "instruction": "Tune the requested load and pulse to reroute the grid"
+          }
+        ]
+      },
+      {
+        "name": "Loading bay",
+        "brief": "Two loading aprons share a crane. Power the cross-yard lane before bringing a vehicle through.",
+        "start": "a",
+        "exit": "e",
+        "link": "km",
+        "tools": [
+          "Substation",
+          "Route stakes",
+          "Glass harvester"
+        ],
+        "encounters": [
+          {
+            "name": "Power allocation",
+            "at": "l",
+            "instruction": "Tune the requested load and pulse to reroute the grid"
+          },
+          {
+            "name": "Construction sled",
+            "at": "m",
+            "instruction": "Use to deploy the sled at the slab"
+          }
+        ]
+      },
+      {
+        "name": "The ice fence",
+        "brief": "The ice fence separates the convoy from the yard. Its power feed runs around the far flank.",
+        "start": "v",
+        "exit": "y",
+        "link": "lo",
+        "tools": [
+          "Substation",
+          "Glass harvester",
+          "Route stakes"
+        ],
+        "encounters": [
+          {
+            "name": "Glass seam",
+            "at": "n",
+            "instruction": "Hold the beam on the seam until the ore breaks free"
+          },
+          {
+            "name": "Power allocation",
+            "at": "l",
+            "instruction": "Tune the requested load and pulse to reroute the grid"
+          },
+          {
+            "name": "Construction sled",
+            "at": "o",
+            "instruction": "Use to deploy the sled at the slab"
+          }
+        ]
+      }
+    ]
   },
   {
     "day": 4,
@@ -57,7 +488,150 @@
     "place": "Sunken limestone, blue reflections, triangular stone faces. Handholds cast a fixed lip shadow in first person.",
     "gift": "The clapper has a loop of LAN cable where a rope should be.",
     "route": "0–4 read a practice jump. 4–9 move the first weight above a dry basin. 9–15 traverse the rising water. 15–20 find a new route down to ring the exposed bell.",
-    "coop": "A partner can call landing spots from a gallery. A missed grab drops into a shallow recovery pool."
+    "coop": "A partner can call landing spots from a gallery. A missed grab drops into a shallow recovery pool.",
+    "feature": "Drained ledge",
+    "featureHint": "Release the upper latch to expose a ledge across the cistern.",
+    "stride": 16,
+    "encounters": [
+      {
+        "name": "Cistern ledge",
+        "instruction": "Catch the high stone brow with Lift"
+      },
+      {
+        "name": "Balance cradle",
+        "instruction": "Set the counterweight in its cradle with Use"
+      },
+      {
+        "name": "Bats in the vault",
+        "instruction": "Pulse each of the three moving clockwork bats"
+      }
+    ],
+    "sectors": [
+      {
+        "name": "Dry basin",
+        "brief": "Descend the stepped lip of the dry basin. A high ledge looks back across the entire reservoir.",
+        "start": "a",
+        "exit": "k",
+        "link": "hr",
+        "tools": [
+          "Ledge grapple",
+          "Counterweight",
+          "Clockwork bat"
+        ],
+        "encounters": [
+          {
+            "name": "Cistern ledge",
+            "at": "h",
+            "instruction": "Catch the high stone brow with Lift"
+          },
+          {
+            "name": "Balance cradle",
+            "at": "r",
+            "instruction": "Set the counterweight in its cradle with Use"
+          }
+        ]
+      },
+      {
+        "name": "Weight gallery",
+        "brief": "Counterweight tracks run at right angles to the gallery. Carry the weight back across its own channel.",
+        "start": "y",
+        "exit": "c",
+        "link": "ml",
+        "tools": [
+          "Counterweight",
+          "Ledge grapple",
+          "Clockwork bat"
+        ],
+        "encounters": [
+          {
+            "name": "Balance cradle",
+            "at": "q",
+            "instruction": "Set the counterweight in its cradle with Use"
+          },
+          {
+            "name": "Cistern ledge",
+            "at": "m",
+            "instruction": "Catch the high stone brow with Lift"
+          }
+        ]
+      },
+      {
+        "name": "Overflow channel",
+        "brief": "An overflow trench bends underneath the bell gallery. Grapple from its last dry shelf.",
+        "start": "f",
+        "exit": "j",
+        "link": "ln",
+        "tools": [
+          "Clockwork bat",
+          "Ledge grapple"
+        ],
+        "encounters": [
+          {
+            "name": "Bats in the vault",
+            "at": "m",
+            "instruction": "Pulse each of the three moving clockwork bats"
+          },
+          {
+            "name": "Cistern ledge",
+            "at": "n",
+            "instruction": "Catch the high stone brow with Lift"
+          }
+        ]
+      },
+      {
+        "name": "Bell vault",
+        "brief": "A square ambulatory encloses the bell. Its raised latch looks down on the drained vault.",
+        "start": "c",
+        "exit": "o",
+        "link": "hm",
+        "tools": [
+          "Counterweight",
+          "Clockwork bat",
+          "Ledge grapple"
+        ],
+        "encounters": [
+          {
+            "name": "Balance cradle",
+            "at": "h",
+            "instruction": "Set the counterweight in its cradle with Use"
+          },
+          {
+            "name": "Bats in the vault",
+            "at": "m",
+            "instruction": "Pulse each of the three moving clockwork bats"
+          }
+        ]
+      },
+      {
+        "name": "The cistern lip",
+        "brief": "Climb out along alternating lips and recover the clapper above the entrance.",
+        "start": "m",
+        "exit": "c",
+        "link": "mi",
+        "tools": [
+          "Clockwork bat",
+          "Ledge grapple",
+          "Counterweight"
+        ],
+        "encounters": [
+          {
+            "name": "Bats in the vault",
+            "at": "m",
+            "instruction": "Pulse each of the three moving clockwork bats"
+          },
+          {
+            "name": "Cistern ledge",
+            "at": "i",
+            "instruction": "Catch the high stone brow with Lift"
+          },
+          {
+            "name": "Balance cradle",
+            "at": "g",
+            "instruction": "Set the counterweight in its cradle with Use"
+          }
+        ]
+      }
+    ]
   },
   {
     "day": 5,
@@ -72,7 +646,150 @@
     "place": "Ice-blue channels, tar-black piers and red canvas sails. Fog lifts in patches around the skiff’s lantern.",
     "gift": "A little wooden ship gives the first table its centrepiece. Its manifest lists guests as cargo.",
     "route": "0–4 learn the pennant at the sawmill. 4–9 restart the oil run. 9–15 map bells through fog gulls. 15–20 steer the barges out as wooden raiders close in.",
-    "coop": "One player pilots while another signals from shore. Solo orders remain active after leaving the pier."
+    "coop": "One player pilots while another signals from shore. Solo orders remain active after leaving the pier.",
+    "feature": "Scout skiff",
+    "featureHint": "Use a sail berth to cross the harbour with a nearby tanker.",
+    "stride": 14,
+    "encounters": [
+      {
+        "name": "Repair gang",
+        "instruction": "Plant the repair pennant with Use"
+      },
+      {
+        "name": "Scout sounding",
+        "instruction": "Cross the sounding buoy at water level"
+      },
+      {
+        "name": "Harbour pilot",
+        "instruction": "Tune the signal lanterns and pulse the pilot code"
+      }
+    ],
+    "sectors": [
+      {
+        "name": "Frozen sawmill",
+        "brief": "The timber road ends at the slipway. Send the repair pennant along the jetty.",
+        "start": "a",
+        "exit": "o",
+        "link": "lr",
+        "tools": [
+          "Repair pennant",
+          "Scout pennant"
+        ],
+        "encounters": [
+          {
+            "name": "Repair gang",
+            "at": "l",
+            "instruction": "Plant the repair pennant with Use"
+          },
+          {
+            "name": "Harbour pilot",
+            "at": "r",
+            "instruction": "Tune the signal lanterns and pulse the pilot code"
+          }
+        ]
+      },
+      {
+        "name": "Tanker quay",
+        "brief": "One long tanker pier faces a parallel oil platform. Cross at the marked ferry berth.",
+        "start": "u",
+        "exit": "s",
+        "link": "qn",
+        "tools": [
+          "Oil tanker",
+          "Repair pennant",
+          "Scout pennant"
+        ],
+        "encounters": [
+          {
+            "name": "Scout sounding",
+            "at": "q",
+            "instruction": "Cross the sounding buoy at water level"
+          },
+          {
+            "name": "Harbour pilot",
+            "at": "n",
+            "instruction": "Tune the signal lanterns and pulse the pilot code"
+          }
+        ]
+      },
+      {
+        "name": "Sounding bells",
+        "brief": "Thread the islands by their sounding bells. The scout landing lies behind the last headland.",
+        "start": "e",
+        "exit": "p",
+        "link": "il",
+        "tools": [
+          "Scout pennant",
+          "Oil tanker",
+          "Repair pennant"
+        ],
+        "encounters": [
+          {
+            "name": "Harbour pilot",
+            "at": "l",
+            "instruction": "Tune the signal lanterns and pulse the pilot code"
+          },
+          {
+            "name": "Scout sounding",
+            "at": "m",
+            "instruction": "Cross the sounding buoy at water level"
+          }
+        ]
+      },
+      {
+        "name": "Lantern harbour",
+        "brief": "Three docks radiate into a horseshoe harbour. The inside channel brings tankers home.",
+        "start": "k",
+        "exit": "c",
+        "link": "ko",
+        "tools": [
+          "Repair pennant",
+          "Oil tanker",
+          "Scout pennant"
+        ],
+        "encounters": [
+          {
+            "name": "Scout sounding",
+            "at": "m",
+            "instruction": "Cross the sounding buoy at water level"
+          },
+          {
+            "name": "Repair gang",
+            "at": "o",
+            "instruction": "Plant the repair pennant with Use"
+          }
+        ]
+      },
+      {
+        "name": "Breakwater",
+        "brief": "Follow the breakwater out to its lantern, then bring the fleet home along the sheltered arm.",
+        "start": "w",
+        "exit": "y",
+        "link": "pn",
+        "tools": [
+          "Oil tanker",
+          "Scout pennant",
+          "Repair pennant"
+        ],
+        "encounters": [
+          {
+            "name": "Repair gang",
+            "at": "p",
+            "instruction": "Plant the repair pennant with Use"
+          },
+          {
+            "name": "Scout sounding",
+            "at": "n",
+            "instruction": "Cross the sounding buoy at water level"
+          },
+          {
+            "name": "Harbour pilot",
+            "at": "h",
+            "instruction": "Tune the signal lanterns and pulse the pilot code"
+          }
+        ]
+      }
+    ]
   },
   {
     "day": 6,
@@ -87,7 +804,155 @@
     "place": "A low-poly horizon is framed by bolted cockpit mullions. A damaged limb changes the instrument silhouette.",
     "gift": "A folding chair clicks open and six recovered settings reveal footage from a party shot by an unseen guest.",
     "route": "0–4 calibrate feet and torso. 4–9 escort the chair crate. 9–15 rotate between ice vents as rival salvage rigs close. 15–20 send the companion to brace the bridge and cross.",
-    "coop": "A friend pilots the second walker. Solo orders give the same two-vehicle bridge solution."
+    "coop": "A friend pilots the second walker. Solo orders give the same two-vehicle bridge solution.",
+    "feature": "Cooling manifold",
+    "featureHint": "On the blue cooling grates the heat beam reaches full charge sooner.",
+    "stride": 19,
+    "encounters": [
+      {
+        "name": "Walker heat beam",
+        "instruction": "Hold the torso beam steady on the frozen rack"
+      },
+      {
+        "name": "Coolant stop",
+        "instruction": "Use the vent to flush the hot manifold"
+      },
+      {
+        "name": "Range shutters",
+        "instruction": "Traverse the three moving range shutters and pulse each one"
+      }
+    ],
+    "sectors": [
+      {
+        "name": "Salvage shed",
+        "brief": "Salvage bays open onto a testing straight. Load the chair crate before crossing the apron.",
+        "start": "p",
+        "exit": "y",
+        "link": "gn",
+        "tools": [
+          "Chair crate",
+          "Heat beam",
+          "Companion walker"
+        ],
+        "encounters": [
+          {
+            "name": "Walker heat beam",
+            "at": "h",
+            "instruction": "Hold the torso beam steady on the frozen rack"
+          },
+          {
+            "name": "Coolant stop",
+            "at": "m",
+            "instruction": "Use the vent to flush the hot manifold"
+          }
+        ]
+      },
+      {
+        "name": "Salt road",
+        "brief": "The road skirts a salt sink. Cooling pads sit off the exposed line between the ridges.",
+        "start": "a",
+        "exit": "e",
+        "link": "qn",
+        "tools": [
+          "Heat beam",
+          "Companion walker",
+          "Chair crate"
+        ],
+        "encounters": [
+          {
+            "name": "Range shutters",
+            "at": "l",
+            "instruction": "Traverse the three moving range shutters and pulse each one"
+          },
+          {
+            "name": "Coolant stop",
+            "at": "n",
+            "instruction": "Use the vent to flush the hot manifold"
+          }
+        ]
+      },
+      {
+        "name": "Cooling vents",
+        "brief": "Walk the zigzag cooling manifold. The companion can hold the central apron during the beam cycle.",
+        "start": "o",
+        "exit": "b",
+        "link": "sl",
+        "tools": [
+          "Heat beam",
+          "Chair crate",
+          "Companion walker"
+        ],
+        "encounters": [
+          {
+            "name": "Coolant stop",
+            "at": "s",
+            "instruction": "Use the vent to flush the hot manifold"
+          },
+          {
+            "name": "Walker heat beam",
+            "at": "l",
+            "instruction": "Hold the torso beam steady on the frozen rack"
+          },
+          {
+            "name": "Range shutters",
+            "at": "m",
+            "instruction": "Traverse the three moving range shutters and pulse each one"
+          }
+        ]
+      },
+      {
+        "name": "Windcut bridge",
+        "brief": "Approach the trestle through windbreaks. The sheltered spur feeds back onto the bridge.",
+        "start": "u",
+        "exit": "y",
+        "link": "ri",
+        "tools": [
+          "Companion walker",
+          "Heat beam"
+        ],
+        "encounters": [
+          {
+            "name": "Range shutters",
+            "at": "r",
+            "instruction": "Traverse the three moving range shutters and pulse each one"
+          },
+          {
+            "name": "Walker heat beam",
+            "at": "i",
+            "instruction": "Hold the torso beam steady on the frozen rack"
+          }
+        ]
+      },
+      {
+        "name": "Mess yard",
+        "brief": "The mess yard has a freight entrance and a narrow canteen wing. Deliver the chairs at the hearth.",
+        "start": "e",
+        "exit": "r",
+        "link": "nr",
+        "tools": [
+          "Chair crate",
+          "Companion walker",
+          "Heat beam"
+        ],
+        "encounters": [
+          {
+            "name": "Walker heat beam",
+            "at": "n",
+            "instruction": "Hold the torso beam steady on the frozen rack"
+          },
+          {
+            "name": "Coolant stop",
+            "at": "r",
+            "instruction": "Use the vent to flush the hot manifold"
+          },
+          {
+            "name": "Range shutters",
+            "at": "m",
+            "instruction": "Traverse the three moving range shutters and pulse each one"
+          }
+        ]
+      }
+    ]
   },
   {
     "day": 7,
@@ -102,7 +967,155 @@
     "place": "Ochre station tiles, frosted service glass and three unmistakable platform clocks. Opponents are wind-up ticket inspectors.",
     "gift": "A station timetable gives the first address of the machine that held the invitations.",
     "route": "0–4 learn a rescue route. 4–9 earn vouchers on platform one. 9–15 choose a second approach after gates change. 15–20 bring the last porter out through the clock hall.",
-    "coop": "A spectator can mark a porter. A failed solo round restarts at the kiosk and retains rescued groups."
+    "coop": "A spectator can mark a porter. A failed solo round restarts at the kiosk and retains rescued groups.",
+    "feature": "Rescue cordon",
+    "featureHint": "The porter and party can cross the green rescue lane under cover.",
+    "stride": 17,
+    "encounters": [
+      {
+        "name": "Rescue cache",
+        "instruction": "Use to open the team's rescue cache"
+      },
+      {
+        "name": "Platform silhouettes",
+        "instruction": "Identify and pulse the moving paper sentries"
+      },
+      {
+        "name": "Evacuation cordon",
+        "instruction": "Lead the sweep through the low green rescue cordon"
+      }
+    ],
+    "sectors": [
+      {
+        "name": "Ticket kiosk",
+        "brief": "A kiosk divides two approaches to the ticket hall. Locate the kit before calling the porter.",
+        "start": "v",
+        "exit": "r",
+        "link": "qh",
+        "tools": [
+          "Rescue kit",
+          "Night porter",
+          "Exit whistle"
+        ],
+        "encounters": [
+          {
+            "name": "Rescue cache",
+            "at": "q",
+            "instruction": "Use to open the team's rescue cache"
+          },
+          {
+            "name": "Platform silhouettes",
+            "at": "h",
+            "instruction": "Identify and pulse the moving paper sentries"
+          }
+        ]
+      },
+      {
+        "name": "Platform one",
+        "brief": "Two parallel platforms meet at the footbridge. Escort the porter along the screened side.",
+        "start": "a",
+        "exit": "c",
+        "link": "kr",
+        "tools": [
+          "Night porter",
+          "Exit whistle"
+        ],
+        "encounters": [
+          {
+            "name": "Platform silhouettes",
+            "at": "k",
+            "instruction": "Identify and pulse the moving paper sentries"
+          },
+          {
+            "name": "Evacuation cordon",
+            "at": "r",
+            "instruction": "Lead the sweep through the low green rescue cordon"
+          }
+        ]
+      },
+      {
+        "name": "Left luggage",
+        "brief": "A U-shaped luggage hall has a blind service aisle and a long public sightline.",
+        "start": "e",
+        "exit": "b",
+        "link": "il",
+        "tools": [
+          "Rescue kit",
+          "Exit whistle",
+          "Night porter"
+        ],
+        "encounters": [
+          {
+            "name": "Rescue cache",
+            "at": "i",
+            "instruction": "Use to open the team's rescue cache"
+          },
+          {
+            "name": "Platform silhouettes",
+            "at": "l",
+            "instruction": "Identify and pulse the moving paper sentries"
+          },
+          {
+            "name": "Evacuation cordon",
+            "at": "g",
+            "instruction": "Lead the sweep through the low green rescue cordon"
+          }
+        ]
+      },
+      {
+        "name": "Signal crossing",
+        "brief": "Across the tracks, two signal boxes overlook the crossing. Mark the exit before moving the group.",
+        "start": "p",
+        "exit": "y",
+        "link": "ro",
+        "tools": [
+          "Exit whistle",
+          "Night porter",
+          "Rescue kit"
+        ],
+        "encounters": [
+          {
+            "name": "Evacuation cordon",
+            "at": "r",
+            "instruction": "Lead the sweep through the low green rescue cordon"
+          },
+          {
+            "name": "Platform silhouettes",
+            "at": "o",
+            "instruction": "Identify and pulse the moving paper sentries"
+          }
+        ]
+      },
+      {
+        "name": "Clock concourse",
+        "brief": "Extract through the clock concourse. The ring around the clock lets the party approach from either side.",
+        "start": "w",
+        "exit": "n",
+        "link": "rn",
+        "tools": [
+          "Night porter",
+          "Rescue kit",
+          "Exit whistle"
+        ],
+        "encounters": [
+          {
+            "name": "Platform silhouettes",
+            "at": "r",
+            "instruction": "Identify and pulse the moving paper sentries"
+          },
+          {
+            "name": "Rescue cache",
+            "at": "h",
+            "instruction": "Use to open the team's rescue cache"
+          },
+          {
+            "name": "Evacuation cordon",
+            "at": "n",
+            "instruction": "Lead the sweep through the low green rescue cordon"
+          }
+        ]
+      }
+    ]
   },
   {
     "day": 8,
@@ -117,7 +1130,150 @@
     "place": "Sodium light, hazard paint and thick condensation frame a little ecological drama. Heat-loving moths gather at working pipes.",
     "gift": "A tram transfer is timestamped one minute before every other delivery.",
     "route": "0–4 ride an uneventful tram. 4–9 free a technician after a cold breach. 9–15 move heat between pumps to draw moths away. 15–20 restart the tram and ride it out.",
-    "coop": "A partner watches a gauge from the gantry. A solo operator reads the mirrored dial beside the pump."
+    "coop": "A partner watches a gauge from the gantry. A solo operator reads the mirrored dial beside the pump.",
+    "feature": "Service tram",
+    "featureHint": "Recruit the technician to run the tram. Use either stop to ride.",
+    "stride": 18,
+    "encounters": [
+      {
+        "name": "Jammed panel",
+        "instruction": "Use the pry bar on the service hatch"
+      },
+      {
+        "name": "Pump bypass",
+        "instruction": "Set the bypass dial and pulse the circuit"
+      },
+      {
+        "name": "Tram points",
+        "instruction": "Pulse while the live contact lines up with the points"
+      }
+    ],
+    "sectors": [
+      {
+        "name": "Night tram",
+        "brief": "The tram line runs into a switchback. The inspection walk leads behind the jammed points.",
+        "start": "u",
+        "exit": "j",
+        "link": "rh",
+        "tools": [
+          "Pry bar",
+          "Technician"
+        ],
+        "encounters": [
+          {
+            "name": "Jammed panel",
+            "at": "m",
+            "instruction": "Use the pry bar on the service hatch"
+          },
+          {
+            "name": "Tram points",
+            "at": "h",
+            "instruction": "Pulse while the live contact lines up with the points"
+          }
+        ]
+      },
+      {
+        "name": "Brine pumps",
+        "brief": "Intake pipes lead up to a bank of pumps. The lock on the return manifold needs a technician.",
+        "start": "k",
+        "exit": "t",
+        "link": "km",
+        "tools": [
+          "Pump controls",
+          "Pry bar",
+          "Technician"
+        ],
+        "encounters": [
+          {
+            "name": "Pump bypass",
+            "at": "k",
+            "instruction": "Set the bypass dial and pulse the circuit"
+          },
+          {
+            "name": "Jammed panel",
+            "at": "m",
+            "instruction": "Use the pry bar on the service hatch"
+          }
+        ]
+      },
+      {
+        "name": "Heat exchange",
+        "brief": "Two exchanger galleries fold around the same hot pipe. Reconnect the cold side from the far valve.",
+        "start": "y",
+        "exit": "e",
+        "link": "rh",
+        "tools": [
+          "Technician",
+          "Pump controls",
+          "Pry bar"
+        ],
+        "encounters": [
+          {
+            "name": "Jammed panel",
+            "at": "r",
+            "instruction": "Use the pry bar on the service hatch"
+          },
+          {
+            "name": "Pump bypass",
+            "at": "h",
+            "instruction": "Set the bypass dial and pulse the circuit"
+          },
+          {
+            "name": "Tram points",
+            "at": "m",
+            "instruction": "Pulse while the live contact lines up with the points"
+          }
+        ]
+      },
+      {
+        "name": "Maintenance line",
+        "brief": "The maintenance line dives under the tram. Follow its elbows to the buried points cabinet.",
+        "start": "f",
+        "exit": "o",
+        "link": "ln",
+        "tools": [
+          "Pump controls",
+          "Technician",
+          "Pry bar"
+        ],
+        "encounters": [
+          {
+            "name": "Tram points",
+            "at": "l",
+            "instruction": "Pulse while the live contact lines up with the points"
+          },
+          {
+            "name": "Pump bypass",
+            "at": "n",
+            "instruction": "Set the bypass dial and pulse the circuit"
+          }
+        ]
+      },
+      {
+        "name": "Last stop",
+        "brief": "The last stop lies beyond the track fan. Route the restored tram from the platform cabin.",
+        "start": "b",
+        "exit": "j",
+        "link": "ht",
+        "tools": [
+          "Technician",
+          "Pry bar",
+          "Pump controls"
+        ],
+        "encounters": [
+          {
+            "name": "Pump bypass",
+            "at": "h",
+            "instruction": "Set the bypass dial and pulse the circuit"
+          },
+          {
+            "name": "Tram points",
+            "at": "t",
+            "instruction": "Pulse while the live contact lines up with the points"
+          }
+        ]
+      }
+    ]
   },
   {
     "day": 9,
@@ -132,7 +1288,150 @@
     "place": "Wide cobalt ridges, orange sails, a distant tower on each skyline and visible streamer trails.",
     "gift": "The windsock’s cloth is cut from one of the old hall curtains.",
     "route": "0–4 learn the bowl below home. 4–9 open a ridge route past kite sentries. 9–15 steal the windsock. 15–20 improvise a fast return as the valley gates swing.",
-    "coop": "A partner clears the crest or takes a dropped flag. Solo falls return the pennant to the last wind gate."
+    "coop": "A partner clears the crest or takes a dropped flag. Solo falls return the pennant to the last wind gate.",
+    "feature": "Ski line",
+    "featureHint": "Hold Lift and move along the blue ski line to carry speed into a jet climb.",
+    "stride": 14,
+    "encounters": [
+      {
+        "name": "Ski gate",
+        "instruction": "Cross the low ridge gate at ground level"
+      },
+      {
+        "name": "Jet crest",
+        "instruction": "Lift through the summit ring"
+      },
+      {
+        "name": "Disc range",
+        "instruction": "Lead the three moving disc targets"
+      }
+    ],
+    "sectors": [
+      {
+        "name": "Home bowl",
+        "brief": "Two lips enclose the home bowl. Take the high crest on the approach and ski the low line back.",
+        "start": "w",
+        "exit": "m",
+        "link": "qm",
+        "tools": [
+          "Jet crest",
+          "Tower pennant",
+          "Disc target"
+        ],
+        "encounters": [
+          {
+            "name": "Ski gate",
+            "at": "q",
+            "instruction": "Cross the low ridge gate at ground level"
+          },
+          {
+            "name": "Jet crest",
+            "at": "m",
+            "instruction": "Lift through the summit ring"
+          }
+        ]
+      },
+      {
+        "name": "Windward ridge",
+        "brief": "A diagonal ridge splits the windward slope. The lee approach trades speed for shelter.",
+        "start": "u",
+        "exit": "r",
+        "link": "qs",
+        "tools": [
+          "Disc target",
+          "Jet crest"
+        ],
+        "encounters": [
+          {
+            "name": "Jet crest",
+            "at": "m",
+            "instruction": "Lift through the summit ring"
+          },
+          {
+            "name": "Ski gate",
+            "at": "s",
+            "instruction": "Cross the low ridge gate at ground level"
+          }
+        ]
+      },
+      {
+        "name": "Kite battery",
+        "brief": "The kite battery stands at the bend of the snow saddle, visible from both flanks.",
+        "start": "a",
+        "exit": "f",
+        "link": "gr",
+        "tools": [
+          "Disc target",
+          "Jet crest",
+          "Tower pennant"
+        ],
+        "encounters": [
+          {
+            "name": "Disc range",
+            "at": "g",
+            "instruction": "Lead the three moving disc targets"
+          },
+          {
+            "name": "Ski gate",
+            "at": "r",
+            "instruction": "Cross the low ridge gate at ground level"
+          }
+        ]
+      },
+      {
+        "name": "Pennant tower",
+        "brief": "Twin ridges converge on the flag tower. The pennant must come down the other side.",
+        "start": "v",
+        "exit": "w",
+        "link": "qx",
+        "tools": [
+          "Disc target",
+          "Tower pennant",
+          "Jet crest"
+        ],
+        "encounters": [
+          {
+            "name": "Ski gate",
+            "at": "l",
+            "instruction": "Cross the low ridge gate at ground level"
+          },
+          {
+            "name": "Jet crest",
+            "at": "n",
+            "instruction": "Lift through the summit ring"
+          }
+        ]
+      },
+      {
+        "name": "Return crest",
+        "brief": "Break from the exposed summit and carry the flag through the long home bowl.",
+        "start": "e",
+        "exit": "w",
+        "link": "iw",
+        "tools": [
+          "Tower pennant",
+          "Jet crest",
+          "Disc target"
+        ],
+        "encounters": [
+          {
+            "name": "Disc range",
+            "at": "i",
+            "instruction": "Lead the three moving disc targets"
+          },
+          {
+            "name": "Jet crest",
+            "at": "m",
+            "instruction": "Lift through the summit ring"
+          },
+          {
+            "name": "Ski gate",
+            "at": "w",
+            "instruction": "Cross the low ridge gate at ground level"
+          }
+        ]
+      }
+    ]
   },
   {
     "day": 10,
@@ -147,7 +1446,155 @@
     "place": "Rain-black voxels, lilac adverts and identical chrome wardens. Hand-painted exit signs are the only trustworthy ones.",
     "gift": "A courier gives you a stamped envelope bearing the order to hold the mail.",
     "route": "0–4 identify a false sign. 4–9 win the couriers’ trust. 9–15 split them to open the tram depot. 15–20 lower a facade and walk everyone out.",
-    "coop": "Partners can lead different groups. A solo leader leaves a persistent rally marker."
+    "coop": "Partners can lead different groups. A solo leader leaves a persistent rally marker.",
+    "feature": "Folded frontage",
+    "featureHint": "Stamp the condemned frontage to open a cut through the block.",
+    "stride": 16,
+    "encounters": [
+      {
+        "name": "Messenger rally",
+        "instruction": "Use the consent beacon to bring the couriers together"
+      },
+      {
+        "name": "Demolition stamp",
+        "instruction": "Hold the stamp on the condemned sign until the facade folds"
+      },
+      {
+        "name": "Street intercept",
+        "instruction": "Pulse when the messenger signal flashes green"
+      }
+    ],
+    "sectors": [
+      {
+        "name": "Sign exchange",
+        "brief": "Billboards conceal the short pedestrian alley. Use the broad boulevard to gather the couriers.",
+        "start": "a",
+        "exit": "f",
+        "link": "cl",
+        "tools": [
+          "Rally marker",
+          "Courier beacon",
+          "Facade stamp"
+        ],
+        "encounters": [
+          {
+            "name": "Demolition stamp",
+            "at": "c",
+            "instruction": "Hold the stamp on the condemned sign until the facade folds"
+          },
+          {
+            "name": "Messenger rally",
+            "at": "l",
+            "instruction": "Use the consent beacon to bring the couriers together"
+          }
+        ]
+      },
+      {
+        "name": "Courier lane",
+        "brief": "A courier lane doglegs behind a row of facades. The rendezvous sits above its blind corner.",
+        "start": "u",
+        "exit": "b",
+        "link": "qi",
+        "tools": [
+          "Courier beacon",
+          "Rally marker",
+          "Facade stamp"
+        ],
+        "encounters": [
+          {
+            "name": "Messenger rally",
+            "at": "q",
+            "instruction": "Use the consent beacon to bring the couriers together"
+          },
+          {
+            "name": "Street intercept",
+            "at": "i",
+            "instruction": "Pulse when the messenger signal flashes green"
+          }
+        ]
+      },
+      {
+        "name": "Chrome arcade",
+        "brief": "Cut through the arcade sign shops to the rally square. A folded frontage opens the sightline.",
+        "start": "o",
+        "exit": "p",
+        "link": "jm",
+        "tools": [
+          "Facade stamp",
+          "Courier beacon",
+          "Rally marker"
+        ],
+        "encounters": [
+          {
+            "name": "Street intercept",
+            "at": "j",
+            "instruction": "Pulse when the messenger signal flashes green"
+          },
+          {
+            "name": "Demolition stamp",
+            "at": "m",
+            "instruction": "Hold the stamp on the condemned sign until the facade folds"
+          },
+          {
+            "name": "Messenger rally",
+            "at": "h",
+            "instruction": "Use the consent beacon to bring the couriers together"
+          }
+        ]
+      },
+      {
+        "name": "Tram depot",
+        "brief": "The tram depot funnels into separate loading and passenger streets. Rally at the shared stop.",
+        "start": "f",
+        "exit": "e",
+        "link": "ks",
+        "tools": [
+          "Courier beacon",
+          "Facade stamp"
+        ],
+        "encounters": [
+          {
+            "name": "Messenger rally",
+            "at": "k",
+            "instruction": "Use the consent beacon to bring the couriers together"
+          },
+          {
+            "name": "Demolition stamp",
+            "at": "s",
+            "instruction": "Hold the stamp on the condemned sign until the facade folds"
+          }
+        ]
+      },
+      {
+        "name": "False boulevard",
+        "brief": "Walk the fake boulevard to its end. Stamp the frontage and bring the messengers through the block.",
+        "start": "b",
+        "exit": "d",
+        "link": "lo",
+        "tools": [
+          "Facade stamp",
+          "Rally marker",
+          "Courier beacon"
+        ],
+        "encounters": [
+          {
+            "name": "Demolition stamp",
+            "at": "l",
+            "instruction": "Hold the stamp on the condemned sign until the facade folds"
+          },
+          {
+            "name": "Street intercept",
+            "at": "o",
+            "instruction": "Pulse when the messenger signal flashes green"
+          },
+          {
+            "name": "Messenger rally",
+            "at": "n",
+            "instruction": "Use the consent beacon to bring the couriers together"
+          }
+        ]
+      }
+    ]
   },
   {
     "day": 11,
@@ -162,7 +1609,151 @@
     "place": "Rust-red polygon passages fold into mint-green shafts. Each junction has a distinct shape visible from either end.",
     "gift": "A miner returns an ornament that always points toward the hall, even when upside down.",
     "route": "0–4 learn translation in a spherical dock. 4–9 free miners from side chambers. 9–15 trace the core route past drill drones. 15–20 trigger shutdown and fly the marked escape.",
-    "coop": "A navigator can mark junctions. Solo and VR have horizon-lock and a forgiving escape reset at the switch."
+    "coop": "A navigator can mark junctions. Solo and VR have horizon-lock and a forgiving escape reset at the switch.",
+    "feature": "Rescue airlock",
+    "featureHint": "Lift and use either overhead airlock to traverse the return bore.",
+    "stride": 16,
+    "encounters": [
+      {
+        "name": "Upper pod hatch",
+        "instruction": "Pitch up or lift through the high pod hatch"
+      },
+      {
+        "name": "Inverted airway",
+        "instruction": "Descend and fly through the low exhaust ring"
+      },
+      {
+        "name": "Core breaker",
+        "instruction": "Tune the breaker and pulse the marked core feed"
+      }
+    ],
+    "sectors": [
+      {
+        "name": "Spherical dock",
+        "brief": "Radial bores meet at the spherical dock. Drop a breadcrumb before taking the rescue spoke.",
+        "start": "m",
+        "exit": "r",
+        "link": "mr",
+        "tools": [
+          "Map breadcrumb",
+          "Rescue pod",
+          "Core switch"
+        ],
+        "encounters": [
+          {
+            "name": "Upper pod hatch",
+            "at": "m",
+            "instruction": "Pitch up or lift through the high pod hatch"
+          },
+          {
+            "name": "Inverted airway",
+            "at": "r",
+            "instruction": "Descend and fly through the low exhaust ring"
+          }
+        ]
+      },
+      {
+        "name": "Inverted shaft",
+        "brief": "Follow the folded shaft down past its returning bore. Look up to find the pod latch.",
+        "start": "e",
+        "exit": "q",
+        "link": "hr",
+        "tools": [
+          "Rescue pod",
+          "Core switch",
+          "Map breadcrumb"
+        ],
+        "encounters": [
+          {
+            "name": "Inverted airway",
+            "at": "h",
+            "instruction": "Descend and fly through the low exhaust ring"
+          },
+          {
+            "name": "Upper pod hatch",
+            "at": "r",
+            "instruction": "Pitch up or lift through the high pod hatch"
+          }
+        ]
+      },
+      {
+        "name": "Rescue drift",
+        "brief": "Three rescue drifts branch around a rock plug. The far airlock sits behind the plug.",
+        "start": "u",
+        "exit": "y",
+        "link": "hn",
+        "tools": [
+          "Rescue pod",
+          "Map breadcrumb",
+          "Core switch"
+        ],
+        "encounters": [
+          {
+            "name": "Upper pod hatch",
+            "at": "h",
+            "instruction": "Pitch up or lift through the high pod hatch"
+          },
+          {
+            "name": "Inverted airway",
+            "at": "n",
+            "instruction": "Descend and fly through the low exhaust ring"
+          }
+        ]
+      },
+      {
+        "name": "Core junction",
+        "brief": "Trace the power bore to its core junction. The return bore has a separate opening.",
+        "start": "a",
+        "exit": "d",
+        "link": "lm",
+        "tools": [
+          "Core switch",
+          "Map breadcrumb",
+          "Rescue pod"
+        ],
+        "encounters": [
+          {
+            "name": "Core breaker",
+            "at": "l",
+            "instruction": "Tune the breaker and pulse the marked core feed"
+          },
+          {
+            "name": "Upper pod hatch",
+            "at": "m",
+            "instruction": "Pitch up or lift through the high pod hatch"
+          }
+        ]
+      },
+      {
+        "name": "Escape channel",
+        "brief": "Cut across the core and escape along the outer exhaust. The lit navigation anchors lead home.",
+        "start": "y",
+        "exit": "w",
+        "link": "sm",
+        "tools": [
+          "Core switch",
+          "Rescue pod",
+          "Map breadcrumb"
+        ],
+        "encounters": [
+          {
+            "name": "Core breaker",
+            "at": "s",
+            "instruction": "Tune the breaker and pulse the marked core feed"
+          },
+          {
+            "name": "Upper pod hatch",
+            "at": "m",
+            "instruction": "Pitch up or lift through the high pod hatch"
+          },
+          {
+            "name": "Inverted airway",
+            "at": "g",
+            "instruction": "Descend and fly through the low exhaust ring"
+          }
+        ]
+      }
+    ]
   },
   {
     "day": 12,
@@ -170,14 +1761,163 @@
     "reference": "Diablo · 1996/97 · original PC release",
     "mission": "Recover a parish register from under a snowbound village before its ink freezes.",
     "kit": [
-      "Explore a seeded crypt assembled from authored rooms.",
+      "Explore connected burial cells, side chapels and a village return route.",
       "Identify a dropped relic to learn its effect.",
       "Place a return scroll linking the crypt to the village."
     ],
     "place": "Candlelit charcoal stone, stained glass on damp floors and wax chandler-knights. Drops have distinct silhouettes.",
     "gift": "The guest register contains everyone’s name. Its final column reads HOLD UNTIL ALL PRESENT.",
     "route": "0–4 hear the sexton’s request. 4–9 descend to find an unnamed relic. 9–15 identify it and use its light on a sealed nave. 15–20 carry the register past its wax guardian.",
-    "coop": "A shared scroll lets friends resupply together. Solo and co-op seeds guarantee the relic and the exit."
+    "coop": "A shared scroll lets friends resupply together. Solo and co-op seeds guarantee the relic and the exit.",
+    "feature": "Return scroll",
+    "featureHint": "Identify the relic to bind two scroll circles. Use either circle to return.",
+    "stride": 12,
+    "encounters": [
+      {
+        "name": "Relic drop",
+        "instruction": "Use to recover the unmarked offering"
+      },
+      {
+        "name": "Identification shrine",
+        "instruction": "Tune the shrine to the relic's mark and pulse"
+      },
+      {
+        "name": "Ward seal",
+        "instruction": "Pulse the ward when the revealed signet glows"
+      }
+    ],
+    "sectors": [
+      {
+        "name": "Sexton yard",
+        "brief": "Leave the sexton's yard through the cloister and bring the first find to the shrine.",
+        "start": "c",
+        "exit": "r",
+        "link": "hw",
+        "tools": [
+          "Return scroll",
+          "Identification shrine",
+          "Unnamed relic"
+        ],
+        "encounters": [
+          {
+            "name": "Relic drop",
+            "at": "h",
+            "instruction": "Use to recover the unmarked offering"
+          },
+          {
+            "name": "Identification shrine",
+            "at": "w",
+            "instruction": "Tune the shrine to the relic's mark and pulse"
+          }
+        ]
+      },
+      {
+        "name": "Wax crypt",
+        "brief": "Side burial cells branch from a bent crypt spine. Identify what the dead left at its far end.",
+        "start": "u",
+        "exit": "o",
+        "link": "km",
+        "tools": [
+          "Unnamed relic",
+          "Identification shrine",
+          "Return scroll"
+        ],
+        "encounters": [
+          {
+            "name": "Ward seal",
+            "at": "k",
+            "instruction": "Pulse the ward when the revealed signet glows"
+          },
+          {
+            "name": "Relic drop",
+            "at": "m",
+            "instruction": "Use to recover the unmarked offering"
+          }
+        ]
+      },
+      {
+        "name": "Undercroft",
+        "brief": "The undercroft doubles back under the chancel. A return scroll links the two walks.",
+        "start": "e",
+        "exit": "x",
+        "link": "iv",
+        "tools": [
+          "Identification shrine",
+          "Unnamed relic",
+          "Return scroll"
+        ],
+        "encounters": [
+          {
+            "name": "Relic drop",
+            "at": "i",
+            "instruction": "Use to recover the unmarked offering"
+          },
+          {
+            "name": "Identification shrine",
+            "at": "v",
+            "instruction": "Tune the shrine to the relic's mark and pulse"
+          },
+          {
+            "name": "Ward seal",
+            "at": "s",
+            "instruction": "Pulse the ward when the revealed signet glows"
+          }
+        ]
+      },
+      {
+        "name": "Sealed nave",
+        "brief": "The nave wraps around sealed side chapels. Carry the identified relic along the ambulatory.",
+        "start": "k",
+        "exit": "r",
+        "link": "cr",
+        "tools": [
+          "Identification shrine",
+          "Return scroll",
+          "Unnamed relic"
+        ],
+        "encounters": [
+          {
+            "name": "Identification shrine",
+            "at": "c",
+            "instruction": "Tune the shrine to the relic's mark and pulse"
+          },
+          {
+            "name": "Ward seal",
+            "at": "r",
+            "instruction": "Pulse the ward when the revealed signet glows"
+          }
+        ]
+      },
+      {
+        "name": "Parish stair",
+        "brief": "Climb the parish stair through a succession of landings and bring the register back to the village.",
+        "start": "y",
+        "exit": "w",
+        "link": "iw",
+        "tools": [
+          "Unnamed relic",
+          "Return scroll",
+          "Identification shrine"
+        ],
+        "encounters": [
+          {
+            "name": "Ward seal",
+            "at": "i",
+            "instruction": "Pulse the ward when the revealed signet glows"
+          },
+          {
+            "name": "Relic drop",
+            "at": "w",
+            "instruction": "Use to recover the unmarked offering"
+          },
+          {
+            "name": "Identification shrine",
+            "at": "n",
+            "instruction": "Tune the shrine to the relic's mark and pulse"
+          }
+        ]
+      }
+    ]
   },
   {
     "day": 13,
@@ -192,7 +1932,150 @@
     "place": "Oxide steel gives way to hot-red brick. Strobing effects have a steady-light substitute. Sprite silhouettes announce different attacks.",
     "gift": "A choirbook margin says the lights once stayed on for somebody who was late.",
     "route": "0–4 learn to circle a cold grate. 4–9 recover two keys on a looping walk. 9–15 bring opposing choirs into the mixing room. 15–20 turn the last valve during a moving-floor fight.",
-    "coop": "Friends can divide keys or draw different choirs. Solo encounters include cover pillars and space to keep moving."
+    "coop": "Friends can divide keys or draw different choirs. Solo encounters include cover pillars and space to keep moving.",
+    "feature": "Keyed blast door",
+    "featureHint": "Deliver the boiler key to open the crossfire lane.",
+    "stride": 20,
+    "encounters": [
+      {
+        "name": "Bellows gallery",
+        "instruction": "Pump three shots into the moving furnace mouths"
+      },
+      {
+        "name": "Shape key",
+        "instruction": "Take the matching key to its boiler socket and use"
+      },
+      {
+        "name": "Crossfire grate",
+        "instruction": "Pulse as the two flame valves line up"
+      }
+    ],
+    "sectors": [
+      {
+        "name": "Cold grate",
+        "brief": "Three firing lanes feed the grate room. Pick up the boiler key in the side gallery.",
+        "start": "p",
+        "exit": "w",
+        "link": "km",
+        "tools": [
+          "Bellows gun",
+          "Boiler key"
+        ],
+        "encounters": [
+          {
+            "name": "Bellows gallery",
+            "at": "k",
+            "instruction": "Pump three shots into the moving furnace mouths"
+          },
+          {
+            "name": "Crossfire grate",
+            "at": "m",
+            "instruction": "Pulse as the two flame valves line up"
+          }
+        ]
+      },
+      {
+        "name": "Red boiler",
+        "brief": "The red boiler splits the key route around its jacket. Open the chamber from its service side.",
+        "start": "e",
+        "exit": "x",
+        "link": "hs",
+        "tools": [
+          "Boiler key",
+          "Furnace choir",
+          "Bellows gun"
+        ],
+        "encounters": [
+          {
+            "name": "Shape key",
+            "at": "h",
+            "instruction": "Take the matching key to its boiler socket and use"
+          },
+          {
+            "name": "Crossfire grate",
+            "at": "s",
+            "instruction": "Pulse as the two flame valves line up"
+          }
+        ]
+      },
+      {
+        "name": "Mixing room",
+        "brief": "Criss-cross the mixing room between key alcoves and exposed furnace pipes.",
+        "start": "u",
+        "exit": "j",
+        "link": "qn",
+        "tools": [
+          "Furnace choir",
+          "Bellows gun",
+          "Boiler key"
+        ],
+        "encounters": [
+          {
+            "name": "Crossfire grate",
+            "at": "q",
+            "instruction": "Pulse as the two flame valves line up"
+          },
+          {
+            "name": "Bellows gallery",
+            "at": "n",
+            "instruction": "Pump three shots into the moving furnace mouths"
+          }
+        ]
+      },
+      {
+        "name": "Valve gallery",
+        "brief": "A narrow valve gallery unfolds into a horseshoe arena. The bellows can reach across the gap.",
+        "start": "a",
+        "exit": "n",
+        "link": "ln",
+        "tools": [
+          "Boiler key",
+          "Bellows gun",
+          "Furnace choir"
+        ],
+        "encounters": [
+          {
+            "name": "Bellows gallery",
+            "at": "l",
+            "instruction": "Pump three shots into the moving furnace mouths"
+          },
+          {
+            "name": "Shape key",
+            "at": "n",
+            "instruction": "Take the matching key to its boiler socket and use"
+          }
+        ]
+      },
+      {
+        "name": "Choir loft",
+        "brief": "The choir loft overlooks the three furnace mouths. Prime the pipe before answering the missing note.",
+        "start": "y",
+        "exit": "w",
+        "link": "om",
+        "tools": [
+          "Furnace choir",
+          "Boiler key",
+          "Bellows gun"
+        ],
+        "encounters": [
+          {
+            "name": "Shape key",
+            "at": "o",
+            "instruction": "Take the matching key to its boiler socket and use"
+          },
+          {
+            "name": "Bellows gallery",
+            "at": "m",
+            "instruction": "Pump three shots into the moving furnace mouths"
+          },
+          {
+            "name": "Crossfire grate",
+            "at": "h",
+            "instruction": "Pulse as the two flame valves line up"
+          }
+        ]
+      }
+    ]
   },
   {
     "day": 14,
@@ -207,7 +2090,150 @@
     "place": "Painted green canopies, raspberry snow and sprite seedlings that visibly lean toward the next note.",
     "gift": "A small seed bell remembers a friend humming between matches.",
     "route": "0–4 practice the recharge in a nursery. 4–9 swing between frozen boughs. 9–15 find notes by answering root sprites. 15–20 combine a clear cut and the right note at the heartwood.",
-    "coop": "Friends queue different notes while the world runs. Solo note queues persist while the player changes tools."
+    "coop": "Friends queue different notes while the world runs. Solo note queues persist while the player changes tools.",
+    "feature": "Ribbon crossing",
+    "featureHint": "Lift and use the ribbon peg to swing to the far bough.",
+    "stride": 13,
+    "encounters": [
+      {
+        "name": "Charged pruning cut",
+        "instruction": "Hold the blade on the knotted ribbon until it parts"
+      },
+      {
+        "name": "Ribbon peg",
+        "instruction": "Lift through the high peg to cross the bough"
+      },
+      {
+        "name": "Elemental seed bell",
+        "instruction": "Pulse the seed bell on its bright answering beat"
+      }
+    ],
+    "sectors": [
+      {
+        "name": "Nursery",
+        "brief": "Prune a way out of the clustered nursery beds. A ribbon spans the fork in the orchard path.",
+        "start": "u",
+        "exit": "y",
+        "link": "qm",
+        "tools": [
+          "Pruning blade",
+          "Ribbon peg",
+          "Elemental notes"
+        ],
+        "encounters": [
+          {
+            "name": "Charged pruning cut",
+            "at": "q",
+            "instruction": "Hold the blade on the knotted ribbon until it parts"
+          },
+          {
+            "name": "Elemental seed bell",
+            "at": "m",
+            "instruction": "Pulse the seed bell on its bright answering beat"
+          }
+        ]
+      },
+      {
+        "name": "Ribbon boughs",
+        "brief": "A fan of boughs hangs over the clearing. Use the marked pegs to cross between branches.",
+        "start": "f",
+        "exit": "k",
+        "link": "is",
+        "tools": [
+          "Ribbon peg",
+          "Pruning blade",
+          "Elemental notes"
+        ],
+        "encounters": [
+          {
+            "name": "Ribbon peg",
+            "at": "i",
+            "instruction": "Lift through the high peg to cross the bough"
+          },
+          {
+            "name": "Charged pruning cut",
+            "at": "s",
+            "instruction": "Hold the blade on the knotted ribbon until it parts"
+          }
+        ]
+      },
+      {
+        "name": "Root choir",
+        "brief": "Root paths converge on a hollow singing tree. Try the elemental note at the heart of the ring.",
+        "start": "a",
+        "exit": "h",
+        "link": "gm",
+        "tools": [
+          "Elemental notes",
+          "Pruning blade"
+        ],
+        "encounters": [
+          {
+            "name": "Elemental seed bell",
+            "at": "g",
+            "instruction": "Pulse the seed bell on its bright answering beat"
+          },
+          {
+            "name": "Ribbon peg",
+            "at": "m",
+            "instruction": "Lift through the high peg to cross the bough"
+          }
+        ]
+      },
+      {
+        "name": "Seed grove",
+        "brief": "Seed beds lie in a crescent around the gully. Carry their song along the ribbon crossing.",
+        "start": "w",
+        "exit": "m",
+        "link": "pn",
+        "tools": [
+          "Elemental notes",
+          "Pruning blade",
+          "Ribbon peg"
+        ],
+        "encounters": [
+          {
+            "name": "Charged pruning cut",
+            "at": "p",
+            "instruction": "Hold the blade on the knotted ribbon until it parts"
+          },
+          {
+            "name": "Ribbon peg",
+            "at": "n",
+            "instruction": "Lift through the high peg to cross the bough"
+          }
+        ]
+      },
+      {
+        "name": "Heartwood",
+        "brief": "Work inward from the bark to the heartwood along the forks of a single immense tree.",
+        "start": "e",
+        "exit": "h",
+        "link": "mh",
+        "tools": [
+          "Ribbon peg",
+          "Elemental notes",
+          "Pruning blade"
+        ],
+        "encounters": [
+          {
+            "name": "Charged pruning cut",
+            "at": "m",
+            "instruction": "Hold the blade on the knotted ribbon until it parts"
+          },
+          {
+            "name": "Ribbon peg",
+            "at": "h",
+            "instruction": "Lift through the high peg to cross the bough"
+          },
+          {
+            "name": "Elemental seed bell",
+            "at": "n",
+            "instruction": "Pulse the seed bell on its bright answering beat"
+          }
+        ]
+      }
+    ]
   },
   {
     "day": 15,
@@ -222,7 +2248,155 @@
     "place": "In first person, grid marks appear on frosted ground while planning. Barns have blue shadows and the lost suits left enormous footprints.",
     "gift": "The surveyor’s notebook records a successful rescue after the official deadline.",
     "route": "0–4 inspect a safe landing tile. 4–9 light two barns. 9–15 conserve reactions through a mimic ambush. 15–20 recover the surveyor and extract a live snow mimic.",
-    "coop": "Everyone plans in the same short phase and commits independently. Solo has a commandable lantern drone."
+    "coop": "Everyone plans in the same short phase and commits independently. Solo has a commandable lantern drone.",
+    "feature": "Reaction blind",
+    "featureHint": "Pulse from a survey blind to illuminate the patrol and interrupt it at a distance.",
+    "stride": 17,
+    "encounters": [
+      {
+        "name": "Survey flare",
+        "instruction": "Use a flare at the last footprint to mark the search zone"
+      },
+      {
+        "name": "Reaction reserve",
+        "instruction": "Pulse as the mimic leaves cover on the green beat"
+      },
+      {
+        "name": "Recovery capsule",
+        "instruction": "Hold the stun lamp on the capsule to secure the live specimen"
+      }
+    ],
+    "sectors": [
+      {
+        "name": "Landing field",
+        "brief": "Sweep the hedges outward from the landing field. A flare at the blind turn reveals the track.",
+        "start": "u",
+        "exit": "j",
+        "link": "lh",
+        "tools": [
+          "Survey flare",
+          "Reaction flash",
+          "Lost surveyor"
+        ],
+        "encounters": [
+          {
+            "name": "Survey flare",
+            "at": "l",
+            "instruction": "Use a flare at the last footprint to mark the search zone"
+          },
+          {
+            "name": "Reaction reserve",
+            "at": "h",
+            "instruction": "Pulse as the mimic leaves cover on the green beat"
+          }
+        ]
+      },
+      {
+        "name": "Lantern barn",
+        "brief": "A lantern barn has an open threshing floor and dark stalls. Cover its exits before collecting the witness.",
+        "start": "e",
+        "exit": "p",
+        "link": "nr",
+        "tools": [
+          "Reaction flash",
+          "Survey flare",
+          "Lost surveyor"
+        ],
+        "encounters": [
+          {
+            "name": "Reaction reserve",
+            "at": "n",
+            "instruction": "Pulse as the mimic leaves cover on the green beat"
+          },
+          {
+            "name": "Recovery capsule",
+            "at": "r",
+            "instruction": "Hold the stun lamp on the capsule to secure the live specimen"
+          }
+        ]
+      },
+      {
+        "name": "Orchard tracks",
+        "brief": "Follow tracks across alternating orchard rows. The reaction blind looks back across the last row.",
+        "start": "a",
+        "exit": "c",
+        "link": "kn",
+        "tools": [
+          "Survey flare",
+          "Reaction flash"
+        ],
+        "encounters": [
+          {
+            "name": "Survey flare",
+            "at": "k",
+            "instruction": "Use a flare at the last footprint to mark the search zone"
+          },
+          {
+            "name": "Reaction reserve",
+            "at": "n",
+            "instruction": "Pulse as the mimic leaves cover on the green beat"
+          }
+        ]
+      },
+      {
+        "name": "Mimic nest",
+        "brief": "The nest is concealed behind two banks of crooked hedges. Keep a reaction flash ready.",
+        "start": "y",
+        "exit": "b",
+        "link": "sm",
+        "tools": [
+          "Lost surveyor",
+          "Reaction flash",
+          "Survey flare"
+        ],
+        "encounters": [
+          {
+            "name": "Reaction reserve",
+            "at": "s",
+            "instruction": "Pulse as the mimic leaves cover on the green beat"
+          },
+          {
+            "name": "Recovery capsule",
+            "at": "m",
+            "instruction": "Hold the stun lamp on the capsule to secure the live specimen"
+          },
+          {
+            "name": "Survey flare",
+            "at": "r",
+            "instruction": "Use a flare at the last footprint to mark the search zone"
+          }
+        ]
+      },
+      {
+        "name": "Survey pickup",
+        "brief": "Escort the surveyor across the recovery perimeter. The shuttle ramp opens onto a lit clearing.",
+        "start": "k",
+        "exit": "d",
+        "link": "vh",
+        "tools": [
+          "Lost surveyor",
+          "Survey flare",
+          "Reaction flash"
+        ],
+        "encounters": [
+          {
+            "name": "Survey flare",
+            "at": "v",
+            "instruction": "Use a flare at the last footprint to mark the search zone"
+          },
+          {
+            "name": "Reaction reserve",
+            "at": "h",
+            "instruction": "Pulse as the mimic leaves cover on the green beat"
+          },
+          {
+            "name": "Recovery capsule",
+            "at": "m",
+            "instruction": "Hold the stun lamp on the capsule to secure the live specimen"
+          }
+        ]
+      }
+    ]
   },
   {
     "day": 16,
@@ -237,7 +2411,151 @@
     "place": "Tea-brown stone and patinated iron silhouettes surround a lime-lit shaft. Iron gargoyles make their home under walkways.",
     "gift": "A foundry nail fixes a torn corner of the original invitation. The writing underneath says START.",
     "route": "0–4 swap a stair with a gate. 4–9 pin two counterweights. 9–15 cross the shaft during a gargoyle attack. 15–20 unlock the bell room from above and descend by a new route.",
-    "coop": "Partners can hold opposite sightlines. A ratchet and a longer stair route support solo and comfort play."
+    "coop": "Partners can hold opposite sightlines. A ratchet and a longer stair route support solo and comfort play.",
+    "feature": "Paired slipgate",
+    "featureHint": "Mark both runes to link the slipgates. Use a lit mouth to cross the shaft.",
+    "stride": 14,
+    "encounters": [
+      {
+        "name": "Ratchet stops",
+        "instruction": "Shoot a rivet into each of the three moving ratchets"
+      },
+      {
+        "name": "Impulse lip",
+        "instruction": "Lift through the ratchet ring above the shaft"
+      },
+      {
+        "name": "Slipgate rune",
+        "instruction": "Use to seat the matching rune in the paired gate"
+      }
+    ],
+    "sectors": [
+      {
+        "name": "Lower foundry",
+        "brief": "A switchback climbs from the foundry floor to the shaft. Pin the first turning stop from below.",
+        "start": "u",
+        "exit": "s",
+        "link": "km",
+        "tools": [
+          "Rivet caster",
+          "Impulse pad",
+          "Paired gate"
+        ],
+        "encounters": [
+          {
+            "name": "Ratchet stops",
+            "at": "k",
+            "instruction": "Shoot a rivet into each of the three moving ratchets"
+          },
+          {
+            "name": "Slipgate rune",
+            "at": "m",
+            "instruction": "Use to seat the matching rune in the paired gate"
+          }
+        ]
+      },
+      {
+        "name": "Rune crossing",
+        "brief": "Two rune balconies hang on opposite sides of the stair. Their paired mouths shorten the crossing.",
+        "start": "e",
+        "exit": "v",
+        "link": "iv",
+        "tools": [
+          "Paired gate",
+          "Rivet caster",
+          "Impulse pad"
+        ],
+        "encounters": [
+          {
+            "name": "Slipgate rune",
+            "at": "i",
+            "instruction": "Use to seat the matching rune in the paired gate"
+          },
+          {
+            "name": "Impulse lip",
+            "at": "v",
+            "instruction": "Lift through the ratchet ring above the shaft"
+          }
+        ]
+      },
+      {
+        "name": "Ratchet gallery",
+        "brief": "Ratchets sit in alternating wall recesses. Sight a rivet across the gear well from each landing.",
+        "start": "a",
+        "exit": "t",
+        "link": "gn",
+        "tools": [
+          "Rivet caster",
+          "Paired gate",
+          "Impulse pad"
+        ],
+        "encounters": [
+          {
+            "name": "Ratchet stops",
+            "at": "g",
+            "instruction": "Shoot a rivet into each of the three moving ratchets"
+          },
+          {
+            "name": "Impulse lip",
+            "at": "n",
+            "instruction": "Lift through the ratchet ring above the shaft"
+          }
+        ]
+      },
+      {
+        "name": "Upper shaft",
+        "brief": "The stair wraps the open shaft. Reach the impulse ledge above the old casting floor.",
+        "start": "w",
+        "exit": "o",
+        "link": "lh",
+        "tools": [
+          "Impulse pad",
+          "Rivet caster",
+          "Paired gate"
+        ],
+        "encounters": [
+          {
+            "name": "Impulse lip",
+            "at": "l",
+            "instruction": "Lift through the ratchet ring above the shaft"
+          },
+          {
+            "name": "Ratchet stops",
+            "at": "h",
+            "instruction": "Shoot a rivet into each of the three moving ratchets"
+          }
+        ]
+      },
+      {
+        "name": "Bell room",
+        "brief": "Descend by the far side of the bell chamber. The final rune folds the long stair back on itself.",
+        "start": "m",
+        "exit": "h",
+        "link": "mh",
+        "tools": [
+          "Impulse pad",
+          "Paired gate",
+          "Rivet caster"
+        ],
+        "encounters": [
+          {
+            "name": "Slipgate rune",
+            "at": "m",
+            "instruction": "Use to seat the matching rune in the paired gate"
+          },
+          {
+            "name": "Ratchet stops",
+            "at": "h",
+            "instruction": "Shoot a rivet into each of the three moving ratchets"
+          },
+          {
+            "name": "Impulse lip",
+            "at": "r",
+            "instruction": "Lift through the ratchet ring above the shaft"
+          }
+        ]
+      }
+    ]
   },
   {
     "day": 17,
@@ -252,7 +2570,151 @@
     "place": "Tall aquamarine towers and amber lenses frame a low winter sun. Masked lens-keepers have long readable windups.",
     "gift": "The apprentice remembers the rest of the correction and writes ANYWAY below START.",
     "route": "0–4 learn the staff in a gallery. 4–9 pull weights along the ravine crossing. 9–15 leap between moving lenses. 15–20 release the apprentice by disarming the keeper or realigning the dome.",
-    "coop": "A friend holds a beam while another leaps. A locking gimbal keeps the solo route open."
+    "coop": "A friend holds a beam while another leaps. A locking gimbal keeps the solo route open.",
+    "feature": "Focus crossing",
+    "featureHint": "Leap and use the suspended focus lens to reach the opposite gallery.",
+    "stride": 15,
+    "encounters": [
+      {
+        "name": "Prism parry",
+        "instruction": "Pulse the staff when the incoming lens flare turns green"
+      },
+      {
+        "name": "Counterweight pull",
+        "instruction": "Hold the prism beam on the hanging weight to draw it home"
+      },
+      {
+        "name": "Focus leap",
+        "instruction": "Leap through the suspended focus ring"
+      }
+    ],
+    "sectors": [
+      {
+        "name": "Prism gallery",
+        "brief": "Prism colonnades split the gallery light. The last beam meets a high landing.",
+        "start": "a",
+        "exit": "x",
+        "link": "gn",
+        "tools": [
+          "Prism staff",
+          "Focus leap",
+          "Lens weight"
+        ],
+        "encounters": [
+          {
+            "name": "Prism parry",
+            "at": "g",
+            "instruction": "Pulse the staff when the incoming lens flare turns green"
+          },
+          {
+            "name": "Counterweight pull",
+            "at": "n",
+            "instruction": "Hold the prism beam on the hanging weight to draw it home"
+          }
+        ]
+      },
+      {
+        "name": "Ravine bridge",
+        "brief": "Approach the ravine along the west shelf and return along the east. Draw the bridge weights across.",
+        "start": "u",
+        "exit": "o",
+        "link": "ln",
+        "tools": [
+          "Lens weight",
+          "Prism staff",
+          "Focus leap"
+        ],
+        "encounters": [
+          {
+            "name": "Counterweight pull",
+            "at": "l",
+            "instruction": "Hold the prism beam on the hanging weight to draw it home"
+          },
+          {
+            "name": "Focus leap",
+            "at": "n",
+            "instruction": "Leap through the suspended focus ring"
+          }
+        ]
+      },
+      {
+        "name": "Counterweight shaft",
+        "brief": "The counterweight shaft has offset landings. Leap from the balance arm to the upper latch.",
+        "start": "e",
+        "exit": "b",
+        "link": "om",
+        "tools": [
+          "Focus leap",
+          "Prism staff",
+          "Lens weight"
+        ],
+        "encounters": [
+          {
+            "name": "Focus leap",
+            "at": "o",
+            "instruction": "Leap through the suspended focus ring"
+          },
+          {
+            "name": "Counterweight pull",
+            "at": "m",
+            "instruction": "Hold the prism beam on the hanging weight to draw it home"
+          }
+        ]
+      },
+      {
+        "name": "Lens garden",
+        "brief": "A sequence of lens islands bends through the garden. Line up the staff with the far mirror.",
+        "start": "k",
+        "exit": "v",
+        "link": "im",
+        "tools": [
+          "Lens weight",
+          "Focus leap",
+          "Prism staff"
+        ],
+        "encounters": [
+          {
+            "name": "Prism parry",
+            "at": "i",
+            "instruction": "Pulse the staff when the incoming lens flare turns green"
+          },
+          {
+            "name": "Focus leap",
+            "at": "m",
+            "instruction": "Leap through the suspended focus ring"
+          }
+        ]
+      },
+      {
+        "name": "Split dome",
+        "brief": "The split dome has two galleries facing the same prism. Realign its light to release the apprentice.",
+        "start": "y",
+        "exit": "p",
+        "link": "im",
+        "tools": [
+          "Focus leap",
+          "Lens weight",
+          "Prism staff"
+        ],
+        "encounters": [
+          {
+            "name": "Counterweight pull",
+            "at": "i",
+            "instruction": "Hold the prism beam on the hanging weight to draw it home"
+          },
+          {
+            "name": "Prism parry",
+            "at": "m",
+            "instruction": "Pulse the staff when the incoming lens flare turns green"
+          },
+          {
+            "name": "Focus leap",
+            "at": "h",
+            "instruction": "Leap through the suspended focus ring"
+          }
+        ]
+      }
+    ]
   },
   {
     "day": 18,
@@ -267,7 +2729,150 @@
     "place": "Ivory lattice, berry-red root mats and riveted blue shelters make the three rules visible from street level.",
     "gift": "A cooperative signal unlocks the second film. The host wrote the correction, but the machine never got it.",
     "route": "0–4 restore an isolated relay. 4–9 grow a route across the cut. 9–15 route resource deliveries while frost mites strip the roof. 15–20 overlap all three shelter systems to transmit.",
-    "coop": "Partners can tend different shelters. A solo player leaves one queued order per fabricator."
+    "coop": "Partners can tend different shelters. A solo player leaves one queued order per fabricator.",
+    "feature": "Living mat",
+    "featureHint": "Mark the growth front to extend the mat to the next shelter.",
+    "stride": 17,
+    "encounters": [
+      {
+        "name": "Pylon field",
+        "instruction": "Tune the ivory pylon and confirm its radius"
+      },
+      {
+        "name": "Living mat",
+        "instruction": "Plant the living node with Use to connect its shelter"
+      },
+      {
+        "name": "Fabricator",
+        "instruction": "Hold the repair beam on the shelter until its hull is sealed"
+      }
+    ],
+    "sectors": [
+      {
+        "name": "Ivory relay",
+        "brief": "The ivory pylon stands in a cloverleaf of relay alcoves. Commission the shelter inside its field.",
+        "start": "k",
+        "exit": "o",
+        "link": "gm",
+        "tools": [
+          "Relay radius",
+          "Repair fabricator"
+        ],
+        "encounters": [
+          {
+            "name": "Pylon field",
+            "at": "g",
+            "instruction": "Tune the ivory pylon and confirm its radius"
+          },
+          {
+            "name": "Fabricator",
+            "at": "m",
+            "instruction": "Hold the repair beam on the shelter until its hull is sealed"
+          }
+        ]
+      },
+      {
+        "name": "Root crossing",
+        "brief": "An organic mat snakes across the cut. Grow its leading edge toward the second settlement.",
+        "start": "u",
+        "exit": "y",
+        "link": "ln",
+        "tools": [
+          "Living mat",
+          "Repair fabricator",
+          "Relay radius"
+        ],
+        "encounters": [
+          {
+            "name": "Living mat",
+            "at": "l",
+            "instruction": "Plant the living node with Use to connect its shelter"
+          },
+          {
+            "name": "Pylon field",
+            "at": "n",
+            "instruction": "Tune the ivory pylon and confirm its radius"
+          }
+        ]
+      },
+      {
+        "name": "Blue foundry",
+        "brief": "Industrial bays surround a square maintenance apron. Bring construction supplies through the foundry.",
+        "start": "e",
+        "exit": "h",
+        "link": "im",
+        "tools": [
+          "Repair fabricator",
+          "Relay radius",
+          "Living mat"
+        ],
+        "encounters": [
+          {
+            "name": "Fabricator",
+            "at": "i",
+            "instruction": "Hold the repair beam on the shelter until its hull is sealed"
+          },
+          {
+            "name": "Living mat",
+            "at": "m",
+            "instruction": "Plant the living node with Use to connect its shelter"
+          }
+        ]
+      },
+      {
+        "name": "Shelter overlap",
+        "brief": "Three shelter lobes touch at one contested junction. Connect the live mat to the powered relay.",
+        "start": "a",
+        "exit": "j",
+        "link": "qn",
+        "tools": [
+          "Repair fabricator",
+          "Living mat",
+          "Relay radius"
+        ],
+        "encounters": [
+          {
+            "name": "Living mat",
+            "at": "q",
+            "instruction": "Plant the living node with Use to connect its shelter"
+          },
+          {
+            "name": "Pylon field",
+            "at": "n",
+            "instruction": "Tune the ivory pylon and confirm its radius"
+          },
+          {
+            "name": "Fabricator",
+            "at": "m",
+            "instruction": "Hold the repair beam on the shelter until its hull is sealed"
+          }
+        ]
+      },
+      {
+        "name": "Evacuation mast",
+        "brief": "The signal mast overlooks the evacuation crescent. Finish the shared repair at the point where the shelters meet.",
+        "start": "p",
+        "exit": "x",
+        "link": "lo",
+        "tools": [
+          "Relay radius",
+          "Living mat",
+          "Repair fabricator"
+        ],
+        "encounters": [
+          {
+            "name": "Pylon field",
+            "at": "l",
+            "instruction": "Tune the ivory pylon and confirm its radius"
+          },
+          {
+            "name": "Fabricator",
+            "at": "o",
+            "instruction": "Hold the repair beam on the shelter until its hull is sealed"
+          }
+        ]
+      }
+    ]
   },
   {
     "day": 19,
@@ -282,7 +2887,150 @@
     "place": "Leaving a dark pipe reveals violet cliffs under an immense waterfall. Jade stone wardens move against warm sky.",
     "gift": "The keeper’s letter asks the hall for a route in, the first invitation written from outside.",
     "route": "0–4 climb out of a wrecked lift. 4–9 translate the aqueduct’s route signs. 9–15 use orb bursts to lift distant sluices. 15–20 escort the keeper while opening the waterfall path.",
-    "coop": "A partner can strike a teammate’s orb. Solo orbs linger briefly when aimed at puzzle sockets."
+    "coop": "A partner can strike a teammate’s orb. Solo orbs linger briefly when aimed at puzzle sockets.",
+    "feature": "Keeper's sluice",
+    "featureHint": "Translate the glyph to expose the aqueduct crossing.",
+    "stride": 17,
+    "encounters": [
+      {
+        "name": "Wall translator",
+        "instruction": "Tune the lens until the glyph matches and pulse"
+      },
+      {
+        "name": "Sluice orb",
+        "instruction": "Pulse to launch the light orb, then shoot it when it blooms"
+      },
+      {
+        "name": "Keeper's path",
+        "instruction": "Use the translated waystone to mark the keeper's path"
+      }
+    ],
+    "sectors": [
+      {
+        "name": "Broken lift",
+        "brief": "A bent lift shaft hides the valley until the last turn. Read the first stone at the overlook.",
+        "start": "a",
+        "exit": "e",
+        "link": "km",
+        "tools": [
+          "Light orb",
+          "Stone translator"
+        ],
+        "encounters": [
+          {
+            "name": "Wall translator",
+            "at": "k",
+            "instruction": "Tune the lens until the glyph matches and pulse"
+          },
+          {
+            "name": "Sluice orb",
+            "at": "m",
+            "instruction": "Pulse to launch the light orb, then shoot it when it blooms"
+          }
+        ]
+      },
+      {
+        "name": "Pictograph wall",
+        "brief": "The glyph wall runs along one bank of the channel. Its answer can be seen across the water.",
+        "start": "u",
+        "exit": "n",
+        "link": "ln",
+        "tools": [
+          "Stone translator",
+          "Light orb",
+          "Valley keeper"
+        ],
+        "encounters": [
+          {
+            "name": "Keeper's path",
+            "at": "l",
+            "instruction": "Use the translated waystone to mark the keeper's path"
+          },
+          {
+            "name": "Wall translator",
+            "at": "n",
+            "instruction": "Tune the lens until the glyph matches and pulse"
+          }
+        ]
+      },
+      {
+        "name": "Jade sluice",
+        "brief": "An elbow in the aqueduct hides the lower sluice. Prime the seal from the dry inspection platform.",
+        "start": "e",
+        "exit": "l",
+        "link": "nr",
+        "tools": [
+          "Light orb",
+          "Stone translator",
+          "Valley keeper"
+        ],
+        "encounters": [
+          {
+            "name": "Sluice orb",
+            "at": "n",
+            "instruction": "Pulse to launch the light orb, then shoot it when it blooms"
+          },
+          {
+            "name": "Keeper's path",
+            "at": "r",
+            "instruction": "Use the translated waystone to mark the keeper's path"
+          }
+        ]
+      },
+      {
+        "name": "Keeper crossing",
+        "brief": "Follow the keeper down through the broken aqueduct. Its stepping stones lead around a sheer drop.",
+        "start": "k",
+        "exit": "y",
+        "link": "mr",
+        "tools": [
+          "Valley keeper",
+          "Stone translator",
+          "Light orb"
+        ],
+        "encounters": [
+          {
+            "name": "Wall translator",
+            "at": "m",
+            "instruction": "Tune the lens until the glyph matches and pulse"
+          },
+          {
+            "name": "Sluice orb",
+            "at": "r",
+            "instruction": "Pulse to launch the light orb, then shoot it when it blooms"
+          }
+        ]
+      },
+      {
+        "name": "Falls overlook",
+        "brief": "The climb curls behind the falls. Carry the keeper's letter to daylight on the far bank.",
+        "start": "v",
+        "exit": "e",
+        "link": "go",
+        "tools": [
+          "Valley keeper",
+          "Light orb",
+          "Stone translator"
+        ],
+        "encounters": [
+          {
+            "name": "Wall translator",
+            "at": "g",
+            "instruction": "Tune the lens until the glyph matches and pulse"
+          },
+          {
+            "name": "Sluice orb",
+            "at": "o",
+            "instruction": "Pulse to launch the light orb, then shoot it when it blooms"
+          },
+          {
+            "name": "Keeper's path",
+            "at": "n",
+            "instruction": "Use the translated waystone to mark the keeper's path"
+          }
+        ]
+      }
+    ]
   },
   {
     "day": 20,
@@ -297,7 +3045,151 @@
     "place": "Teal maintenance tiles, watching lenses and dim monitors give way to an open, magenta wireframe space. The station’s silhouette recurs as a circuit diagram.",
     "gift": "A spool of message tape records the Steward practising the words COME IN.",
     "route": "0–4 hear a contradictory log. 4–9 trace a message through two decks. 9–15 lower surveillance while repair spiders interfere. 15–20 enter the network to release the dispatcher.",
-    "coop": "A partner can guide the diver from a physical map. A solo diver carries a copy of the same diagram."
+    "coop": "A partner can guide the diver from a physical map. A solo diver carries a copy of the same diagram.",
+    "feature": "Network jack",
+    "featureHint": "Blind the surveillance lens to activate both network jacks. Use to enter.",
+    "stride": 17,
+    "encounters": [
+      {
+        "name": "Surveillance eyes",
+        "instruction": "Blind the three tracking eyes with aimed pulses"
+      },
+      {
+        "name": "Deck security",
+        "instruction": "Tune the security loop and pulse to disconnect it"
+      },
+      {
+        "name": "Log address",
+        "instruction": "Use the jack to recover the dispatcher's address"
+      }
+    ],
+    "sectors": [
+      {
+        "name": "Maintenance lock",
+        "brief": "Trace the missing dispatcher from the maintenance airlock along its crooked service conduit.",
+        "start": "u",
+        "exit": "d",
+        "link": "lh",
+        "tools": [
+          "Log fragments",
+          "Circuit nodes",
+          "Surveillance lens"
+        ],
+        "encounters": [
+          {
+            "name": "Log address",
+            "at": "l",
+            "instruction": "Use the jack to recover the dispatcher's address"
+          },
+          {
+            "name": "Surveillance eyes",
+            "at": "h",
+            "instruction": "Blind the three tracking eyes with aimed pulses"
+          }
+        ]
+      },
+      {
+        "name": "Silent ward",
+        "brief": "Two ward corridors divide into small camera bays. Blind the eye watching the records terminal.",
+        "start": "e",
+        "exit": "b",
+        "link": "om",
+        "tools": [
+          "Surveillance lens",
+          "Log fragments",
+          "Circuit nodes"
+        ],
+        "encounters": [
+          {
+            "name": "Surveillance eyes",
+            "at": "o",
+            "instruction": "Blind the three tracking eyes with aimed pulses"
+          },
+          {
+            "name": "Deck security",
+            "at": "m",
+            "instruction": "Tune the security loop and pulse to disconnect it"
+          }
+        ]
+      },
+      {
+        "name": "Lens deck",
+        "brief": "A camera overlooks the bend on the lens deck. Cut its feed to expose the circuit controls.",
+        "start": "a",
+        "exit": "w",
+        "link": "hn",
+        "tools": [
+          "Surveillance lens",
+          "Circuit nodes",
+          "Log fragments"
+        ],
+        "encounters": [
+          {
+            "name": "Deck security",
+            "at": "h",
+            "instruction": "Tune the security loop and pulse to disconnect it"
+          },
+          {
+            "name": "Surveillance eyes",
+            "at": "n",
+            "instruction": "Blind the three tracking eyes with aimed pulses"
+          }
+        ]
+      },
+      {
+        "name": "Wireframe circuit",
+        "brief": "Inside the network, the deck becomes a bright circuit. Cross the spokes between memory addresses.",
+        "start": "m",
+        "exit": "q",
+        "link": "mw",
+        "tools": [
+          "Circuit nodes",
+          "Log fragments",
+          "Surveillance lens"
+        ],
+        "encounters": [
+          {
+            "name": "Log address",
+            "at": "m",
+            "instruction": "Use the jack to recover the dispatcher's address"
+          },
+          {
+            "name": "Deck security",
+            "at": "w",
+            "instruction": "Tune the security loop and pulse to disconnect it"
+          }
+        ]
+      },
+      {
+        "name": "Dispatcher bay",
+        "brief": "Follow the recovered signal to the dispatcher bay. The last camera looks into the empty chair.",
+        "start": "y",
+        "exit": "k",
+        "link": "nh",
+        "tools": [
+          "Circuit nodes",
+          "Surveillance lens",
+          "Log fragments"
+        ],
+        "encounters": [
+          {
+            "name": "Surveillance eyes",
+            "at": "n",
+            "instruction": "Blind the three tracking eyes with aimed pulses"
+          },
+          {
+            "name": "Log address",
+            "at": "h",
+            "instruction": "Use the jack to recover the dispatcher's address"
+          },
+          {
+            "name": "Deck security",
+            "at": "m",
+            "instruction": "Tune the security loop and pulse to disconnect it"
+          }
+        ]
+      }
+    ]
   },
   {
     "day": 21,
@@ -312,7 +3204,150 @@
     "place": "Wattle huts give way to fired-clay halls. A half-built roof and piles of cut timber reveal progress without a menu.",
     "gift": "A loaf carved from alder wood marks a place for anyone who arrives hungry.",
     "route": "0–4 feed the hearth. 4–9 staff forest and quarry. 9–15 advance an age to repair a flood crossing. 15–20 complete a feast house as boars scatter the supply carts.",
-    "coop": "Friends lay different foundations. Solo villagers remember jobs and use a bell to regroup after raids."
+    "coop": "Friends lay different foundations. Solo villagers remember jobs and use a bell to regroup after raids.",
+    "feature": "Timber ford",
+    "featureHint": "Finish the foundation to give the village a working cart crossing.",
+    "stride": 14,
+    "encounters": [
+      {
+        "name": "Villager order",
+        "instruction": "Use the job bell to assign the waiting workers"
+      },
+      {
+        "name": "Granary balance",
+        "instruction": "Set the food allocation and pulse to advance the village"
+      },
+      {
+        "name": "Raised foundation",
+        "instruction": "Keep the builder's beam on the frame to finish the roof"
+      }
+    ],
+    "sectors": [
+      {
+        "name": "Hearth square",
+        "brief": "Three plots face a common hearth. Send the first workers out along the village lanes.",
+        "start": "m",
+        "exit": "v",
+        "link": "mh",
+        "tools": [
+          "Work orders",
+          "Food stores",
+          "Feast foundation"
+        ],
+        "encounters": [
+          {
+            "name": "Villager order",
+            "at": "m",
+            "instruction": "Use the job bell to assign the waiting workers"
+          },
+          {
+            "name": "Granary balance",
+            "at": "h",
+            "instruction": "Set the food allocation and pulse to advance the village"
+          }
+        ]
+      },
+      {
+        "name": "Timber yard",
+        "brief": "The timber settlement hugs a single forest edge. Haul the stock back by the cart track.",
+        "start": "a",
+        "exit": "h",
+        "link": "km",
+        "tools": [
+          "Work orders",
+          "Feast foundation",
+          "Food stores"
+        ],
+        "encounters": [
+          {
+            "name": "Villager order",
+            "at": "k",
+            "instruction": "Use the job bell to assign the waiting workers"
+          },
+          {
+            "name": "Raised foundation",
+            "at": "m",
+            "instruction": "Keep the builder's beam on the frame to finish the roof"
+          }
+        ]
+      },
+      {
+        "name": "Stone ford",
+        "brief": "The quarry and granary lie on opposing banks. Bring food to the work crews at the ford.",
+        "start": "e",
+        "exit": "l",
+        "link": "iv",
+        "tools": [
+          "Food stores",
+          "Work orders"
+        ],
+        "encounters": [
+          {
+            "name": "Granary balance",
+            "at": "i",
+            "instruction": "Set the food allocation and pulse to advance the village"
+          },
+          {
+            "name": "Villager order",
+            "at": "v",
+            "instruction": "Use the job bell to assign the waiting workers"
+          }
+        ]
+      },
+      {
+        "name": "Flood crossing",
+        "brief": "Build out from the floodplain. A timber crossing brings the two halves of the settlement together.",
+        "start": "u",
+        "exit": "y",
+        "link": "lo",
+        "tools": [
+          "Feast foundation",
+          "Work orders",
+          "Food stores"
+        ],
+        "encounters": [
+          {
+            "name": "Raised foundation",
+            "at": "l",
+            "instruction": "Keep the builder's beam on the frame to finish the roof"
+          },
+          {
+            "name": "Villager order",
+            "at": "o",
+            "instruction": "Use the job bell to assign the waiting workers"
+          }
+        ]
+      },
+      {
+        "name": "Feast house",
+        "brief": "The feast house rises above a market horseshoe. Carry the last stores past the occupied foundations.",
+        "start": "w",
+        "exit": "o",
+        "link": "rc",
+        "tools": [
+          "Food stores",
+          "Feast foundation",
+          "Work orders"
+        ],
+        "encounters": [
+          {
+            "name": "Villager order",
+            "at": "r",
+            "instruction": "Use the job bell to assign the waiting workers"
+          },
+          {
+            "name": "Granary balance",
+            "at": "c",
+            "instruction": "Set the food allocation and pulse to advance the village"
+          },
+          {
+            "name": "Raised foundation",
+            "at": "m",
+            "instruction": "Keep the builder's beam on the frame to finish the roof"
+          }
+        ]
+      }
+    ]
   },
   {
     "day": 22,
@@ -327,7 +3362,150 @@
     "place": "Painted crimson railcars, ink-black sky and flickering handbill sprites. Wax and papier-mâché underpin the scares.",
     "gift": "A carnival handbill advertises the reunion with its correct, previously unprinted return address.",
     "route": "0–4 board the rear carriage. 4–9 tag the wax ticket-takers. 9–15 light mirrored signals at the midway. 15–20 direct the train back through a procession of false silhouettes.",
-    "coop": "A partner can identify reflections from the opposite platform. Solo uses scorch marks to distinguish the real signal."
+    "coop": "A partner can identify reflections from the opposite platform. Solo uses scorch marks to distinguish the real signal.",
+    "feature": "Flare gallery",
+    "featureHint": "Pulse from the gallery to light up the wax patrol across the midway.",
+    "stride": 14,
+    "encounters": [
+      {
+        "name": "Delayed flare",
+        "instruction": "Tag the wax signal and pulse it again as the flare blooms"
+      },
+      {
+        "name": "Twin-caster gallery",
+        "instruction": "Shoot the three passing wax silhouettes"
+      },
+      {
+        "name": "Mirror signal",
+        "instruction": "Pulse the real signal on the bright beat"
+      }
+    ],
+    "sectors": [
+      {
+        "name": "Rear carriage",
+        "brief": "Work up the carriage aisle and back along the narrow platform. Wax conductors wait in the vestibules.",
+        "start": "u",
+        "exit": "v",
+        "link": "kq",
+        "tools": [
+          "Lantern flare",
+          "Burst caster",
+          "Twin-caster token"
+        ],
+        "encounters": [
+          {
+            "name": "Delayed flare",
+            "at": "k",
+            "instruction": "Tag the wax signal and pulse it again as the flare blooms"
+          },
+          {
+            "name": "Twin-caster gallery",
+            "at": "q",
+            "instruction": "Shoot the three passing wax silhouettes"
+          }
+        ]
+      },
+      {
+        "name": "Sideshow platform",
+        "brief": "The sideshow spills sideways from a long platform. Light the signal at the end of the blind siding.",
+        "start": "b",
+        "exit": "q",
+        "link": "ir",
+        "tools": [
+          "Burst caster",
+          "Lantern flare"
+        ],
+        "encounters": [
+          {
+            "name": "Twin-caster gallery",
+            "at": "i",
+            "instruction": "Shoot the three passing wax silhouettes"
+          },
+          {
+            "name": "Mirror signal",
+            "at": "r",
+            "instruction": "Pulse the real signal on the bright beat"
+          }
+        ]
+      },
+      {
+        "name": "Mirror tent",
+        "brief": "The mirror tent doubles back around its painted centre. Take the twin token past the false silhouettes.",
+        "start": "k",
+        "exit": "w",
+        "link": "gm",
+        "tools": [
+          "Twin-caster token",
+          "Burst caster",
+          "Lantern flare"
+        ],
+        "encounters": [
+          {
+            "name": "Mirror signal",
+            "at": "g",
+            "instruction": "Pulse the real signal on the bright beat"
+          },
+          {
+            "name": "Delayed flare",
+            "at": "m",
+            "instruction": "Tag the wax signal and pulse it again as the flare blooms"
+          }
+        ]
+      },
+      {
+        "name": "False signal",
+        "brief": "Twin signal galleries run side by side. A flare distinguishes the wax conductor at the far head.",
+        "start": "y",
+        "exit": "x",
+        "link": "os",
+        "tools": [
+          "Burst caster",
+          "Lantern flare",
+          "Twin-caster token"
+        ],
+        "encounters": [
+          {
+            "name": "Delayed flare",
+            "at": "o",
+            "instruction": "Tag the wax signal and pulse it again as the flare blooms"
+          },
+          {
+            "name": "Mirror signal",
+            "at": "s",
+            "instruction": "Pulse the real signal on the bright beat"
+          }
+        ]
+      },
+      {
+        "name": "Midnight train",
+        "brief": "The return train follows an L-shaped platform. Prime the last false signal before the procession arrives.",
+        "start": "a",
+        "exit": "n",
+        "link": "kn",
+        "tools": [
+          "Twin-caster token",
+          "Lantern flare",
+          "Burst caster"
+        ],
+        "encounters": [
+          {
+            "name": "Twin-caster gallery",
+            "at": "k",
+            "instruction": "Shoot the three passing wax silhouettes"
+          },
+          {
+            "name": "Delayed flare",
+            "at": "n",
+            "instruction": "Tag the wax signal and pulse it again as the flare blooms"
+          },
+          {
+            "name": "Mirror signal",
+            "at": "h",
+            "instruction": "Pulse the real signal on the bright beat"
+          }
+        ]
+      }
+    ]
   },
   {
     "day": 23,
@@ -342,7 +3520,151 @@
     "place": "Gunmetal wrecks half buried in white, turning windmills and bright copper construction beams. Salvage value is visible in a hull’s intact parts.",
     "gift": "A transmitter aerial rises from the hall roof. Its first reply is a knock at tomorrow’s door.",
     "route": "0–4 reclaim a fallen chassis. 4–9 find a wind source for the grid. 9–15 complete two relay arms under recycler pressure. 15–20 repurpose the last rival hulk as an aerial.",
-    "coop": "A partner balances power while the builder works. Solo can pause a queue to restore throughput."
+    "coop": "A partner balances power while the builder works. Solo can pause a queue to restore throughput.",
+    "feature": "Rebuilt trestle",
+    "featureHint": "Finish the constructor order to span the wreck basin.",
+    "stride": 16,
+    "encounters": [
+      {
+        "name": "Wreck reclaim",
+        "instruction": "Hold the constructor beam on the hulk to reclaim its metal"
+      },
+      {
+        "name": "Streaming power",
+        "instruction": "Balance the power bus and pulse to feed the queue"
+      },
+      {
+        "name": "Constructor order",
+        "instruction": "Use the order marker to dispatch the helper"
+      }
+    ],
+    "sectors": [
+      {
+        "name": "Chassis field",
+        "brief": "Three wreck clusters break up the valley floor. Reclaim intact hulls before leaving the chassis field.",
+        "start": "a",
+        "exit": "i",
+        "link": "lm",
+        "tools": [
+          "Reclaim beam",
+          "Constructor queue",
+          "Power balance"
+        ],
+        "encounters": [
+          {
+            "name": "Wreck reclaim",
+            "at": "l",
+            "instruction": "Hold the constructor beam on the hulk to reclaim its metal"
+          },
+          {
+            "name": "Constructor order",
+            "at": "m",
+            "instruction": "Use the order marker to dispatch the helper"
+          }
+        ]
+      },
+      {
+        "name": "Wind farm",
+        "brief": "A hooked ridge carries the wind farm. Link the exposed turbines back to the constructor below.",
+        "start": "e",
+        "exit": "b",
+        "link": "nl",
+        "tools": [
+          "Power balance",
+          "Reclaim beam",
+          "Constructor queue"
+        ],
+        "encounters": [
+          {
+            "name": "Streaming power",
+            "at": "n",
+            "instruction": "Balance the power bus and pulse to feed the queue"
+          },
+          {
+            "name": "Wreck reclaim",
+            "at": "l",
+            "instruction": "Hold the constructor beam on the hulk to reclaim its metal"
+          }
+        ]
+      },
+      {
+        "name": "Metal basin",
+        "brief": "Two metal deposits feed the basin from different sides. Balance the bus at their shared outlet.",
+        "start": "u",
+        "exit": "o",
+        "link": "qh",
+        "tools": [
+          "Constructor queue",
+          "Reclaim beam",
+          "Power balance"
+        ],
+        "encounters": [
+          {
+            "name": "Wreck reclaim",
+            "at": "q",
+            "instruction": "Hold the constructor beam on the hulk to reclaim its metal"
+          },
+          {
+            "name": "Streaming power",
+            "at": "h",
+            "instruction": "Balance the power bus and pulse to feed the queue"
+          }
+        ]
+      },
+      {
+        "name": "Relay arms",
+        "brief": "The northern relay arm bends east while its companion crosses the basin. Rebuild the return feed.",
+        "start": "k",
+        "exit": "w",
+        "link": "ci",
+        "tools": [
+          "Power balance",
+          "Constructor queue",
+          "Reclaim beam"
+        ],
+        "encounters": [
+          {
+            "name": "Constructor order",
+            "at": "c",
+            "instruction": "Use the order marker to dispatch the helper"
+          },
+          {
+            "name": "Wreck reclaim",
+            "at": "i",
+            "instruction": "Hold the constructor beam on the hulk to reclaim its metal"
+          }
+        ]
+      },
+      {
+        "name": "Aerial summit",
+        "brief": "Climb through the debris to a rival hulk on the ridge. Salvage it into the transmitter aerial.",
+        "start": "y",
+        "exit": "r",
+        "link": "nr",
+        "tools": [
+          "Constructor queue",
+          "Power balance",
+          "Reclaim beam"
+        ],
+        "encounters": [
+          {
+            "name": "Wreck reclaim",
+            "at": "n",
+            "instruction": "Hold the constructor beam on the hulk to reclaim its metal"
+          },
+          {
+            "name": "Streaming power",
+            "at": "r",
+            "instruction": "Balance the power bus and pulse to feed the queue"
+          },
+          {
+            "name": "Constructor order",
+            "at": "m",
+            "instruction": "Use the order marker to dispatch the helper"
+          }
+        ]
+      }
+    ]
   },
   {
     "day": 24,
@@ -357,6 +3679,150 @@
     "place": "A snowbound signal yard seen through analogue monitors, with red bulbs, scalloped coil towers and a clock visible from every pad.",
     "gift": "The last keepsake is a blank place card. Write a name locally or leave it blank. The Steward unlocks the front doors and the clock strikes twelve.",
     "route": "0–4 receive the Steward’s final dispatch. 4–9 fund the frozen convoy. 9–15 choose which coils protect its route. 15–20 shift the mail van into the hall and manually release the minute hand.",
-    "coop": "Friends coordinate relay, convoy and clock. Every relay latches for solo. Earlier clears restore extra voices in the ending; all players can send the invitations."
+    "coop": "Friends coordinate relay, convoy and clock. Every relay latches for solo. Earlier clears restore extra voices in the ending; all players can send the invitations.",
+    "feature": "Chrono pads",
+    "featureHint": "Divert coil power, then use a pad to shift yourself and a nearby mail van.",
+    "stride": 16,
+    "encounters": [
+      {
+        "name": "Coil grid",
+        "instruction": "Tune the switchboard and pulse to divert the coil feed"
+      },
+      {
+        "name": "Convoy manifest",
+        "instruction": "Use to credit the waiting mail convoy"
+      },
+      {
+        "name": "Chrono synchroniser",
+        "instruction": "Pulse while both clocks show the green minute"
+      }
+    ],
+    "sectors": [
+      {
+        "name": "Signal yard",
+        "brief": "A switching yard divides the ore train from the mail convoy. Divert power at the centre cabin.",
+        "start": "u",
+        "exit": "t",
+        "link": "km",
+        "tools": [
+          "Coil power",
+          "Convoy credits",
+          "Mail van"
+        ],
+        "encounters": [
+          {
+            "name": "Convoy manifest",
+            "at": "k",
+            "instruction": "Use to credit the waiting mail convoy"
+          },
+          {
+            "name": "Coil grid",
+            "at": "m",
+            "instruction": "Tune the switchboard and pulse to divert the coil feed"
+          }
+        ]
+      },
+      {
+        "name": "Ore exchange",
+        "brief": "The ore exchange wraps around the depot. Bring credits from the terminus to the convoy road.",
+        "start": "a",
+        "exit": "x",
+        "link": "hr",
+        "tools": [
+          "Convoy credits",
+          "Coil power",
+          "Mail van"
+        ],
+        "encounters": [
+          {
+            "name": "Convoy manifest",
+            "at": "h",
+            "instruction": "Use to credit the waiting mail convoy"
+          },
+          {
+            "name": "Coil grid",
+            "at": "r",
+            "instruction": "Tune the switchboard and pulse to divert the coil feed"
+          }
+        ]
+      },
+      {
+        "name": "Coil crossing",
+        "brief": "A staggered line of coils screens the crossing. Switch the feed to the clock when the convoy passes.",
+        "start": "e",
+        "exit": "c",
+        "link": "om",
+        "tools": [
+          "Coil power",
+          "Mail van",
+          "Convoy credits"
+        ],
+        "encounters": [
+          {
+            "name": "Coil grid",
+            "at": "o",
+            "instruction": "Tune the switchboard and pulse to divert the coil feed"
+          },
+          {
+            "name": "Chrono synchroniser",
+            "at": "m",
+            "instruction": "Pulse while both clocks show the green minute"
+          }
+        ]
+      },
+      {
+        "name": "Chrono pads",
+        "brief": "Twin chrono pads occupy opposite ends of the yard. The mail van can skip the central ice cut.",
+        "start": "k",
+        "exit": "w",
+        "link": "lw",
+        "tools": [
+          "Mail van",
+          "Convoy credits",
+          "Coil power"
+        ],
+        "encounters": [
+          {
+            "name": "Chrono synchroniser",
+            "at": "l",
+            "instruction": "Pulse while both clocks show the green minute"
+          },
+          {
+            "name": "Convoy manifest",
+            "at": "w",
+            "instruction": "Use to credit the waiting mail convoy"
+          }
+        ]
+      },
+      {
+        "name": "The minute hand",
+        "brief": "Follow the clock perimeter to its winding house. Return the borrowed minute and leave the gate open.",
+        "start": "y",
+        "exit": "w",
+        "link": "ow",
+        "tools": [
+          "Mail van",
+          "Coil power",
+          "Convoy credits"
+        ],
+        "encounters": [
+          {
+            "name": "Convoy manifest",
+            "at": "o",
+            "instruction": "Use to credit the waiting mail convoy"
+          },
+          {
+            "name": "Coil grid",
+            "at": "w",
+            "instruction": "Tune the switchboard and pulse to divert the coil feed"
+          },
+          {
+            "name": "Chrono synchroniser",
+            "at": "m",
+            "instruction": "Pulse while both clocks show the green minute"
+          }
+        ]
+      }
+    ]
   }
 ]

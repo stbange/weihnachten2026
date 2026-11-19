@@ -6,4 +6,4 @@ This covers the hall, cinema, all 24 expedition environments, route art, keepsak
 
 Gloock and DM Sans are third-party typefaces distributed under their respective SIL Open Font Licenses in the licenses directory. SDL and the generated Emscripten runtime retain their upstream notices. The cited classic games belong to their respective creators. The almanac uses their names for historical reference. All playable characters, maps, props and sound are original to this project.
 
-The authored chamber plans, working gates, mission arrival models, projector shutter, harvester weighbridge, and stereo guide artwork are original Lantern Hall contributions under the same CC BY 4.0 art license.
+The 120 floor plans, district terrain, skyline models, encounter art, authored chamber plans, working gates, mission arrival models, projector shutter, harvester weighbridge, and stereo guide artwork are original Lantern Hall contributions under the same CC BY 4.0 art license.
