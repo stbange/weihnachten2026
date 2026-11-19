@@ -788,3 +788,25 @@ kbd {
   border: 1px solid var(--rule);
   font: inherit;
 }
+
+#panelbody label:has(#trialday),
+#panelbody label:has(#trialmode),
+#panelbody label:has([data-device]),
+#panelbody label:has([data-comfort]),
+#panelbody label:has([data-note]) {
+  display: block;
+  margin: 0.65rem 0;
+}
+#trialday,
+#trialmode,
+#vrspeed,
+#vrturn,
+[data-device],
+[data-comfort] {
+  max-width: 100%;
+  padding: 0.42rem;
+  color: var(--cream);
+  background: var(--ink);
+  border: 1px solid var(--rule);
+  font: inherit;
+}
