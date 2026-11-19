@@ -23,3 +23,5 @@
 - [x] Two-seat native relay hosting and joining use the browser relay protocol.
 - [x] The hall displays earned keepsakes, three six-piece chapter effects and the latecomer opening on day 24.
 - [ ] Finish bespoke encounters, milestone recordings and human pacing sessions before marking the content milestones complete.
+- [x] Add an authored chamber and working shortcut per door, plus party-operated cinema and convoy machinery.
+- [x] Ship local first-clear logs, portable results, and a stereo objective guide with headset diagnostics.

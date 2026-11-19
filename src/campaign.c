@@ -6,6 +6,28 @@
 const Expedition expeditions[24] = {
 #include "expeditions.inc"
 };
+typedef struct {
+    const char *name, *rows[5];
+} Chamber;
+static const Chamber chambers[24] = {
+#include "chambers.inc"
+};
+const char *campaign_chamber_name(const Game *g) { return chambers[g->door - 1].name; }
+static Cell chamber_origin(const Game *g)
+{
+    Cell site = campaign_site(g, 1);
+    /* Leave a whole walkable ring and keep the authored pillars on even coordinates. */
+    return (Cell){(int)fminf(21, fmaxf(3, site.x)) - 2, (int)fminf(21, fmaxf(3, site.z)) - 2};
+}
+char campaign_chamber_tile(const Game *g, int x, int z)
+{
+    Cell origin = chamber_origin(g);
+    x -= origin.x;
+    z -= origin.z;
+    if ((unsigned)x >= 5 || (unsigned)z >= 5)
+        return 0;
+    return chambers[g->door - 1].rows[z][x];
+}
 static unsigned char walls[MAP_SIZE][MAP_SIZE];
 static int cached = -1;
 static const Cell dirs[] = {{0, -1}, {1, 0}, {0, 1}, {-1, 0}};
@@ -17,9 +39,10 @@ static unsigned random_step(unsigned *seed)
 static void layout(const Game *g)
 {
     int key = g->door * 7 + g->area;
-    if (cached == key)
+    int layout_key = key * 2 + (g->task != 0);
+    if (cached == layout_key)
         return;
-    cached = key;
+    cached = layout_key;
     unsigned seed = 7919u * key + 117u;
     memset(walls, 1, sizeof(walls));
     Cell stack[MAP_SIZE * MAP_SIZE];
@@ -50,6 +73,13 @@ static void layout(const Game *g)
             for (int dx = -1; dx <= 1; dx++)
                 walls[z + dz][x + dx] = 0;
     }
+    Cell origin = chamber_origin(g);
+    for (int z = 0; z < 5; z++)
+        for (int x = 0; x < 5; x++) {
+            char tile = chambers[g->door - 1].rows[z][x];
+            walls[origin.z + z][origin.x + x] =
+                (tile >= 'A' && tile <= 'Z') || (tile == '+' && g->task == 0);
+        }
     /* Reserve a walkable arrival court around the two solid landmark tiles. */
     for (int z = 19; z <= 23; z++)
         for (int x = 1; x <= 5; x++)
@@ -146,6 +176,19 @@ static const Combination combinations[24] = {
     [23] = {GRID, PUNCH, "Use the powered chrono pad to transmit the invitations"}};
 static const Combination *combination(const Game *g)
 {
+    static const Combination pump = {GRID, PUNCH, "Use the accumulator release at the far pump"};
+    static const Combination pod = {FLY, PUNCH, "Use the rescue cradle to seal the recovered pod"};
+    static const Combination aerial = {
+        GRID, CHARGE, "Charge and release the constructor beam to weld the live aerial"};
+    if (g->task < EXIT_TASK) {
+        int tool = campaign_kind(g);
+        if (g->door == 8 && tool == GRID)
+            return &pump;
+        if (g->door == 11 && tool == FLY)
+            return &pod;
+        if (g->door == 23 && tool == GRID)
+            return &aerial;
+    }
     if (g->door == 17 && g->task < 3 && campaign_kind(g) == FLY) {
         static const Combination mirror = {FLY, PUNCH,
                                            "Use the landing mirror to hold the light bridge open"};
@@ -246,6 +289,15 @@ static int operate(Game *g, int seat, Input in, int pressed, int released, float
     Player *p = &g->player[seat];
     int kind = campaign_kind(g);
     int nearby = distance < 2.7f && clear_path(g, p->x, p->z, x, z);
+    /* A partner can prepare the shutter or weighbridge while the other player
+       carries the reel or escorts the vehicle. The latch belongs to the party. */
+    if (g->task < EXIT_TASK && g->phase &&
+        ((g->door == 1 && kind == FLY) || (g->door == 3 && kind == ESCORT))) {
+        if ((pressed & FIRE) && aimed(g, p, in, x, z, 1.55f))
+            g->dial = 1;
+        if (!g->dial)
+            return 0;
+    }
     if (g->door == 1 && g->task < EXIT_TASK) {
         if (kind == SHOT) {
             if (!(pressed & FIRE) || !aimed(g, p, in, x, z, 1.55f))
@@ -434,13 +486,20 @@ void campaign_prompt(const Game *g, int who, char *buf, int size)
             action = g->phase ? "Lift to the booth and load the reel"
                               : "Lift to the rigging and collect the reel";
     }
+    if (g->task < EXIT_TASK && g->phase && !g->dial) {
+        if (g->door == 1 && k == FLY)
+            action = "Pulse the amber shutter lens below the booth";
+        if (g->door == 3 && k == ESCORT)
+            action = "Pulse the amber weighbridge relay, then guide the harvester onto the scale";
+    }
     if (g->phase && combination(g))
         action = combination(g)->instruction;
     const Transmission *memory = &transmissions[g->door - 1];
     if (g->task == TRANSMISSION)
         action = g->phase ? memory->destination : memory->origin;
     k = campaign_action(g);
-    snprintf(buf, size, "%s | %s | %s (%s, %.0f m)", e->areas[g->area],
+    snprintf(buf, size, "%s%s%s | %s | %s (%s, %.0f m)", e->areas[g->area],
+             g->task == 0 ? " · " : "", g->task == 0 ? campaign_chamber_name(g) : "",
              g->task == TRANSMISSION ? memory->message
              : g->task == EXIT_TASK  ? e->gift
                                      : e->tools[(g->task + g->area) % 3].name,

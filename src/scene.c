@@ -391,6 +391,164 @@ static void district_landmark(Mesh *m, const Game *g, float x, float z)
                 j ? 0x6bb878 : 0xacdf9a, GLOW);
     }
 }
+/* Standalone silhouettes for the arrival plinth. All scenery stays within
+   its two occupied tiles; the two side aisles stay clear in co-op. */
+static void campaign_landmark(Mesh *m, const Game *g, float x, float z)
+{
+    unsigned col = expeditions[g->door - 1].colour;
+    const unsigned brass = 0xc6a574, iron = 0x4c6063, ice = 0xb9dcdb, wood = 0x856548;
+    switch (g->door) {
+    case 2: /* Striped collection balloon and a basket suspended on four stays. */
+        box(m, x, .72f, z, 1.3f, .67f, 1.04f, wood, OAK);
+        for (int k = 0; k < 4; k++) {
+            float dx = (k & 1) ? .49f : -.49f, dz = (k & 2) ? .42f : -.42f;
+            rod(m, xyz(x + dx, 1.39f, z + dz), xyz(x + dx * 1.8f, 2.58f, z + dz * 1.8f), .034f,
+                .034f, 5, brass, OAK);
+        }
+        rod(m, xyz(x, 1.98f, z), xyz(x, 3.05f, z), .44f, 1.54f, 10, col, PAINT);
+        rod(m, xyz(x, 3.05f, z), xyz(x, 3.79f, z), 1.54f, 1.49f, 10, 0xe0ad82, PAINT);
+        rod(m, xyz(x, 3.79f, z), xyz(x, 4.68f, z), 1.49f, .4f, 10, col, PAINT);
+        break;
+    case 4: /* Bell suspended between counterweight pylons. */
+    case 16:
+        for (int k = -1; k <= 1; k += 2)
+            box(m, x + k * 2.5f, .24f, z, .82f, 3.85f, .96f, col, STONE);
+        box(m, x, 4.09f, z, 6.15f, .38f, 1.04f, brass, PAINT);
+        if (g->door == 4) {
+            rod(m, xyz(x, 1.48f, z), xyz(x, 3.81f, z), 1.35f, .48f, 10, brass, PAINT);
+            box(m, x, 1.1f, z, .42f, .52f, .42f, iron, PAINT);
+        } else {
+            rod(m, xyz(x, 2.53f, z - .57f), xyz(x, 2.53f, z + .57f), 1.40f, 1.40f, 10, brass,
+                PAINT);
+            for (int j = -2; j <= 2; j++) {
+                box(m, x + j * .54f, .44f, z + .88f, .29f, .36f, .38f, ice, PAINT);
+            }
+        }
+        break;
+    case 6:
+    case 23: /* Working walker and its dismantled counterpart. */
+        for (int k = -1; k <= 1; k += 2) {
+            box(m, x + k * 1.1f, .24f, z + .23f, .96f, .3f, 1.62f, iron, STONE);
+            rod(m, xyz(x + k * 1.1f, .52f, z + .3f), xyz(x + k * .8f, 1.55f, z - .55f), .28f, .35f,
+                6, brass, PAINT);
+            rod(m, xyz(x + k * .8f, 1.55f, z - .55f), xyz(x + k * .65f, 2.6f, z), .32f, .45f, 6,
+                col, PAINT);
+        }
+        if (g->door == 6) {
+            box(m, x, 2.47f, z, 2.45f, 1.46f, 1.83f, col, PAINT);
+            box(m, x, 3.36f, z + .8f, 1.26f, .43f, .31f, ice, GLOW);
+            for (int k = -1; k <= 1; k += 2)
+                box(m, x + k * 1.65f, 2.65f, z, .6f, .72f, 1.95f, iron, PAINT);
+        } else {
+            rod(m, xyz(x - 2.65f, .68f, z), xyz(x + 1.65f, 2.74f, z), .19f, .24f, 6, iron, PAINT);
+            for (int j = 0; j < 4; j++)
+                box(m, x - 2.4f + j * .57f, .54f + j * .25f, z, .31f, .33f, 1.4f, brass, PAINT);
+        }
+        break;
+    case 7: /* Station clock with two faces, counter and departure lamps. */
+        box(m, x, .24f, z, 6.5f, 1.1f, 2.3f, col, OAK);
+        box(m, x, .24f, z, .52f, 3.1f, .55f, iron, PAINT);
+        rod(m, xyz(x, 3.64f, z - .24f), xyz(x, 3.64f, z + .24f), 1.05f, 1.05f, 12, 0xf1dcaf, GLOW);
+        box(m, x - .22f, 3.60f, z + .26f, .5f, .10f, .05f, iron, PAINT);
+        box(m, x, 3.63f, z + .27f, .09f, .69f, .05f, iron, PAINT);
+        break;
+    case 8:
+    case 13: /* Brine pumps and their gothic boiler-choir cousins. */
+        box(m, x, .24f, z, 6.5f, .7f, 2.44f, iron, STONE);
+        for (int j = -2; j <= 2; j++) {
+            float h = g->door == 13 ? 3.6f - fabsf(j) * .65f : 1.4f + .68f * (j % 2 == 0);
+            rod(m, xyz(x + j * 1.07f, .94f, z), xyz(x + j * 1.07f, .95f + h, z), .40f, .40f, 8, col,
+                PAINT);
+            rod(m, xyz(x + j * 1.07f, .99f + h, z), xyz(x + j * 1.07f, 1.13f + h, z), .53f, .53f, 8,
+                brass, PAINT);
+        }
+        break;
+    case 9:
+    case 15: /* A pennant above two ski runners or an angular survey lander. */
+        for (int k = -1; k <= 1; k += 2)
+            rod(m, xyz(x - 2.8f, .42f, z + k * .88f), xyz(x + 2.7f, .62f, z + k * .88f), .14f, .1f,
+                6, brass, PAINT);
+        if (g->door == 9) {
+            rod(m, xyz(x, .35f, z), xyz(x, 4.4f, z), .16f, .08f, 6, iron, PAINT);
+            tri(m, xyz(x, 4.35f, z), xyz(x + 2.43f, 3.8f, z + .2f), xyz(x, 3.07f, z), col, GLOW);
+        } else {
+            rod(m, xyz(x - 2.46f, 1.6f, z), xyz(x, 1.72f, z), .12f, 1.27f, 5, col, PAINT);
+            rod(m, xyz(x, 1.72f, z), xyz(x + 2.5f, 1.6f, z), 1.27f, .19f, 5, col, PAINT);
+            box(m, x, 2.03f, z, 1.29f, .63f, .92f, ice, GLOW);
+        }
+        break;
+    case 10:
+    case 20: /* Courier signs and a watchful deck surveillance array. */
+        for (int j = -1; j <= 1; j++) {
+            float h = 2.7f - j * .53f, px = x + j * 2.11f;
+            box(m, px, .24f, z, .38f, h, .44f, iron, PAINT);
+            if (g->door == 10) {
+                box(m, px, h, z, 1.92f, 1.12f, .49f, col, GLOW);
+                box(m, px, h + .4f, z, 1.6f, .12f, .52f, ice, GLOW);
+            } else {
+                box(m, px, h, z, 1.12f, .79f, 1.27f, iron, PAINT);
+                rod(m, xyz(px, h + .38f, z + .64f), xyz(px, h + .38f, z + 1.04f), .39f, .32f, 8,
+                    col, GLOW);
+            }
+        }
+        break;
+    case 11: /* Rescue pod with opposed lateral and vertical thrusters. */
+        rod(m, xyz(x, 1.08f, z), xyz(x, 2.25f, z), .5f, 1.45f, 8, col, PAINT);
+        rod(m, xyz(x, 2.25f, z), xyz(x, 3.48f, z), 1.45f, .48f, 8, ice, PAINT);
+        for (int k = -1; k <= 1; k += 2)
+            rod(m, xyz(x + k * 1.1f, 2.17f, z), xyz(x + k * 2.37f, 2.17f, z), .42f, .74f, 8, iron,
+                PAINT);
+        break;
+    case 17:
+    case 19: /* Paired optical prisms or a waterfall and its carved glyph. */
+        for (int k = -1; k <= 1; k += 2) {
+            rod(m, xyz(x + k * 2, .24f, z), xyz(x + k * 2, 2.04f, z), .84f, .56f, 6, iron, STONE);
+            rod(m, xyz(x + k * 2, 2.04f, z), xyz(x + k * 2, 2.89f, z), .32f, .9f, 4, col, GLOW);
+            rod(m, xyz(x + k * 2, 2.89f, z), xyz(x + k * 2, 4.1f, z), .9f, .12f, 4, ice, PAINT);
+        }
+        if (g->door == 19) {
+            box(m, x, .25f, z, 2.7f, 3.48f, .32f, 0x80bfbf, GLOW);
+            star(m, xyz(x, 2, z + .28f), .72f, 4, brass, iron);
+        }
+        break;
+    case 18: /* Three buildings with distinct roofs at the shared border. */
+        for (int k = -1; k <= 1; k++) {
+            float px = x + k * 2.3f;
+            box(m, px, .24f, z, 2.0f, 1.22f, 2.04f, k < 0 ? ice : k == 0 ? 0x798963 : col, STONE);
+            rod(m, xyz(px, 1.46f, z), xyz(px, 2.97f, z), 1.35f, k == 0 ? .12f : .53f, 4 + k, brass,
+                PAINT);
+        }
+        break;
+    case 21: /* Storehouse and four broad windmill sails. */
+        box(m, x, .24f, z, 3.2f, 2.65f, 2.5f, col, STONE);
+        rod(m, xyz(x, 2.89f, z), xyz(x, 4.04f, z), 2.0f, .22f, 4, wood, OAK);
+        for (int j = 0; j < 4; j++) {
+            float a = .4f + j * PI * .5f;
+            tri(m, xyz(x, 2.49f, z + 1.38f), xyz(x + 2 * cosf(a), 2.49f + 2 * sinf(a), z + 1.38f),
+                xyz(x + 1.8f * cosf(a + .39f), 2.49f + 1.8f * sinf(a + .39f), z + 1.38f), 0xe2cc9e,
+                PAINT);
+        }
+        break;
+    case 22: /* Painted sideshow wagon. */
+        for (int k = -1; k <= 1; k += 2)
+            rod(m, xyz(x + k * 2.0f, .87f, z - 1.15f), xyz(x + k * 2.0f, .87f, z + 1.15f), .63f,
+                .63f, 10, iron, PAINT);
+        box(m, x, 1.02f, z, 5.4f, 1.81f, 2.7f, col, OAK);
+        for (int j = -2; j <= 2; j++)
+            box(m, x + j, 1.62f, z, .53f, .8f, 2.73f, brass, PAINT);
+        box(m, x, 2.83f, z, 5.75f, .37f, 2.99f, 0xe0bd80, PAINT);
+        break;
+    case 24: /* Chrono induction coils and delivery pad. */
+        for (int k = -1; k <= 1; k += 2) {
+            box(m, x + k * 2.4f, .24f, z, .73f, 3.2f, .64f, iron, PAINT);
+            for (int j = 0; j < 4; j++)
+                rod(m, xyz(x + k * 2.4f, 1 + j * .62f, z), xyz(x + k * 2.4f, 1.21f + j * .62f, z),
+                    .82f, .78f, 9, brass, PAINT);
+        }
+        box(m, x, .25f, z, 2.7f, .18f, 2.7f, col, GLOW);
+        break;
+    }
+}
 static void arrival_court(Mesh *m, const Game *g)
 {
     const Expedition *e = &expeditions[g->door - 1];
@@ -413,6 +571,59 @@ static void arrival_court(Mesh *m, const Game *g)
         box(m, x, 3.18f, z, 7.78f, .24f, 2.88f, 0x405256, PAINT);
         rod(m, xyz(x, 3.42f, z), xyz(x - 1.8f, 4.35f, z), .045f, .045f, 5, 0xd8b47e, PAINT);
         rod(m, xyz(1.9f, 4.45f, z), xyz(24, 4.45f, z), .024f, .024f, 5, 0x8c7f70, PAINT);
+    } else if (g->door == 1) {
+        if (g->area == 1) {
+            box(m, x, .24f, z, 5.15f, 2.35f, 2.7f, col, OAK);
+            box(m, x, 1.21f, z, 5.18f, .99f, 2.74f, 0xf1cea2, GLOW);
+            box(m, x, 2.59f, z, 6.25f, .52f, 3.45f, 0xa66a55, PAINT);
+            for (int k = -3; k <= 3; k++)
+                box(m, x + k * .78f, 2.8f, z + 1.74f, .22f, .16f, .12f, 0xffdfa7, GLOW);
+        } else if (g->area == 2) {
+            for (int j = 0; j < 2; j++)
+                for (int k = -2; k <= 2; k++) {
+                    float px = x + k, pz = z + j * 1.22f - .65f, y = .32f + j * .32f;
+                    box(m, px, y, pz, .84f, .38f, .78f, col, PAINT);
+                    box(m, px, y + .38f, pz - .33f, .85f, .74f, .18f, col, OAK);
+                }
+        } else if (g->area == 3) {
+            box(m, x, .24f, z, 3.15f, 1.86f, 1.97f, 0x4d6767, PAINT);
+            for (int k = -1; k <= 1; k += 2)
+                rod(m, xyz(x + k * .9f, 2.58f, z), xyz(x + k * .9f, 2.58f, z + .38f), .88f, .88f,
+                    12, 0xc1a474, PAINT);
+            rod(m, xyz(x + 1.57f, 1.55f, z), xyz(x + 2.5f, 1.55f, z), .35f, .56f, 8, 0xe4c99e,
+                GLOW);
+        } else {
+            box(m, x, .24f, z, 7.1f, 4.05f, .72f, col, OAK);
+            box(m, x, 1.08f, z + .39f, 6.3f, 2.9f, .15f, 0xe5d4ad, GLOW);
+            star(m, xyz(x, 2.53f, z + .54f), 1, 7, 0x927162, 0xb49775);
+        }
+    } else if (g->door == 3 && g->area >= 2) {
+        if (g->area == 2) {
+            for (int k = -1; k <= 1; k += 2) {
+                rod(m, xyz(x + k * 1.67f, .24f, z), xyz(x + k * 1.67f, 3.5f, z), 1.3f, 1.3f, 10,
+                    col, PAINT);
+                rod(m, xyz(x + k * 1.67f, 3.5f, z), xyz(x + k * 1.67f, 4.35f, z), 1.3f, .26f, 10,
+                    0xb8a47e, PAINT);
+            }
+        } else {
+            for (int k = -1; k <= 1; k += 2)
+                box(m, x + k * 2.81f, .24f, z, .47f, 3.8f, .84f, col, PAINT);
+            box(m, x, 4.04f, z, 6.6f, .51f, .94f, 0xaaa07c, PAINT);
+            if (g->area == 3) {
+                rod(m, xyz(x, 2.01f, z), xyz(x, 4.04f, z), .07f, .07f, 5, 0x666351, PAINT);
+                present(m, x, .83f, z, 1.45f, 1.2f, 0x7c9c71);
+            } else
+                for (int k = -2; k <= 2; k++)
+                    box(m, x + k, 1.48f, z, .16f, 2.45f, .22f, 0x9cc9c5, GLOW);
+        }
+    } else if (g->door == 3 && g->area == 1) {
+        for (int j = -3; j <= 3; j++) {
+            float h = 1.15f + .65f * ((j + 4) % 3);
+            rod(m, xyz(x + j * .91f, .24f, z + .4f * (j % 2)),
+                xyz(x + j * 1.02f, h, z + .4f * (j % 2)), .63f, .40f, 5, 0x69986e, PAINT);
+            rod(m, xyz(x + j * 1.02f, h, z + .4f * (j % 2)),
+                xyz(x + j * 1.11f, h + .84f, z + .4f * (j % 2)), .40f, .02f, 5, 0xa2dfa4, GLOW);
+        }
     } else if (g->door == 3) {
         box(m, x, .55f, z, 5.4f, 1.15f, 2.75f, 0x58846a, PAINT);
         for (int j = -1; j <= 1; j += 2)
@@ -422,6 +633,8 @@ static void arrival_court(Mesh *m, const Game *g)
         for (int j = 0; j < 5; j++)
             rod(m, xyz(x + j * .42f, 1.72f, z), xyz(x + j * .42f + .2f, 2.6f + (j % 2) * .45f, z),
                 .39f, .04f, 5, 0x8be091, GLOW);
+    } else if (g->door != 1 && g->door != 5 && g->door != 12 && g->door != 14) {
+        campaign_landmark(m, g, x, z);
     } else if (e->architecture == WILD) {
         rod(m, xyz(x, .24f, z), xyz(x, 3.2f, z), 1.25f, .52f, 7, 0x765340, OAK);
         for (int j = -1; j <= 1; j++) {
@@ -443,16 +656,69 @@ static void arrival_court(Mesh *m, const Game *g)
         }
         box(m, x, 4.15f, z, 6.4f, .75f, 1.55f, col, STONE);
         star(m, xyz(x, 3.5f, z + .83f), .8f, 6, 0xe9d28f, 0xc79967);
-    } else {
-        box(m, x, .24f, z, 6.9f, 1.3f, 3.45f, col, STONE);
-        box(m, x, 1.54f, z, 5.7f, 1.65f, 2.55f, 0x4d6267, PAINT);
-        for (int i = -2; i <= 2; i++)
-            box(m, x + i, 1.96f, z, .66f, .67f, 2.57f, 0xe8c481, GLOW);
-        box(m, x, 3.19f, z, 6.30f, .22f, 2.94f, col, PAINT);
     }
     for (int j = -1; j <= 1; j += 2) {
         box(m, x + j * 3.65f, .23f, z + 1.55f, .18f, 2.12f, .18f, 0x6e5945, OAK);
         box(m, x + j * 3.65f, 2.35f, z + 1.55f, .48f, .61f, .48f, 0xffce7d, GLOW);
+    }
+}
+static void chamber_scenery(Mesh *m, const Game *g, char mark, float x, float z)
+{
+    unsigned col = expeditions[g->door - 1].colour;
+    int lit = g->task != 0;
+    if (mark == ':' || mark == '+') {
+        box(m, x, .018f, z, 3.96f, .026f, 1.4f, col, PAINT);
+        for (int sign = -1; sign <= 1; sign += 2)
+            box(m, x, .046f, z + sign * .61f, 3.96f, .015f, .075f, lit ? 0xa5dfc9 : 0xc39e76,
+                lit ? GLOW : PAINT);
+        if (mark == '+') {
+            box(m, x, lit ? 3.4f : .1f, z, 3.94f, lit ? .34f : 3.45f, 3.91f,
+                lit ? 0x497770 : 0x765346, PAINT);
+            box(m, x, lit ? 3.5f : 1.6f, z, 3.97f, .19f, 3.96f, lit ? 0xa5dfc9 : 0xedb767, GLOW);
+        }
+        return;
+    }
+    box(m, x, 0, z, 3.98f, .36f, 3.98f, 0x655e57, STONE);
+    switch (mark) {
+    case 'L': /* Marquee or station canopy */
+        box(m, x, .36f, z, 2.7f, 2.4f, 2.6f, col, OAK);
+        for (int i = -1; i <= 1; i++)
+            box(m, x + i * .76f, 1.2f, z, .57f, 1.3f, 2.67f, 0xefcea2, GLOW);
+        box(m, x, 2.76f, z, 3.95f, .47f, 3.92f, col, PAINT);
+        break;
+    case 'H': /* Machine with twin exhausts and inspection lights */
+        box(m, x, .36f, z, 3.7f, 1.44f, 3.45f, col, PAINT);
+        for (int i = -1; i <= 1; i += 2) {
+            rod(m, xyz(x + i * .94f, 1.8f, z), xyz(x + i * .94f, 3.45f, z), .54f, .42f, 8, 0x576065,
+                PAINT);
+            box(m, x + i * .92f, 1.20f, z, .6f, .25f, 3.5f, lit ? 0xadf09b : 0xf3b36e, GLOW);
+        }
+        break;
+    case 'R':
+    case 'A': /* Lens and shrine on faceted plinths */
+        rod(m, xyz(x, .36f, z), xyz(x, 1.7f, z), 1.47f, .86f, 6, col, STONE);
+        rod(m, xyz(x, 1.7f, z), xyz(x, 2.5f, z), .25f, 1.02f, mark == 'R' ? 4 : 8, 0xe0c396, PAINT);
+        rod(m, xyz(x, 2.5f, z), xyz(x, 3.55f, z), 1.02f, .05f, mark == 'R' ? 4 : 8, col, GLOW);
+        break;
+    case 'W': /* Suspended wheel and counterweight */
+        for (int i = -1; i <= 1; i += 2)
+            box(m, x + i * 1.36f, .36f, z, .42f, 3.25f, .64f, col, STONE);
+        rod(m, xyz(x, 2.55f, z - .35f), xyz(x, 2.55f, z + .35f), 1.25f, 1.25f, 10, 0xb69969, PAINT);
+        box(m, x - .85f, .37f, z + .66f, .73f, 1.15f, .7f, col, STONE);
+        break;
+    case 'F':
+    case 'S': /* Signal flags or dockside sails */
+        rod(m, xyz(x, .36f, z), xyz(x, 4.25f, z), .22f, .12f, 6, 0xb58d66, OAK);
+        tri(m, xyz(x, 4.15f, z), xyz(x + 1.65f, mark == 'S' ? 1.72f : 3.72f, z + .15f),
+            xyz(x, mark == 'S' ? 1.63f : 3.0f, z), col, GLOW);
+        break;
+    case 'T':
+    case 'B': /* Tied orchard bough or moored ember balloon */
+        rod(m, xyz(x, .36f, z), xyz(x, 2.3f, z), .6f, .22f, 6, 0x715749, OAK);
+        rod(m, xyz(x, 1.85f, z), xyz(x, 3.05f, z), .46f, 1.65f, 8, col, PAINT);
+        rod(m, xyz(x, 3.05f, z), xyz(x, 4.4f, z), 1.65f, .24f, 8, mark == 'T' ? 0x8eaa82 : 0xda9e84,
+            PAINT);
+        break;
     }
 }
 static void expedition_mesh(Mesh *m, const Game *g)
@@ -463,7 +729,14 @@ static void expedition_mesh(Mesh *m, const Game *g)
     arrival_court(m, g);
     for (int z = 0; z < MAP_SIZE; z++)
         for (int x = 0; x < MAP_SIZE; x++) {
-            if ((z == 21 && (x == 3 || x == 4)) || !campaign_wall(g, x, z))
+            if (z == 21 && (x == 3 || x == 4))
+                continue;
+            char mark = campaign_chamber_tile(g, x, z);
+            if (mark && mark != '.') {
+                chamber_scenery(m, g, mark, x * CELL, z * CELL);
+                continue;
+            }
+            if (!campaign_wall(g, x, z))
                 continue;
             float a = x * CELL, b = z * CELL;
             int variation = (x * 7 + z * 11 + g->area) % 5;
@@ -687,7 +960,38 @@ void scene_actors(Mesh *m, const Game *g, int viewer, float time, int held_tool)
         star(m,
              xyz(x, (kind == FLY && g->task != EXIT_TASK ? 4.4f : 3.9f) + .18f * sinf(time * 2), z),
              .57f, 6, 0xffde86, 0xcc9a50);
+        if (g->task < EXIT_TASK && g->phase &&
+            ((g->door == 1 && kind == FLY) || (g->door == 3 && kind == ESCORT))) {
+            unsigned signal = g->dial ? 0x8ae5ac : 0xf9bc65;
+            box(m, x, .08f, z, 1.02f, 1.52f, .9f, 0x415d5f, PAINT);
+            box(m, x, 1.43f, z, 1.06f, .25f, .96f, signal, GLOW);
+            if (g->door == 1) {
+                for (int j = -1; j <= 1; j += 2)
+                    rod(m, xyz(x + j * .38f, 4.0f, z), xyz(x + j * .38f, 4.0f, z + .27f), .34f,
+                        .34f, 10, 0xbc986a, PAINT);
+                box(m, x, 3.44f, z, .93f, .49f, .62f, 0x577b70, PAINT);
+            } else {
+                box(m, x, .09f, z, 3.55f, .07f, 3.68f, 0x838379, STONE);
+                for (int j = -1; j <= 1; j += 2)
+                    box(m, x + j * 1.6f, .16f, z, .16f, .07f, 3.6f, signal, GLOW);
+            }
+        }
+        if (g->door == 1 && g->task == EXIT_TASK) {
+            box(m, x, 3.62f, z, 3.8f, 1.95f, .18f, 0xe4d5ae, GLOW);
+            star(m, xyz(x + .74f * sinf(time), 4.55f, z + .11f), .48f, 6, 0xa76759, 0x80575c);
+        }
         if (kind == ESCORT && g->task < 3) {
+            if (g->door == 3) {
+                box(m, g->escort_x, .92f, g->escort_z - .5f, .83f, .54f, .52f, 0x7fa696, GLOW);
+                for (int j = -1; j <= 1; j += 2) {
+                    box(m, g->escort_x + j * .7f, .12f, g->escort_z, .28f, .35f, 1.9f, 0x484e48,
+                        STONE);
+                    if (g->phase)
+                        rod(m, xyz(g->escort_x + j * .31f, 1.10f, g->escort_z + .31f),
+                            xyz(g->escort_x + j * .37f, 1.65f, g->escort_z + .41f), .24f, .04f, 5,
+                            0x9ae7a4, GLOW);
+                }
+            }
             box(m, g->escort_x, .35f, g->escort_z, 1.25f, .8f, 1.7f, col, PAINT);
             box(m, g->escort_x, .11f, g->escort_z, 1.45f, .34f, 1.35f, 0x494647, STONE);
         }

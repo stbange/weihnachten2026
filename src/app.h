@@ -9,6 +9,7 @@ void lh_close(void);
 void lh_resize(int w, int h);
 void lh_start(int seats, int open, int rehearsal, int completed);
 int lh_chart(int x,int z);
+int lh_trial(int day);
 int lh_preview(int day);
 const char *lh_prompt(int seat);
 void lh_open(int open);

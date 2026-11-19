@@ -91,6 +91,7 @@ async def play(args):
                 lib.lh_preview(args.door)
             lib.lh_capture()
             print("Connected as", "host" if host else "guest", flush=True)
+            version = lib.lh_state()[0]
             keys = (c.c_float * 7)()
             remote = [0.0] * 7
             last = last_packet = last_remote = time.monotonic()
@@ -119,6 +120,10 @@ async def play(args):
                             remote = frame
                             last_remote = now
                         elif not host and numeric_frame(frame, WORDS):
+                            if frame[0] != version:
+                                raise RuntimeError(
+                                    "Game versions differ. Update both clients and reconnect."
+                                )
                             wire = lib.lh_wire()
                             for i, v in enumerate(frame):
                                 wire[i] = v

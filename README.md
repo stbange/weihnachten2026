@@ -20,7 +20,7 @@ Choose **Playtest Door 01** on the title screen for *House Lights*. Start at the
 
 Walk through eligible arches in the hall to earn the 24 individual keepsakes. Practice and calendar checkpoints are separate. Read a returned keepsake's story in the almanac. Completing the final date opens the front doors even for someone playing their first evening.
 
-These are playable campaign prototypes. They share a procedural layout system and several encounter types. The almanac describes the intended bespoke missions. In the current build an automated player following the shortest marked passages clocks 17.6 simulated minutes for Door 01 and 17.7 for Door 03. The full set spans 17.2–21.1 minutes. First-time human solo and co-op timings are still outstanding.
+These are playable campaign prototypes. Each door now combines an authored chamber and working shortcut with connecting procedural passages. The cinema and harvester missions have distinct machinery and arrival landmarks across all five sectors. The almanac describes the intended bespoke missions. In the current build an automated player following the shortest marked passages clocks 19.2 simulated minutes for Door 01 and 21.0 for Door 03. The full set spans 17.1–21.0 minutes. First-time human solo and co-op timings are still outstanding.
 
 | Mode | Controls |
 | --- | --- |
@@ -30,6 +30,14 @@ These are playable campaign prototypes. They share a procedural layout system an
 | WebXR preview | Left stick moves, right stick snap-turns, gaze aims, trigger pulses, grip uses, primary face button lifts |
 
 Choose **Play together** for split screen or a two-browser session. For a direct WebRTC game, the host sends an invitation, the guest sends a reply and the host connects. Both browsers share one authoritative mission. A WebSocket relay option supports networks that block direct connections. Friends can supply their own relay endpoint and use an eight-character room code. The static Pages site serves the game files. [Relay instructions and platform design](design/engineering.md)
+
+## Human playtests
+
+Open **Portal almanac → Playtest log**, choose a door and party, and mark a first visit only when everyone is new to it. The timed trial starts in sector one and preserves the device’s regular progress. For an online party, the browser host can select a door and **Record a network playtest** under **Play together**. [Time House Lights](https://stbange.github.io/weihnachten2026/?playtest=1) · [Time The Glass Convoy](https://stbange.github.io/weihnachten2026/?playtest=3)
+
+For the first round, have a fresh solo player and a fresh two-person party try each of these two doors. Let them discover the shutter and weighbridge on their own. After extraction, note the device, which interaction took longest to understand, and where anyone needed help. The log records active time in each sector. Solo menus, hidden tabs and lost XR tracking pause the timer. A network host’s menu leaves the party simulation running. Early exits remain visible as stopped sessions. Export finished sessions as JSON and import friends’ files in the same panel to see observed first-clear medians by door and mode.
+
+On a physical headset, open a trial link in its browser and choose **WebXR**. Use the right stick to snap-turn and the secondary face button to toggle the stereo guide. Check that the lettering aligns in both eyes, the trigger pulses, grip uses, lift works, and the floor height feels right while stationary. Record the headset, comfort rating and any alignment or locomotion issues in the result after exiting VR. The export includes reference space, observed eye count, controller actions, tracking interruptions and mean frame-callback rate. Simulated headset runs exercise the software path. Physical comfort and first-time human results require participant sessions.
 
 ## Build and test
 
@@ -71,7 +79,7 @@ python3 tests/web_game.py http://127.0.0.1:8571/
 
 Set `CHROMIUM` to use an existing Chromium executable. Add `--direct` to the browser test on a network that permits WebRTC ICE candidates. The ordinary suite starts a loopback WebSocket relay, connects two browser contexts through the visible room UI, folds an usher from the guest and checks the shared result. It also checks all 24 briefings, calendar rollover, split views, mobile controls and a simulated stereo XR session. The browser replays cover the short tutorial extraction and entry through the live December arch.
 
-GCC/gcov measured **97.38% native C unit line coverage (1,413/1,451)**. Separate normal-input replays cleared all 24 expeditions in solo calendar and split-screen practice. A native relay integration test exercises both host and guest. The browser suite also covers an actual two-peer relay session and a simulated stereo XR session. Physical phone and headset testing and first-time human pacing sessions remain release criteria. [Continuous verification](https://github.com/stbange/weihnachten2026/actions/workflows/verify.yml) · [OpenSpec capabilities](openspec/specs) · [Remaining campaign work](openspec/changes/complete-campaign/tasks.md)
+GCC/gcov measured **97.80% native C unit line coverage (1,689/1,727)**. Separate normal-input replays cleared all 24 expeditions in solo calendar and split-screen practice. A native relay integration test exercises both host and guest. The browser suite also covers an actual two-peer relay session and a simulated stereo XR session. Physical phone and headset testing and first-time human pacing sessions remain release criteria. [Continuous verification](https://github.com/stbange/weihnachten2026/actions/workflows/verify.yml) · [OpenSpec capabilities](openspec/specs) · [Remaining campaign work](openspec/changes/complete-campaign/tasks.md)
 
 ## Publishing and credits
 

@@ -228,6 +228,14 @@ static void test_expeditions(void)
                     once(&g, 1, (Input){0});
                     int b = USE;
                     if (task != 3) {
+                        if (task < EXIT_TASK && g.phase &&
+                            ((day == 1 && kind == FLY) || (day == 3 && kind == ESCORT))) {
+                            once(&g, 1, (Input){.buttons = USE});
+                            assert(g.task == task && !g.dial);
+                            once(&g, 1, (Input){.buttons = FIRE});
+                            assert(g.dial);
+                            once(&g, 1, (Input){0});
+                        }
                         if (kind == GRID) {
                             while (g.dial != 1 + (day + task + area) % 3) {
                                 once(&g, 1, (Input){.buttons = USE});
@@ -274,8 +282,32 @@ static void test_expeditions(void)
     wire[8] = 0;
     assert(!game_unpack(&copy, wire));
 }
+static void test_chamber_gates(void)
+{
+    Game g;
+    game_start(&g, 2, 24, 0, 0);
+    for (int day = 1; day <= 24; day++)
+        for (int area = 0; area < AREA_COUNT; area++) {
+            campaign_enter(&g, day, 1, area);
+            int gates = 0;
+            for (int z = 0; z < MAP_SIZE; z++)
+                for (int x = 0; x < MAP_SIZE; x++)
+                    if (campaign_chamber_tile(&g, x, z) == '+') {
+                        assert(campaign_wall(&g, x, z));
+                        g.task = 1;
+                        assert(!campaign_wall(&g, x, z));
+                        Cell from = campaign_site(&g, 0),
+                             next = campaign_next(&g, from, (Cell){x, z});
+                        assert(next.x != from.x || next.z != from.z);
+                        g.task = 0;
+                        gates++;
+                    }
+            assert(gates == 1);
+        }
+}
 int main(void)
 {
+    test_chamber_gates();
     test_expeditions();
     test_calendar();
     test_hall();

@@ -101,7 +101,7 @@ static Mesh solid = {architecture, 0, 150000}, moving = {actors, 0, 4000};
 static GLuint prog, buffers[2];
 static GLint position, normal, colour, camera, clock_id, room_id, flash_id, hand_id, mate_id;
 static GLint beacon_id,watcher_id;
-static int prev_day=-1,prev_area=-1;
+static int prev_day=-1,prev_area=-1,prev_gate=-1;
 static int prev_room = -1, prev_open = -1, prev_done = -1, prev_projected = -1;
 
 static GLuint shader(GLenum kind, const char *source)
@@ -169,11 +169,11 @@ void draw_view(const Game *g, int viewer, float time, const float matrix[16], in
                int h, int held_tool)
 {
     if (g->room != prev_room || g->open != prev_open || g->completed != prev_done ||
-        g->projected != prev_projected || (g->room==EXPEDITION && (g->area!=prev_area || g->door!=prev_day))) {
+        g->projected != prev_projected || (g->room==EXPEDITION && (g->area!=prev_area || g->door!=prev_day || (g->task!=0)!=prev_gate))) {
         scene_static(&solid, g);
         G(BindBuffer)(GL_ARRAY_BUFFER, buffers[0]);
         G(BufferData)(GL_ARRAY_BUFFER, solid.count * sizeof(Vertex), solid.v, GL_STATIC_DRAW);
-        prev_room = g->room; prev_area=g->area;prev_day=g->door;
+        prev_room = g->room; prev_area=g->area;prev_gate=g->task!=0;prev_day=g->door;
         prev_open = g->open;
         prev_done = g->completed;
         prev_projected = g->projected;

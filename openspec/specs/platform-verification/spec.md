@@ -26,3 +26,23 @@ Unit verification SHALL cover at least 95 percent of the instrumented production
 #### Scenario: Coverage gate
 - **WHEN** the measured percentage is below 95 or a production C translation unit is missing
 - **THEN** the verification command exits unsuccessfully before separate game replays
+
+### Requirement: Measured first-clear sessions
+The web playtest SHALL provide a fresh timed session, durable per-sector active times, independent trial and campaign progress, and locally exportable results.
+
+#### Scenario: A returning playtester joins a new party
+- **GIVEN** one party member has already played this door
+- **WHEN** the host records a repeat visit or stops before extraction
+- **THEN** the log preserves the run and excludes it from first-clear medians
+
+#### Scenario: A friend imports recorded results
+- **WHEN** a tester imports the same JSON export twice
+- **THEN** each party session appears once, with its original door, play mode, five sector times and comfort notes
+
+### Requirement: Headset guidance and field evidence
+Immersive play SHALL render a readable objective panel in each eye, support snap turns, and allow a tester to record tracking and control observations.
+
+#### Scenario: Seated device with interrupted tracking
+- **GIVEN** a timed WebXR session uses local reference space because floor space is unavailable
+- **WHEN** tracking is lost and returns
+- **THEN** play pauses during loss, resumes with the stereo guide, and records the interruption and reference space

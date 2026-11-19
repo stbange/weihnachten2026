@@ -1,3 +1,5 @@
+import { PlaytestLog } from './playtest.mjs';
+import { fieldGuide } from './field-guide.js';
 import { Link } from './network.js';
 import { Relay } from './relay.js';
 import { immersive } from './xr.js';
@@ -6,6 +8,37 @@ const $ = (id) => document.getElementById(id),
   canvas = $('canvas'),
   dialog = $('panel'),
   body = $('panelbody');
+let storage;
+try {
+  storage = window.localStorage;
+} catch {}
+const fieldLog = new PlaytestLog(storage);
+let resultsDue = null;
+function showFieldLog(initialDay = 1) {
+  fieldGuide({
+    log: fieldLog,
+    focusId: resultsDue?.id,
+    cards,
+    modal,
+    esc,
+    xrSupported,
+    initialDay: Number.isInteger(initialDay) ? initialDay : 1,
+    start: (day, mode, firstVisit) => {
+      start(false, mode === 'Split screen', '', mode !== 'WebXR', day, true);
+      if (mode === 'WebXR')
+        goVR(() => fieldLog.begin(day, mode, firstVisit, performance.now()));
+      else fieldLog.begin(day, mode, firstVisit, performance.now());
+    },
+  });
+  resultsDue = null;
+}
+addEventListener('pagehide', (e) => {
+  if (e.persisted) fieldLog.pause(performance.now());
+  else fieldLog.end('Stopped', performance.now());
+});
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden && !xrActive) fieldLog.pause(performance.now());
+});
 const sources = 'https://github.com/stbange/weihnachten2026/blob/main/';
 let M,
   cards = [],
@@ -99,6 +132,7 @@ function resetInput() {
 }
 function modal(section, html) {
   if (document.pointerLockElement) document.exitPointerLock();
+  if (role !== 'host') fieldLog.pause(performance.now());
   resetInput();
   $('section').textContent = section;
   body.innerHTML = html;
@@ -139,8 +173,10 @@ function start(
   online = '',
   lock = true,
   preview = 0,
+  trial = false,
 ) {
   if (!M) return;
+  fieldLog.end('Stopped', performance.now());
   if (!online) {
     link.reset();
     relay.reset();
@@ -155,7 +191,8 @@ function start(
   open = currentDay();
   if (dialog.open) closePanel();
   M._lh_start(split || role ? 2 : 1, open, rehearsal ? 1 : 0, persisted());
-  if (preview) M._lh_preview(preview);
+  if (trial) M._lh_trial(preview);
+  else if (preview) M._lh_preview(preview);
   locationUI(true);
   canvas.focus();
   chime([294, 370, 440]);
@@ -164,6 +201,7 @@ function start(
     canvas.requestPointerLock?.()?.catch?.(() => {});
 }
 function home() {
+  fieldLog.end('Stopped', performance.now());
   link.reset();
   relay.reset();
   role = '';
@@ -204,8 +242,9 @@ function almanac() {
     .join('');
   modal(
     'PORTAL ALMANAC',
-    `<h2>Twenty-four evenings</h2><p>One door opens at midnight in Warsaw each day, December 1–24. Select a door to playtest its route. Calendar clears return keepsakes to the hall.</p><p>${esc(hallStory(bits))}</p><div class="grid">${grid}</div><a class="booklink" href="${sources}design/lantern-hall.md" target="_blank" rel="noopener">Read the campaign design →</a> &nbsp; <a class="booklink" href="${sources}ART-CREDITS.md" target="_blank" rel="noopener">Art credits</a>`,
+    `<h2>Twenty-four evenings</h2><p>One door opens at midnight in Warsaw each day, December 1–24. Select a door to playtest its route. Calendar clears return keepsakes to the hall.</p><p>${esc(hallStory(bits))}</p><div class="grid">${grid}</div><p><button id="fieldnotes" class="choice">Playtest log</button></p><a class="booklink" href="${sources}design/lantern-hall.md" target="_blank" rel="noopener">Read the campaign design →</a> &nbsp; <a class="booklink" href="${sources}ART-CREDITS.md" target="_blank" rel="noopener">Art credits</a>`,
   );
+  $('fieldnotes').onclick = showFieldLog;
   body
     .querySelectorAll('[data-day]')
     .forEach((b) => (b.onclick = () => briefing(+b.dataset.day)));
@@ -231,12 +270,25 @@ function controlsText() {
 function menu() {
   modal(
     'LANTERN HALL',
-    `<h2>At the landing</h2><div class="buttons"><button id="resume" class="primary">Resume</button><button id="browse" class="choice">Portal almanac</button><button id="leave" class="choice">Return to title</button></div><details open><summary>Controls</summary>${controlsText()}</details>${!role && !split && xrSupported ? '<button id="xrhere" class="choice">Enter VR</button>' : ''}`,
+    `<h2>At the landing</h2><div class="buttons"><button id="resume" class="primary">Resume</button><button id="browse" class="choice">Portal almanac</button><button id="notebook" class="choice">Playtest log</button><button id="leave" class="choice">Return to title</button></div><details open><summary>Controls</summary>${controlsText()}</details>${!role && !split && xrSupported ? vrOptions() + '<button id="xrhere" class="choice">Enter VR</button>' : ''}`,
   );
+  $('notebook').onclick = showFieldLog;
   $('resume').onclick = closePanel;
   $('browse').onclick = almanac;
   $('leave').onclick = home;
-  if ($('xrhere')) $('xrhere').onclick = goVR;
+  if ($('xrhere')) {
+    $('xrhere').onclick = goVR;
+    for (const [id, key] of [
+      ['vrspeed', 'speed'],
+      ['vrturn', 'turn'],
+    ])
+      $(id).onchange = (e) => {
+        vrPreferences[key] = Number(e.target.value);
+        try {
+          storage?.setItem('lantern-hall.vr.v1', JSON.stringify(vrPreferences));
+        } catch {}
+      };
+  }
 }
 $('enter').onclick = () => start();
 $('practice').onclick = () => start(true);
@@ -275,7 +327,10 @@ $('chart').onclick = () => {
   $('backgame').onclick = closePanel;
 };
 function connected(newRole) {
-  start(friendsRehearse, false, newRole, true, friendsDay);
+  const timed = newRole === 'host' && friendsDay && networkTrial;
+  start(friendsRehearse, false, newRole, true, friendsDay, timed);
+  if (timed)
+    fieldLog.begin(friendsDay, 'Network host', networkFirst, performance.now());
   notify('Connected · two seats at the table');
 }
 function incoming(msg) {
@@ -300,6 +355,14 @@ function incoming(msg) {
       Math.max(-1, Math.min(1, pitch)),
     );
   } else if (role === 'guest' && msg.length === 32) {
+    if (msg[0] !== M.HEAPF32[M._lh_state() / 4]) {
+      home();
+      modal(
+        'MULTIPLAYER',
+        '<h2>Game versions differ</h2><p>Reload both clients or update the native build, then reconnect.</p>',
+      );
+      return;
+    }
     M.HEAPF32.set(msg, M._lh_wire() / 4);
     if (M._lh_receive()) events();
   }
@@ -316,13 +379,17 @@ function disconnected() {
 const link = new Link(connected, incoming, disconnected),
   relay = new Relay(connected, incoming, disconnected);
 let transport = link,
-  friendsDay = 0;
+  friendsDay = 0,
+  networkTrial = false,
+  networkFirst = false;
 function multiplayer() {
   if (!M) return;
   modal(
     'MULTIPLAYER',
-    `<h2>Pull up a chair</h2><p>Choose where to meet, then share a screen or connect two browsers.</p><label><input id="meetpractice" type="checkbox" ${friendsRehearse ? 'checked' : ''}> Meet in the short cinema rehearsal</label><label>Campaign playtest <select id="meetday"><option value="0">Calendar hall or rehearsal</option>${cards.map((c) => '<option value="' + c.day + '" ' + (friendsDay === c.day ? 'selected' : '') + '>' + c.day + ' · ' + esc(c.title) + '</option>').join('')}</select></label><div class="buttons"><button id="splits" class="primary">Start split screen</button><button id="net" class="choice">Connect browsers</button></div><details><summary>Two-player controls</summary>${controlsText()}</details>`,
+    `<h2>Pull up a chair</h2><p>Choose where to meet, then share a screen or connect two browsers.</p><label><input id="meetpractice" type="checkbox" ${friendsRehearse ? 'checked' : ''}> Meet in the short cinema rehearsal</label><label>Campaign playtest <select id="meetday"><option value="0">Calendar hall or rehearsal</option>${cards.map((c) => '<option value="' + c.day + '" ' + (friendsDay === c.day ? 'selected' : '') + '>' + c.day + ' · ' + esc(c.title) + '</option>').join('')}</select></label><details><summary>Record a network playtest</summary><p>Select a campaign door above. The host records one timed run for the party.</p><label><input id="nettrial" type="checkbox" ${networkTrial ? 'checked' : ''}> Start from sector one and record</label><label><input id="netfirst" type="checkbox" ${networkFirst ? 'checked' : ''}> Everyone is new to this door</label></details><div class="buttons"><button id="splits" class="primary">Start split screen</button><button id="net" class="choice">Connect browsers</button></div><details><summary>Two-player controls</summary>${controlsText()}</details>`,
   );
+  $('nettrial').onchange = (e) => (networkTrial = e.target.checked);
+  $('netfirst').onchange = (e) => (networkFirst = e.target.checked);
   $('meetpractice').onchange = (e) => (friendsRehearse = e.target.checked);
   $('meetday').onchange = (e) => (friendsDay = Number(e.target.value));
   $('splits').onclick = () =>
@@ -573,6 +640,11 @@ function events() {
   if (!event) return;
   const s = state();
   if (event === 3 || event === 7) {
+    if (event === 7 && fieldLog.active && s[8] === fieldLog.active.door) {
+      resultsDue = { id: fieldLog.active.id, day: s[8] };
+      fieldLog.end('Completed', performance.now());
+      if (!xrActive) showFieldLog(s[8]);
+    }
     if (event === 3 && s[6]) persist(1 << (s[8] - 1));
     chime([392, 494, 587, 784]);
   }
@@ -743,25 +815,93 @@ function duration(seconds) {
   );
 }
 let xrSupported = false;
-async function goVR() {
+const vrPreferences = { speed: 0.75, turn: 30 };
+try {
+  const saved = JSON.parse(storage?.getItem('lantern-hall.vr.v1') || '{}');
+  if ([0.5, 0.75, 1].includes(saved.speed)) vrPreferences.speed = saved.speed;
+  if ([15, 30, 45].includes(saved.turn)) vrPreferences.turn = saved.turn;
+} catch {}
+function vrOptions() {
+  const select = (id, values, key, unit) =>
+    '<select id="' +
+    id +
+    '">' +
+    values
+      .map(
+        (value) =>
+          '<option value="' +
+          value +
+          '" ' +
+          (vrPreferences[key] === value ? 'selected' : '') +
+          '>' +
+          Math.round(value * (key === 'speed' ? 100 : 1)) +
+          unit +
+          '</option>',
+      )
+      .join('') +
+    '</select>';
+  return (
+    '<details><summary>VR comfort controls</summary><label>Movement speed ' +
+    select('vrspeed', [0.5, 0.75, 1], 'speed', '%') +
+    '</label><label>Snap turn ' +
+    select('vrturn', [15, 30, 45], 'turn', '°') +
+    '</label><p>Right stick turns. Trigger pulses, grip uses and the primary face button lifts. The secondary face button hides or shows the reading panel.</p></details>'
+  );
+}
+async function goVR(onReady) {
   if (!M || role || split) return;
   if (!playing) start(false, false, '', false);
   if (dialog.open) closePanel();
   xrActive = true;
+  if (fieldLog.active) fieldLog.end('Stopped', performance.now());
   try {
     await immersive(
       M,
-      (dt) => {
-        timeVisit(state(), dt);
-        M._lh_tick(dt, 1);
+      (dt, tracked, device) => {
+        const s = state();
+        if (fieldLog.active) {
+          fieldLog.sample(performance.now(), s[22], tracked);
+          fieldLog.xrFrame(dt, tracked, device);
+        }
+        timeVisit(s, tracked ? dt : 0);
+        M._lh_tick(dt, tracked ? 1 : 0);
         events();
       },
       state,
       () => {
+        if (fieldLog.active?.mode === 'WebXR') {
+          resultsDue = { id: fieldLog.active.id, day: fieldLog.active.door };
+          fieldLog.end('Stopped', performance.now());
+        }
         xrActive = false;
+        last = 0;
+        lastVisitFrame = 0;
         resetInput();
+        if (resultsDue) showFieldLog(resultsDue.day);
       },
+      (s) => {
+        if (s[1] === 2) {
+          const [area, tool, ...steps] = M.UTF8ToString(M._lh_prompt(0)).split(
+            ' | ',
+          );
+          const recent =
+            performance.now() < toastUntil &&
+            $('toast').textContent.startsWith('Recording');
+          return [
+            s[8] + ' · ' + area + ' · ' + tool,
+            recent ? $('toast').textContent : steps.join(' · '),
+          ];
+        }
+        hud(s);
+        return [
+          $('location').textContent,
+          document.querySelector('.viewinfo')?.innerText.replace(/\n/g, ' ') ||
+            'Walk to a numbered arch',
+        ];
+      },
+      vrPreferences,
     );
+    if (typeof onReady === 'function') onReady();
   } catch (e) {
     xrActive = false;
     notify('VR session could not start · ' + e.message);
@@ -804,6 +944,12 @@ function render(t) {
     }
     const steps = M._lh_tick(dt, role !== 'guest' && (!dialog.open || !!role));
     const s = state();
+    if (fieldLog.active && s[1] === 2)
+      fieldLog.sample(
+        performance.now(),
+        s[22],
+        !document.hidden && (!dialog.open || role === 'host'),
+      );
     timeVisit(s, lastVisitFrame ? Math.min(1, (t - lastVisitFrame) / 1000) : 0);
     if (role === 'host' && (t - lastSend > 50 || s[7])) {
       transport.send(s);
@@ -839,6 +985,11 @@ async function boot() {
         xrSupported = await navigator.xr.isSessionSupported('immersive-vr');
         $('xr').hidden = !xrSupported;
       } catch {}
+    const seedDoor = Number(
+      new URLSearchParams(location.search).get('playtest'),
+    );
+    if (Number.isInteger(seedDoor) && seedDoor >= 1 && seedDoor <= 24)
+      showFieldLog(seedDoor);
   } catch (e) {
     $('loading').textContent = 'Game could not start · ' + e.message;
     console.error(e);

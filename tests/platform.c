@@ -8,6 +8,23 @@
 #include "scene.h"
 #include "app.h"
 int lh_native_main(int, char **);
+static void extract_sector(void)
+{
+    float *s = lh_state();
+    s[23] = 3;
+    assert(lh_receive());
+    for (int z = 0; z < 25; z++)
+        for (int x = 0; x < 25; x++)
+            if (lh_chart(x, z) == 2) {
+                s[10] = x * 4;
+                s[12] = z * 4;
+            }
+    assert(lh_receive());
+    lh_input(0, 0, 0, 0, 0, 0);
+    lh_tick(.04f, 1);
+    lh_input(0, 0, 0, 0, 0, USE);
+    lh_tick(.04f, 1);
+}
 int main(void)
 {
     int ready = lh_init();
@@ -33,7 +50,7 @@ int main(void)
     assert(s[2] == 24 && s[12] != s[18]);
     s[0] = 8;
     assert(!lh_receive());
-    s[0] = 3;
+    s[0] = WIRE_VERSION;
     assert(lh_receive());
     assert(lh_wire() == s && lh_near(0) == 0);
     lh_start(1, 1, 1, 0);
@@ -45,21 +62,15 @@ int main(void)
     assert(lh_chart(-1, 0) == 1 && lh_chart(1, 23) == 0);
     lh_draw(0, 0, 0);
     /* Use the actual sector exit, restart, and verify independent practice and live slots. */
-    s = lh_state();
-    s[23] = 3;
-    assert(lh_receive());
-    for (int z = 0; z < 25; z++)
-        for (int x = 0; x < 25; x++)
-            if (lh_chart(x, z) == 2) {
-                s[10] = x * 4;
-                s[12] = z * 4;
-            }
-    assert(lh_receive());
-    lh_input(0, 0, 0, 0, 0, 0);
-    lh_tick(.04f, 1);
-    lh_input(0, 0, 0, 0, 0, USE);
-    lh_tick(.04f, 1);
+    extract_sector();
     assert(lh_state()[22] == 1);
+    assert(lh_preview(24) && lh_state()[22] == 1);
+    assert(lh_trial(24) && !lh_trial(0) && lh_state()[22] == 0);
+    for (int area = 0; area < 5; area++) {
+        assert(lh_state()[22] == area);
+        extract_sector();
+    }
+    assert(lh_state()[1] == HALL && lh_event() == REHEARSAL_TICKET && !lh_state()[6]);
     assert(lh_preview(24) && lh_state()[22] == 1);
     lh_start(1, 24, 0, 0);
     s = lh_state();

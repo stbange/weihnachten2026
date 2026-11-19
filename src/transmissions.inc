@@ -1,7 +1,7 @@
 /* Sector mask, two actions, recovered message and prompts for its physical endpoints. */
-{16, PUNCH, FLY, "The missing frame", "Use the cutting bench to splice the invitation into the film", "Lift to the booth and use the reel changeover"},
+{21, PUNCH, FLY, "The missing frame", "Use the cutting bench to splice the invitation into the film", "Lift to the booth and use the reel changeover"},
 {31, FLY, PUNCH, "A candle on the wind", "Fly up and use the loose ember in the thermal", "Use the mooring winch to bank the ember"},
-{16, GRID, PUNCH, "Refinery night dispatch", "Tune the defence lamp circuit and pulse to divert its power", "Use the construction sled to raise the loading ramp"},
+{31, GRID, PUNCH, "Refinery night dispatch", "Tune the defence lamp circuit and pulse to divert its power", "Use the construction sled to raise the loading ramp"},
 {31, SHOT, FLY, "The silent bell", "Pulse the rusted release on the hanging bell", "Lift to its gallery and use the recovered clapper"},
 {31, PUNCH, GRID, "Harbour pilot's orders", "Use the pier bell to request a pilot", "Tune the answering harbour lights and pulse to confirm"},
 {20, CHARGE, PUNCH, "A seat on the walker", "Charge and release the beam at the frozen chair rack", "Use the salvage crane to load the chairs"},

@@ -82,26 +82,58 @@ def touch(browser, url, errors):
     context.close()
 
 
+def timed_trial(browser, url, errors):
+    context = browser.new_context(viewport={"width": 860, "height": 600})
+    page = visit(context, url.rstrip("/") + "/?playtest=3", 1796079599, errors)
+    expect(page.locator("#trialday")).to_have_value("3")
+    page.evaluate("localStorage.setItem('lantern-hall.sector.v1.3.1','2')")
+    page.locator("#trialday").select_option("3")
+    page.locator("#trialmode").select_option("Split screen")
+    page.locator("#firstvisit").check()
+    page.locator("#begintrial").click()
+    expect(page.locator(".view")).to_have_count(2)
+    expect(page.locator(".viewinfo").first).to_contain_text("1/5 · Survey camp")
+    home(page)
+    page.locator("#book").click()
+    page.locator("#fieldnotes").click()
+    expect(page.locator("#panelbody summary").first).to_contain_text(
+        "Split screen · Stopped"
+    )
+    page.locator("#panelbody summary").first.click()
+    page.locator("[data-device]").fill("Two game seats")
+    page.locator("[data-save]").click()
+    expect(page.locator("#logstatus")).to_contain_text("saved")
+    with page.expect_download() as download:
+        page.locator("#exportlog").click()
+    assert download.value.suggested_filename == "lantern-hall-playtests.json"
+    assert page.evaluate("localStorage.getItem('lantern-hall.sector.v1.3.1')") == "2"
+    context.close()
+
+
 def simulated_xr(browser, url, errors):
     context = browser.new_context(viewport={"width": 800, "height": 480})
     # Supply only the device boundary. The page runs its production XR code,
     # Wasm core and real GL renderer for both eyes.
     context.add_init_script("""(() => {
       const identity=new Float32Array([1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1]);
-      window.eyePasses=new Set();
+      window.eyePasses=new Set();window.guideDraws=0;
+      const draw=WebGLRenderingContext.prototype.drawArrays;
+      WebGLRenderingContext.prototype.drawArrays=function(mode,...args){
+        if(mode===this.TRIANGLE_STRIP)window.guideDraws++;return draw.call(this,mode,...args);
+      };
       WebGLRenderingContext.prototype.makeXRCompatible=async()=>{};
       window.XRWebGLLayer=class {
         constructor(){this.framebuffer=null;}
         getViewport(v){window.eyePasses.add(v.eye);return {x:v.eye==='left'?0:200,y:0,width:200,height:200};}
       };
       class Session extends EventTarget {
-        inputSources=[]; ended=false;
+        inputSources=[{handedness:'right',gamepad:{axes:[0,0,0,0],buttons:Array.from({length:6},()=>({pressed:false}))}}]; ended=false;
         updateRenderState(){}
-        async requestReferenceSpace(){return {};}
+        async requestReferenceSpace(kind){if(kind==="local-floor")throw Error("Seat-only device");return {};}
         requestAnimationFrame(fn){return requestAnimationFrame(t=>{
           if(this.ended)return;
           const views=['left','right'].map(eye=>({eye,projectionMatrix:identity,transform:{inverse:{matrix:identity}}}));
-          fn(t,{getViewerPose:()=>({views,transform:{orientation:{x:0,y:0,z:0,w:1}}})});
+          fn(t,{getViewerPose:()=>{if(this.lost){this.lostFrames=(this.lostFrames||0)+1;return null;}this.trackedFrames=(this.trackedFrames||0)+1;return {views,transform:{matrix:identity,orientation:{x:0,y:0,z:0,w:1}}};}});
         });}
         async end(){this.ended=true;this.dispatchEvent(new Event('end'));}
       }
@@ -109,10 +141,40 @@ def simulated_xr(browser, url, errors):
         requestSession:async()=>window.testHeadset=new Session()}});
     })()""")
     page = visit(context, url, 1796079600, errors)
-    page.locator("#xr").click()
-    page.wait_for_function("window.eyePasses.size === 2")
+    page.locator("#book").click()
+    page.locator("#fieldnotes").click()
+    page.locator("#trialmode").select_option("WebXR")
+    page.locator("#begintrial").click()
+    page.wait_for_function("window.eyePasses.size === 2 && window.guideDraws>=4")
+    page.evaluate("testHeadset.inputSources[0].gamepad.buttons[5].pressed=true")
+    page.wait_for_timeout(250)
+    before = page.evaluate("window.guideDraws")
+    page.wait_for_timeout(250)
+    assert page.evaluate("window.guideDraws") == before
+    page.evaluate("testHeadset.inputSources[0].gamepad.buttons[5].pressed=false")
+    page.evaluate("testHeadset.lost=true")
+    page.wait_for_function("testHeadset.lostFrames>=2")
+    page.evaluate(
+        "testHeadset.trackedFrames=0;testHeadset.lost=false;testHeadset.inputSources[0].gamepad.axes[2]=1;testHeadset.inputSources[0].gamepad.buttons[0].pressed=true"
+    )
+    page.wait_for_function("testHeadset.trackedFrames>=3")
     page.evaluate("window.testHeadset.end()")
     expect(page.locator("#hud")).to_be_visible()
+    rows = page.evaluate(
+        "Object.keys(localStorage).filter(k=>k.startsWith('lantern-hall.field-notes')).map(k=>JSON.parse(localStorage[k]))"
+    )
+    assert (
+        len(rows) == 1
+        and rows[0]["mode"] == "WebXR"
+        and rows[0]["status"] == "Stopped"
+        and rows[0]["xrFrames"] > 0
+    )
+    assert (
+        rows[0]["xrSpace"] == "local"
+        and rows[0]["xrEyes"] == 2
+        and rows[0]["trackingLosses"] >= 1
+    )
+    assert rows[0]["xrActions"] & 2 and rows[0]["xrActions"] & 16
     context.close()
 
 
@@ -256,6 +318,7 @@ if __name__ == "__main__":
         )
         desktop(browser, url, errors)
         touch(browser, url, errors)
+        timed_trial(browser, url, errors)
         simulated_xr(browser, url, errors)
         browser_clear(browser, url, rehearsal=True)
         browser_clear(browser, url, rehearsal=False)

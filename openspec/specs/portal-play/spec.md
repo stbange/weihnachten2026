@@ -50,3 +50,10 @@ Selected sectors of each expedition SHALL include a two-part encounter tied to t
 - **GIVEN** the party has uncovered the service timetable in a night-shift transmission
 - **WHEN** either player sets the points cabinet to the indicated setting and confirms the signal
 - **THEN** the chapter recording plays as a caption and the sector exit becomes available
+
+### Requirement: Authored mission chambers
+Each dated mission SHALL have a navigable authored chamber and a shared shortcut that opens after the first objective in each sector.
+
+#### Scenario: Cinema shutter and harvester weighbridge
+- **WHEN** one player pulses the booth shutter or the weighbridge relay
+- **THEN** the lit apparatus allows either player to load the reel at booth height or unload the harvester when it reaches the scale

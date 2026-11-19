@@ -49,6 +49,11 @@ static void drive_action(Game *g, int seat)
     drive_frame(g, seat, (Input){0});
     int buttons = USE;
     if (g->task != 3) {
+        if (g->task < EXIT_TASK && g->phase &&
+            ((g->door == 1 && kind == FLY) || (g->door == 3 && kind == ESCORT))) {
+            drive_frame(g, seat, (Input){.buttons = FIRE});
+            drive_frame(g, seat, (Input){0});
+        }
         if (kind == SHOT)
             buttons = FIRE;
         if (kind == CHARGE) {

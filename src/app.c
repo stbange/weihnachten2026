@@ -17,6 +17,7 @@
 static SDL_Window *window;
 static SDL_GLContext context;
 static Game game;
+static int timed_trial;
 static Input controls[2];
 static float wire[SNAP_WORDS], xr_transform[16], elapsed, accum;
 static int width = 720, height = 405;
@@ -65,6 +66,7 @@ API void lh_resize(int w, int h)
 }
 API void lh_start(int seats, int open, int rehearsal, int done)
 {
+    timed_trial = 0;
     memset(controls, 0, sizeof(controls));
     accum = 0;
     game_start(&game, seats, open, rehearsal, done);
@@ -114,11 +116,20 @@ API int lh_chart(int x, int z)
     campaign_target(&game, &tx, &tz);
     return tx == x * CELL && tz == z * CELL ? 2 : 0;
 }
+API int lh_trial(int day)
+{
+    if (day < 1 || day > 24)
+        return 0;
+    timed_trial = 1;
+    campaign_enter(&game, day, 1, 0);
+    return 1;
+}
 API int lh_preview(int day)
 {
     if (day < 1 || day > 24)
         return 0;
     campaign_enter(&game, day, 1, 0);
+    timed_trial = 0;
     resume_sector();
     return 1;
 }
@@ -169,9 +180,11 @@ API int lh_tick(float dt, int simulate)
         game_step(&game, controls, 1.f / 60.f);
         if (game.room == EXPEDITION && room == HALL)
             resume_sector();
-        else if (room == EXPEDITION && game.room == HALL)
-            checkpoint(game.door, practice, 0);
-        else if (game.room == EXPEDITION && game.area != area)
+        else if (room == EXPEDITION && game.room == HALL) {
+            if (!timed_trial)
+                checkpoint(game.door, practice, 0);
+            timed_trial = 0;
+        } else if (!timed_trial && game.room == EXPEDITION && game.area != area)
             checkpoint(game.door, practice, game.area);
         accum -= 1.f / 60.f;
         steps++;

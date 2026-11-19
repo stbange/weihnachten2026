@@ -22,6 +22,8 @@ typedef struct {
 extern const Expedition expeditions[24];
 void campaign_enter(Game *g, int day, int rehearsal, int area);
 void campaign_tick(Game *g, const Input in[2], float dt);
+const char *campaign_chamber_name(const Game *g);
+char campaign_chamber_tile(const Game *g, int x, int z);
 int campaign_wall(const Game *g, int x, int z);
 Cell campaign_site(const Game *g, int index);
 Cell campaign_next(const Game *g, Cell from, Cell to);
