@@ -1,4 +1,6 @@
 #include "app.h"
+#include "campaign.h"
+#include <stdlib.h>
 #include "draw.h"
 #include <SDL3/SDL.h>
 #include <math.h>
@@ -67,14 +69,69 @@ API void lh_start(int seats, int open, int rehearsal, int done)
     accum = 0;
     game_start(&game, seats, open, rehearsal, done);
 }
-API void lh_open(int open)
-{
-    game.open = (int)fmaxf(0, fminf(24, open));
+/* Keep separate sector checkpoints for the live calendar and playtests. */
+#ifdef __EMSCRIPTEN__
+EM_JS(int, checkpoint, (int day,int practice,int write_area), {
+    try {
+        const key='lantern-hall.sector.v1.'+day+'.'+practice;
+        if(write_area>=0)localStorage.setItem(key,String(write_area));
+        return Number(localStorage.getItem(key))|0;
 }
-API int lh_today(double epoch)
+catch(e) { return 0; }
+});
+#else
+static int checkpoint(int day, int practice, int write_area)
 {
-    return calendar_open((int64_t)epoch);
+    char *path = SDL_GetPrefPath("Lantern Hall", "Advent 2026");
+    if (!path)
+        return 0;
+    char file[1200];
+    snprintf(file, sizeof(file), "%ssector-v1-%02d-%d", path, day, practice);
+    SDL_free(path);
+    if (write_area >= 0) {
+        char value = (char)('0' + write_area);
+        SDL_SaveFile(file, &value, 1);
+        return write_area;
+    }
+    size_t bytes;
+    char *data = SDL_LoadFile(file, &bytes);
+    int area = data && bytes == 1 ? data[0] - '0' : 0;
+    SDL_free(data);
+    return area;
 }
+#endif
+static void resume_sector(void)
+{
+    int area = checkpoint(game.door, game.rehearsal, -1);
+    if (area > 0 && area < AREA_COUNT)
+        campaign_enter(&game, game.door, game.rehearsal, area);
+}
+API int lh_chart(int x, int z)
+{
+    if (game.room != EXPEDITION || campaign_wall(&game, x, z))
+        return 1;
+    float tx, tz;
+    campaign_target(&game, &tx, &tz);
+    return tx == x * CELL && tz == z * CELL ? 2 : 0;
+}
+API int lh_preview(int day)
+{
+    if (day < 1 || day > 24)
+        return 0;
+    campaign_enter(&game, day, 1, 0);
+    resume_sector();
+    return 1;
+}
+API const char *lh_prompt(int seat)
+{
+    static char result[320];
+    result[0] = 0;
+    if (game.room == EXPEDITION && (unsigned)seat < 2)
+        campaign_prompt(&game, seat, result, sizeof(result));
+    return result;
+}
+API void lh_open(int open) { game.open = (int)fmaxf(0, fminf(24, open)); }
+API int lh_today(double epoch) { return calendar_open((int64_t)epoch); }
 API void lh_input(int who, float forward, float side, float turn, float tilt, int buttons)
 {
     if ((unsigned)who < 2)
@@ -108,16 +165,20 @@ API int lh_tick(float dt, int simulate)
     int steps = 0;
     accum += dt;
     while (accum >= 1.f / 60.f) {
+        int room = game.room, area = game.area, practice = game.rehearsal;
         game_step(&game, controls, 1.f / 60.f);
+        if (game.room == EXPEDITION && room == HALL)
+            resume_sector();
+        else if (room == EXPEDITION && game.room == HALL)
+            checkpoint(game.door, practice, 0);
+        else if (game.room == EXPEDITION && game.area != area)
+            checkpoint(game.door, practice, game.area);
         accum -= 1.f / 60.f;
         steps++;
     }
     return steps;
 }
-API int lh_near(int who)
-{
-    return game_near(&game, who);
-}
+API int lh_near(int who) { return game_near(&game, who); }
 API int lh_event(void)
 {
     int event = game.event;
@@ -129,18 +190,9 @@ API float *lh_state(void)
     game_pack(&game, wire);
     return wire;
 }
-API float *lh_wire(void)
-{
-    return wire;
-}
-API int lh_receive(void)
-{
-    return game_unpack(&game, wire);
-}
-API float *lh_matrix(void)
-{
-    return xr_transform;
-}
+API float *lh_wire(void) { return wire; }
+API int lh_receive(void) { return game_unpack(&game, wire); }
+API float *lh_matrix(void) { return xr_transform; }
 API void lh_xr_eye(int viewer, int x, int y, int w, int h)
 {
     draw_view(&game, viewer, elapsed, xr_transform, x, y, w, h, 0);
@@ -188,11 +240,17 @@ int lh_saved(void)
     SDL_free(path);
     size_t bytes = 0;
     char *value = SDL_LoadFile(file, &bytes);
-    int result = value && bytes == 1 && value[0] == '1';
+    int result = 0;
+    if (value && bytes <= 8) {
+        char *end;
+        long n = strtol(value, &end, 10);
+        if (end == value + bytes && n >= 0 && n <= 0xffffff)
+            result = (int)n;
+    }
     SDL_free(value);
     return result;
 }
-void lh_save_ticket(void)
+void lh_save_ticket(int earned)
 {
     char *path = SDL_GetPrefPath("Lantern Hall", "Advent 2026");
     if (!path)
@@ -200,51 +258,95 @@ void lh_save_ticket(void)
     char file[1200];
     SDL_snprintf(file, sizeof(file), "%sticket-v1", path);
     SDL_free(path);
-    SDL_SaveFile(file, "1", 1);
+    char bits[12];
+    int count = snprintf(bits, sizeof(bits), "%d", (earned | lh_saved()) & 0xffffff);
+    SDL_SaveFile(file, bits, count);
+}
+
+/* Feed the same native input sample to local play or the relay client. */
+int lh_native_input(float values[7])
+{
+    SDL_Event e;
+    int result = 1;
+    float yaw = 0, pitch = 0;
+    while (SDL_PollEvent(&e)) {
+        if (e.type == SDL_EVENT_QUIT || (e.type == SDL_EVENT_KEY_DOWN && e.key.key == SDLK_ESCAPE))
+            return 0;
+        if (e.type == SDL_EVENT_MOUSE_MOTION) {
+            yaw += e.motion.xrel * .0035f;
+            pitch -= e.motion.yrel * .0035f;
+        }
+        if (e.type == SDL_EVENT_WINDOW_RESIZED) {
+            width = e.window.data1;
+            height = e.window.data2;
+        }
+        if (e.type == SDL_EVENT_KEY_DOWN && e.key.key == SDLK_R && !e.key.repeat)
+            result = 2;
+    }
+    const bool *k = SDL_GetKeyboardState(NULL);
+    values[0] = k[SDL_SCANCODE_W] - k[SDL_SCANCODE_S];
+    values[1] = k[SDL_SCANCODE_D] - k[SDL_SCANCODE_A];
+    values[2] = k[SDL_SCANCODE_RIGHT] - k[SDL_SCANCODE_LEFT];
+    values[3] = k[SDL_SCANCODE_UP] - k[SDL_SCANCODE_DOWN];
+    values[4] = k[SDL_SCANCODE_E] * USE +
+                (k[SDL_SCANCODE_F] || (SDL_GetMouseState(NULL, NULL) & SDL_BUTTON_LMASK)) * FIRE +
+                k[SDL_SCANCODE_SPACE] * BOOST;
+    values[5] = yaw;
+    values[6] = pitch;
+    return result;
+}
+void lh_capture(void)
+{
+    SDL_SetWindowRelativeMouseMode(window, true);
+    SDL_GL_SetSwapInterval(1);
+}
+void lh_native_title(int seat)
+{
+    const char *goal = game.room == HALL         ? "WASD move | E inspect | R rehearse Door 01"
+                       : game.room == EXPEDITION ? lh_prompt(seat)
+                       : game.folded != 3        ? "Aim and F to shrink both paper ushers"
+                       : !game.projected ? "Space to boost to the left balcony, E at projector"
+                                         : "Return to entrance and press E";
+    char title[220];
+    snprintf(title, sizeof(title), "Lantern Hall | %s | %d/24 doors open", goal, game.open);
+    if (game.room == HALL && game_near(&game, seat))
+        snprintf(title, sizeof(title), "Lantern Hall | Door %02d | %s", game_near(&game, seat),
+                 game_near(&game, seat) > game.open ? "Sealed until its December date"
+                                                    : "Walk through");
+    SDL_SetWindowTitle(window, title);
 }
 
 int main(int argc, char **argv)
 {
     if (!lh_init())
         return 1;
-    int split = 0, rehearsal = 0, smoke = 0;
+    int split = 0, rehearsal = 0, smoke = 0, day = 0;
     for (int i = 1; i < argc; i++) {
         if (!strcmp(argv[i], "--split"))
             split = 1;
         if (!strcmp(argv[i], "--rehearsal"))
             rehearsal = 1;
+        if (!strcmp(argv[i], "--door") && i + 1 < argc)
+            day = atoi(argv[++i]);
         if (!strcmp(argv[i], "--smoke"))
             smoke = 1;
     }
     lh_start(1 + split, calendar_open((int64_t)time(NULL)), rehearsal, lh_saved());
-    SDL_SetWindowRelativeMouseMode(window, true);
-    SDL_GL_SetSwapInterval(1);
+    if (day)
+        lh_preview(day);
+    lh_capture();
     Uint64 last = SDL_GetTicksNS();
     int run = 1, frames = 0;
     while (run) {
-        SDL_Event e;
-        while (SDL_PollEvent(&e)) {
-            if (e.type == SDL_EVENT_QUIT)
-                run = 0;
-            if (e.type == SDL_EVENT_MOUSE_MOTION)
-                lh_aim(0, e.motion.xrel * .0035f, -e.motion.yrel * .0035f);
-            if (e.type == SDL_EVENT_WINDOW_RESIZED) {
-                width = e.window.data1;
-                height = e.window.data2;
-            }
-            if (e.type == SDL_EVENT_KEY_DOWN && e.key.key == SDLK_ESCAPE)
-                run = 0;
-            if (e.type == SDL_EVENT_KEY_DOWN && e.key.key == SDLK_R && !e.key.repeat)
-                lh_start(1 + split, calendar_open((int64_t)time(NULL)), 1, game.completed);
-        }
+        float input[7];
+        int action = lh_native_input(input);
+        if (!action)
+            break;
+        if (action == 2)
+            lh_start(1 + split, calendar_open((int64_t)time(NULL)), 1, game.completed);
+        lh_input(0, input[0], input[1], input[2], input[3], (int)input[4]);
+        lh_aim(0, input[5], input[6]);
         const bool *k = SDL_GetKeyboardState(NULL);
-        int a = k[SDL_SCANCODE_E] * USE +
-                (k[SDL_SCANCODE_F] || ((SDL_GetMouseState(NULL, NULL) & SDL_BUTTON_LMASK) != 0)) *
-                    FIRE +
-                k[SDL_SCANCODE_SPACE] * BOOST;
-        lh_input(0, k[SDL_SCANCODE_W] - k[SDL_SCANCODE_S], k[SDL_SCANCODE_D] - k[SDL_SCANCODE_A],
-                 k[SDL_SCANCODE_RIGHT] - k[SDL_SCANCODE_LEFT],
-                 k[SDL_SCANCODE_UP] - k[SDL_SCANCODE_DOWN], a);
         lh_input(1, k[SDL_SCANCODE_I] - k[SDL_SCANCODE_K], k[SDL_SCANCODE_L] - k[SDL_SCANCODE_J],
                  k[SDL_SCANCODE_O] - k[SDL_SCANCODE_U], 0,
                  k[SDL_SCANCODE_H] * USE + k[SDL_SCANCODE_Y] * FIRE + k[SDL_SCANCODE_N] * BOOST);
@@ -254,19 +356,8 @@ int main(int argc, char **argv)
         lh_open(calendar_open((int64_t)time(NULL)));
         lh_draw(0, split, 0);
         if (game.event == TICKET && game.completed)
-            lh_save_ticket();
-        const char *goal = game.room == HALL  ? "WASD move | E inspect | R rehearse Door 01"
-                           : game.folded != 3 ? "Aim and F to shrink both paper ushers"
-                           : !game.projected  ? "Space to boost to the left balcony, E at projector"
-                                              : "Return to entrance and press E";
-        char title[220];
-        snprintf(title, sizeof(title), "Lantern Hall | %s | %d/24 doors open", goal, game.open);
-        if (game.room == HALL && game_near(&game, 0))
-            snprintf(title, sizeof(title), "Lantern Hall | Door %02d | %s", game_near(&game, 0),
-                     game_near(&game, 0) > game.open ? "Sealed until its December date"
-                     : game_near(&game, 0) == 1      ? "Walk through"
-                                                     : "Mission in the portal almanac");
-        SDL_SetWindowTitle(window, title);
+            lh_save_ticket(game.completed);
+        lh_native_title(0);
         lh_event();
         if (smoke && ++frames == 3)
             run = 0;

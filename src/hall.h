@@ -2,10 +2,20 @@
 #define LANTERN_HALL_H
 #include <stdint.h>
 
-enum { HALL, CINEMA };
+enum { HALL, CINEMA, EXPEDITION };
 enum { USE = 1, FIRE = 2, BOOST = 4 };
-enum { NO_EVENT, FOLDED, PROJECTED, TICKET, OPEN_BRIEF, ENTERED, LOCKED, REHEARSAL_TICKET };
-enum { SNAP_WORDS = 22 };
+enum {
+    NO_EVENT,
+    FOLDED,
+    PROJECTED,
+    TICKET,
+    OPEN_BRIEF,
+    ENTERED,
+    LOCKED,
+    REHEARSAL_TICKET,
+    OBJECTIVE
+};
+enum { SNAP_WORDS = 32 };
 typedef struct {
     float x, y, z, yaw, pitch, fuel;
     int previous;
@@ -19,7 +29,8 @@ typedef struct {
 typedef struct {
     Player player[2];
     int room, seats, open, rehearsal, folded, projected, completed, event, door;
-    float flash[2];
+    int area, task, phase, dial;
+    float escort_x, escort_z, clock, stun, charge[2], flash[2];
 } Game;
 
 int calendar_open(int64_t epoch);

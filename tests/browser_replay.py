@@ -46,6 +46,10 @@ def browser_clear(browser, url, rehearsal):
         assert "Door 01" in status.inner_text(), status.inner_text()
         hold("e", 3)
         assert "live calendar" in page.locator("#location").inner_text().lower()
+        assert "Tram terminus" in status.inner_text(), status.inner_text()
+        assert "1/5" in status.inner_text()
+        context.close()
+        return
     hold("a", 31)
     hold("f", 3)
     assert "1/2" in status.inner_text(), status.inner_text()

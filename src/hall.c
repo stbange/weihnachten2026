@@ -1,19 +1,10 @@
-#include "hall.h"
+#include "campaign.h"
 #include <math.h>
 #include <string.h>
 
-static float bound(float v, float lo, float hi)
-{
-    return fminf(hi, fmaxf(lo, v));
-}
-static float sq(float x)
-{
-    return x * x;
-}
-static float distance2(float x, float z, float a, float b)
-{
-    return sq(x - a) + sq(z - b);
-}
+static float bound(float v, float lo, float hi) { return fminf(hi, fmaxf(lo, v)); }
+static float sq(float x) { return x * x; }
+static float distance2(float x, float z, float a, float b) { return sq(x - a) + sq(z - b); }
 
 int calendar_open(int64_t epoch)
 {
@@ -62,7 +53,7 @@ void game_start(Game *g, int seats, int open, int rehearsal, int completed)
     memset(g, 0, sizeof(*g));
     g->seats = seats == 2 ? 2 : 1;
     g->open = (int)bound(open, 0, 24);
-    g->completed = !!completed;
+    g->completed = completed & 0xffffff;
     if (rehearsal)
         game_enter(g, 1);
     else
@@ -72,6 +63,7 @@ void game_start(Game *g, int seats, int open, int rehearsal, int completed)
 void game_enter(Game *g, int rehearsal)
 {
     g->room = CINEMA;
+    g->door = 1;
     g->rehearsal = !!rehearsal;
     g->folded = 0;
     g->projected = 0;
@@ -182,8 +174,8 @@ static int interact(Game *g, int who, int use)
         if (!door)
             return 0;
         g->door = door;
-        if (door == 1 && g->open >= 1 && (use || fabsf(p->x) > 7.16f)) {
-            game_enter(g, 0);
+        if (door <= g->open && (use || fabsf(p->x) > 7.16f)) {
+            campaign_enter(g, door, 0, 0);
             return 1;
         }
         if (use)
@@ -195,7 +187,7 @@ static int interact(Game *g, int who, int use)
     } else if (use && g->projected && distance2(p->x, p->z, 0, 10) < 5.f) {
         int ticket = g->rehearsal ? REHEARSAL_TICKET : TICKET;
         if (!g->rehearsal)
-            g->completed = 1;
+            g->completed |= 1;
         game_hall(g);
         g->event = ticket;
         return 1;
@@ -205,6 +197,10 @@ static int interact(Game *g, int who, int use)
 
 void game_step(Game *g, const Input in[2], float dt)
 {
+    if (g->room == EXPEDITION) {
+        campaign_tick(g, in, dt);
+        return;
+    }
     for (int i = 0; i < g->seats; ++i) {
         int pressed = in[i].buttons & ~g->player[i].previous;
         g->player[i].previous = in[i].buttons;
@@ -220,7 +216,17 @@ void game_step(Game *g, const Input in[2], float dt)
 /* A versioned numeric wire layout, independent of C structure packing. */
 void game_pack(const Game *g, float out[SNAP_WORDS])
 {
-    out[0] = 1;
+    out[0] = 2;
+    out[22] = g->area;
+    out[23] = g->task;
+    out[24] = g->phase;
+    out[25] = g->dial;
+    out[26] = g->escort_x;
+    out[27] = g->escort_z;
+    out[28] = g->clock;
+    out[29] = g->stun;
+    out[30] = g->charge[0];
+    out[31] = g->charge[1];
     out[1] = g->room;
     out[2] = g->open;
     out[3] = g->rehearsal;
@@ -244,21 +250,37 @@ void game_pack(const Game *g, float out[SNAP_WORDS])
 
 int game_unpack(Game *g, const float in[SNAP_WORDS])
 {
-    const int limits[] = {1, 1, 24, 1, 3, 1, 1, REHEARSAL_TICKET, 24, 2};
+    const int limits[] = {2, EXPEDITION, 24, 1, 3, 1, 0xffffff, OBJECTIVE, 24, 2};
     for (int i = 0; i < SNAP_WORDS; ++i)
         if (!isfinite(in[i]))
             return 0;
     for (int i = 0; i < 10; ++i)
         if (in[i] < 0 || in[i] > limits[i] || in[i] != floorf(in[i]))
             return 0;
-    if (in[0] != 1 || in[9] < 1)
+    const int extra_limits[] = {4, 3, 1, 3, 96, 96, 120, 6, 1, 1};
+    for (int i = 22; i < SNAP_WORDS; i++)
+        if (in[i] < 0 || in[i] > extra_limits[i - 22] || (i < 26 && floorf(in[i]) != in[i]))
+            return 0;
+    int expedition = in[1] == EXPEDITION;
+    if (in[0] != 2 || in[9] < 1 || ((expedition || in[7] == TICKET) && in[8] < 1))
         return 0;
     for (int i = 0; i < 2; ++i) {
         const float *v = in + 10 + 6 * i;
-        if (fabsf(v[0]) > 8 || v[1] < 0 || v[1] > 5 || fabsf(v[2]) > 30 || fabsf(v[3]) > 3.15f ||
+        if ((expedition ? (v[0] < 0 || v[0] > 96) : fabsf(v[0]) > 8) || v[1] < 0 || v[1] > 5 ||
+            (expedition ? (v[2] < 0 || v[2] > 96) : fabsf(v[2]) > 30) || fabsf(v[3]) > 3.15f ||
             fabsf(v[4]) > 1.13f || v[5] < 0 || v[5] > 1)
             return 0;
     }
+    g->area = in[22];
+    g->task = in[23];
+    g->phase = in[24];
+    g->dial = in[25];
+    g->escort_x = in[26];
+    g->escort_z = in[27];
+    g->clock = in[28];
+    g->stun = in[29];
+    g->charge[0] = in[30];
+    g->charge[1] = in[31];
     g->room = (int)in[1];
     g->open = (int)in[2];
     g->rehearsal = (int)in[3];

@@ -46,6 +46,13 @@ def desktop(browser, url, errors):
         expect(page.locator("#panelbody h2")).not_to_be_empty()
         page.locator("#backbook").click()
     page.locator("#close").click()
+    page.locator("#featured").click()
+    expect(page.locator(".viewinfo")).to_contain_text("Tram terminus")
+    page.evaluate("document.exitPointerLock?.()")
+    page.locator("#chart").click()
+    expect(page.locator("#chartmap")).to_be_visible()
+    page.locator("#backgame").click()
+    home(page)
     page.locator("#enter").click()
     expect(page.locator("#location")).to_contain_text("0/24 open")
     page.evaluate("Date.now = () => 1796079600 * 1000")
@@ -117,6 +124,11 @@ def connect_screen(page):
 def peers(browser, url, errors, relay_url=None):
     first = browser.new_context(viewport={"width": 760, "height": 480})
     second = browser.new_context(viewport={"width": 760, "height": 480})
+    second.add_init_script("""const parse=JSON.parse;JSON.parse=(...args)=>{
+        const value=parse(...args);
+        if(Array.isArray(value)&&value.length===32)window.observedFrame=value;
+        return value;
+    };""")
     host = visit(first, url, 1796079600, errors)
     guest = visit(second, url, 1796079599, errors)
     connect_screen(host)
@@ -150,24 +162,68 @@ def peers(browser, url, errors, relay_url=None):
     guest.locator("#browse").click()
     expect(guest.locator(".day.ready")).to_have_count(1)
     guest.locator("#close").click()
-    # Host and guest see a single shared target count. Strafing left crosses the first usher’s
-    # sightline. Repeated pulses tolerate differences in software GL frame rate.
+    # Use a snapshot actually received by the guest to stop on the usher sightline.
+    # The only commands sent to the game are ordinary keyboard events.
     guest.bring_to_front()
     guest.keyboard.down("a")
     try:
-        for _ in range(18):
-            guest.keyboard.down("f")
-            guest.wait_for_timeout(85)
-            guest.keyboard.up("f")
-            guest.wait_for_timeout(55)
-            if "1/2" in host.locator(".viewinfo").inner_text():
-                break
+        guest.wait_for_function("window.observedFrame?.[16] < -1.7", timeout=18000)
     finally:
         guest.keyboard.up("a")
+    guest.wait_for_timeout(160)
+    for _ in range(7):
+        guest.keyboard.down("f")
+        guest.wait_for_timeout(170)
+        guest.keyboard.up("f")
+        guest.wait_for_timeout(170)
+        if "1/2" in host.locator(".viewinfo").inner_text():
+            break
     expect(host.locator(".viewinfo")).to_contain_text("1/2", timeout=7000)
     expect(guest.locator(".viewinfo")).to_contain_text("1/2", timeout=7000)
     first.close()
     second.close()
+
+
+def native_host(browser, url, errors, relay_url, library):
+    peer_script = Path(__file__).resolve().parents[1] / "scripts/native_peer.py"
+    env = dict(os.environ, SDL_VIDEODRIVER="offscreen")
+    peer = subprocess.Popen(
+        [
+            sys.executable,
+            str(peer_script),
+            relay_url,
+            "--library",
+            str(library),
+            "--door",
+            "3",
+        ],
+        stdout=subprocess.PIPE,
+        text=True,
+        env=env,
+    )
+    context = browser.new_context(viewport={"width": 760, "height": 480})
+    try:
+        code = peer.stdout.readline().strip().split()[-1]
+        guest = visit(context, url, 1796079599, errors)
+        connect_screen(guest)
+        guest.locator("#relay-details summary").click()
+        guest.locator("#relay-url").fill(relay_url)
+        guest.locator("#relay-code").fill(code)
+        guest.locator("#relay-join").click()
+        expect(guest.locator("#location")).to_contain_text(
+            "Door 03 · playtest", timeout=18000
+        )
+        expect(guest.locator(".viewinfo")).to_contain_text("Survey camp")
+        guest.keyboard.down("ArrowRight")
+        guest.wait_for_timeout(500)
+        guest.keyboard.up("ArrowRight")
+        guest.evaluate("document.exitPointerLock?.()")
+        guest.locator("#chart").click()
+        expect(guest.locator("#chartmap")).to_be_visible()
+    finally:
+        context.close()
+        peer.terminate()
+        peer.wait(timeout=6)
 
 
 if __name__ == "__main__":
@@ -177,6 +233,11 @@ if __name__ == "__main__":
         "--direct",
         action="store_true",
         help="also verify direct WebRTC on a network allowing ICE candidates",
+    )
+    args.add_argument(
+        "--native-runtime",
+        type=Path,
+        help="also connect Chromium to this native SDL3 library",
     )
     options = args.parse_args()
     url = options.url
@@ -207,6 +268,14 @@ if __name__ == "__main__":
         try:
             port = int(relay.stdout.readline().strip().split()[-1])
             peers(browser, url, errors, f"ws://127.0.0.1:{port}")
+            if options.native_runtime:
+                native_host(
+                    browser,
+                    url,
+                    errors,
+                    f"ws://127.0.0.1:{port}",
+                    options.native_runtime,
+                )
         finally:
             relay.terminate()
             relay.wait(timeout=5)
@@ -215,5 +284,5 @@ if __name__ == "__main__":
         browser.close()
     assert not errors, errors
     print(
-        "Browser acceptance passed: 24 briefings, midnight rollover, split views, mobile touch, simulated stereo XR, full rehearsal and live clears, and two networked browsers."
+        "Browser acceptance passed: 24 briefings, midnight rollover, split views, mobile touch, simulated stereo XR, tutorial extraction and live campaign entry, and two networked browsers."
     )

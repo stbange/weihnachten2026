@@ -14,7 +14,13 @@ The concept preserves the supplied order, from Duke Nukem 3D to the first Red Al
 
 ## What you can play today
 
-The C/SDL3/OpenGL rehearsal includes a walkable hall with all 24 arches and a small cinema. Choose **Rehearse Door 01** at any time. Fold both paper ushers, boost onto the balcony along the left wall, start the projector and punch out at the green entrance door. A rehearsal does not earn a calendar stamp. A live clear saves the ticket on the device. The other 23 doors have complete design treatments and browsable briefings. The 20-minute timings belong to the full campaign.
+Choose **Playtest Door 01** on the title screen for *House Lights*. Start at the tram terminus, collect and punch tickets, fold paper ushers, and lift reels to the raised booths. The **Cinema tutorial** button opens the original short auditorium exercise.
+
+**Portal almanac → a date → Playtest mission** opens any of the 24 expeditions before December. Each currently has five sectors, shared objectives, a route guide on the floor and a star gate. The browser's **Map** shows the destination and both players. Hold Pulse and release for charged tools. For escorts, stay within twelve metres and bring the follower to the dock. Returning to the same door resumes at the start of the last sector reached.
+
+Walk through eligible arches in the hall to earn the 24 individual keepsakes. Practice and calendar checkpoints are separate. Read a returned keepsake's story in the almanac. Completing the final date opens the front doors even for someone playing their first evening.
+
+These are playable campaign prototypes. They share a procedural layout system and several encounter types. The almanac describes the intended bespoke missions. In the current build an automated player following the shortest marked passages clocks 17.4 simulated minutes for Door 01 and 17.1 for Door 03. The full set spans 11.9–19.4 minutes. First-time human solo and co-op timings are still outstanding.
 
 | Mode | Controls |
 | --- | --- |
@@ -35,7 +41,16 @@ cmake --build build/native --config Release
 ctest --test-dir build/native -C Release --output-on-failure
 ```
 
-Run `lantern-hall` for the calendar, or pass `--rehearsal` and optionally `--split`. Press R to enter rehearsal in a native session. Native co-op in this build is local.
+Run `lantern-hall` for the calendar, `--door 1` through `--door 24` for a campaign playtest, or `--rehearsal` for the cinema tutorial. Add `--split` for a second local player.
+
+For network play on Windows or Linux, install Python 3.10+ and `websockets>=14,<17`. The native build places `native_peer.py` beside the game library. Point it at the same relay used by the web game. The host gets an eight-character room code. The browser can join from **Play together → Connect browsers → Connect through a WebSocket relay**. A native player can also join a browser host.
+
+```sh
+python native_peer.py wss://your-relay.example --door 3
+python native_peer.py wss://your-relay.example --join ROOMCODE
+```
+
+To run a local relay, use `python scripts/relay.py` and enter `ws://127.0.0.1:8765` on the same machine. Public browser sessions use a TLS relay. [Relay setup](design/engineering.md)
 
 With Emscripten **4.0.20** active, build and serve the web version. It uses the SDK’s SDL3 port.
 
@@ -44,7 +59,7 @@ bash scripts/build-web.sh
 python3 -m http.server 8571 --directory dist
 ```
 
-Verification uses OpenSpec 2.1.0, GCC/gcov, SDL3, an offscreen Mesa OpenGL driver, Python and Playwright. The coverage gate counts **all four hand-written production C translation units** and fails below 95% executed lines. The separate input replays and browser tests do not inflate this number.
+Verification uses OpenSpec 2.1.0, GCC/gcov, SDL3, an offscreen Mesa OpenGL driver, Python and Playwright. The coverage gate counts **all five hand-written production C translation units** and fails below 95% executed lines. The separate input replays and browser tests do not inflate this number.
 
 ```sh
 npx --yes @fission-ai/openspec@2.1.0 validate --all --strict --no-interactive
@@ -54,9 +69,9 @@ python3 -m playwright install chromium
 python3 tests/web_game.py http://127.0.0.1:8571/
 ```
 
-Set `CHROMIUM` to use an existing Chromium executable. Add `--direct` to the browser test on a network that permits WebRTC ICE candidates. The ordinary suite starts a loopback WebSocket relay, connects two browser contexts through the visible room UI, folds an usher from the guest and checks the shared result. It also checks all 24 briefings, calendar rollover, split views, mobile controls and a simulated stereo XR session. Two full browser replays drive the normal keyboard controls from entry to extraction and verify that only a live clear earns a stamp.
+Set `CHROMIUM` to use an existing Chromium executable. Add `--direct` to the browser test on a network that permits WebRTC ICE candidates. The ordinary suite starts a loopback WebSocket relay, connects two browser contexts through the visible room UI, folds an usher from the guest and checks the shared result. It also checks all 24 briefings, calendar rollover, split views, mobile controls and a simulated stereo XR session. The browser replays cover the short tutorial extraction and entry through the live December arch.
 
-GCC 14.2 measured **96.73% native C unit line coverage (770/796)**. Both the gameplay rules and scene construction reached 100%. Four separate input replays completed the cinema. The GitHub Actions browser job also passed the direct WebRTC invitation/reply test. The release check built the Windows x86-64 executable, ran the Linux application against real offscreen OpenGL, and compiled and played the Emscripten build in Chromium. The XR device path is experimental. Headset comfort, physical mobile devices and native Windows gameplay still need hands-on playtests. [Continuous verification](https://github.com/stbange/weihnachten2026/actions/workflows/verify.yml) · [OpenSpec capabilities](openspec/specs) · [Remaining campaign work](openspec/changes/complete-campaign/tasks.md)
+GCC/gcov measured **97.33% native C unit line coverage (1,387/1,425)**. Separate normal-input replays cleared all 24 expeditions in solo calendar and split-screen practice. A native relay integration test exercises both host and guest. The browser suite also covers an actual two-peer relay session and a simulated stereo XR session. Physical phone and headset testing and first-time human pacing sessions remain release criteria. [Continuous verification](https://github.com/stbange/weihnachten2026/actions/workflows/verify.yml) · [OpenSpec capabilities](openspec/specs) · [Remaining campaign work](openspec/changes/complete-campaign/tasks.md)
 
 ## Publishing and credits
 

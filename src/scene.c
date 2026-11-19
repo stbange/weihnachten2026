@@ -1,37 +1,20 @@
 #include "scene.h"
+#include "campaign.h"
 #include <math.h>
 #include <string.h>
 
 #define PI 3.14159265f
 enum { PAINT, OAK = 42, FLOOR = 85, STONE = 135, GLOW = 255 };
-static Vec xyz(float x, float y, float z)
-{
-    return (Vec){x, y, z};
-}
-static Vec plus(Vec a, Vec b)
-{
-    return xyz(a.x + b.x, a.y + b.y, a.z + b.z);
-}
-static Vec minus(Vec a, Vec b)
-{
-    return xyz(a.x - b.x, a.y - b.y, a.z - b.z);
-}
-static Vec scale(Vec a, float f)
-{
-    return xyz(a.x * f, a.y * f, a.z * f);
-}
-static float dot(Vec a, Vec b)
-{
-    return a.x * b.x + a.y * b.y + a.z * b.z;
-}
+static Vec xyz(float x, float y, float z) { return (Vec){x, y, z}; }
+static Vec plus(Vec a, Vec b) { return xyz(a.x + b.x, a.y + b.y, a.z + b.z); }
+static Vec minus(Vec a, Vec b) { return xyz(a.x - b.x, a.y - b.y, a.z - b.z); }
+static Vec scale(Vec a, float f) { return xyz(a.x * f, a.y * f, a.z * f); }
+static float dot(Vec a, Vec b) { return a.x * b.x + a.y * b.y + a.z * b.z; }
 static Vec cross(Vec a, Vec b)
 {
     return xyz(a.y * b.z - a.z * b.y, a.z * b.x - a.x * b.z, a.x * b.y - a.y * b.x);
 }
-static Vec unit(Vec a)
-{
-    return scale(a, 1.f / fmaxf(.0001f, sqrtf(dot(a, a))));
-}
+static Vec unit(Vec a) { return scale(a, 1.f / fmaxf(.0001f, sqrtf(dot(a, a)))); }
 
 static void tri(Mesh *m, Vec a, Vec b, Vec c, unsigned col, int mat)
 {
@@ -154,7 +137,7 @@ static void portal(Mesh *m, int day, const Game *g)
     int sign = x < 0 ? 1 : -1, ready = day <= g->open;
     float face = x + sign * .1f;
     unsigned fill = ready ? 0x32776b : 0x334b49;
-    unsigned edge = (day == 1 && g->completed) ? 0xd7ab4a : (ready ? 0xe0ad62 : 0xa88b60);
+    unsigned edge = (g->completed & (1 << (day - 1))) ? 0xd7ab4a : (ready ? 0xe0ad62 : 0xa88b60);
     box(m, x, 0, z, .19f, 2.36f, 2.20f, fill, OAK);
     for (int i = 0; i < 14; i++) {
         float a = PI * i / 14, b = PI * (i + 1) / 14;
@@ -196,6 +179,39 @@ static void chandelier(Mesh *m, float z, float y, float r)
     }
 }
 
+/* Each row is an eight-pixel silhouette of an object recovered from a portal. */
+static const unsigned char mementos[24][8] = {{0, 0x7e, 0xff, 0xdb, 0xff, 0x7e, 0, 0},
+                                              {0x18, 0x3c, 0x18, 0x3c, 0x3c, 0x3c, 0x3c, 0x7e},
+                                              {0x3c, 0x7e, 0xe7, 0xdb, 0xdb, 0xe7, 0x7e, 0x3c},
+                                              {0x18, 0x18, 0x18, 0x18, 0x3c, 0x7e, 0x7e, 0x3c},
+                                              {0x10, 0x18, 0x1c, 0x5e, 0x10, 0xff, 0x7e, 0x3c},
+                                              {0x62, 0x62, 0x7e, 0x02, 0x7e, 0x24, 0x42, 0x81},
+                                              {0xff, 0x81, 0xbd, 0x81, 0xad, 0x81, 0xbd, 0xff},
+                                              {0, 0x7e, 0xff, 0xb5, 0xf7, 0xff, 0x7e, 0},
+                                              {0x60, 0x7c, 0x7f, 0x63, 0x60, 0x40, 0x40, 0xe0},
+                                              {0, 0xff, 0xc3, 0xa5, 0x99, 0xc3, 0xff, 0},
+                                              {0x18, 0x3c, 0x7e, 0xdb, 0xe7, 0x7e, 0x3c, 0x18},
+                                              {0x7e, 0xc3, 0xdb, 0xc3, 0xdb, 0xc3, 0x7f, 0x3e},
+                                              {0, 0x66, 0xff, 0x99, 0xbd, 0x99, 0xff, 0x18},
+                                              {0x06, 0x0c, 0x38, 0x7c, 0x7c, 0x7c, 0xfe, 0x38},
+                                              {0x7c, 0xc6, 0xde, 0xc6, 0xd6, 0xc6, 0xfe, 0x7c},
+                                              {0, 0x7e, 0x7e, 0x18, 0x18, 0x18, 0x18, 0x10},
+                                              {0x03, 0x07, 0x0e, 0x1c, 0x38, 0x70, 0xc0, 0xff},
+                                              {0x24, 0x7e, 0xe7, 0xbd, 0xbd, 0xe7, 0x7e, 0x24},
+                                              {0x3c, 0x7e, 0xe7, 0xc3, 0xdb, 0xc3, 0xff, 0x7e},
+                                              {0x7e, 0xff, 0x66, 0x7e, 0x66, 0x66, 0xff, 0x7e},
+                                              {0, 0x18, 0x3c, 0x76, 0xf3, 0xff, 0x7e, 0},
+                                              {0x7e, 0xff, 0x99, 0xbd, 0xdb, 0x99, 0xff, 0x7e},
+                                              {0x81, 0x42, 0x24, 0x99, 0x5a, 0x3c, 0x18, 0x7e},
+                                              {0, 0, 0x3c, 0x7e, 0xff, 0xff, 0xc3, 0x81}};
+static void keepsake(Mesh *m, int day, float x, float y, float z, float pixel)
+{
+    for (int row = 0; row < 8; row++)
+        for (int col = 0; col < 8; col++)
+            if (mementos[day - 1][row] & (128 >> col))
+                box(m, x + (col - 3.5f) * pixel, y + (7 - row) * pixel, z, pixel, pixel, pixel * 2,
+                    row % 3 == 0 ? 0xeac986 : expeditions[day - 1].colour, PAINT);
+}
 static void hall_mesh(Mesh *m, const Game *g)
 {
     box(m, 0, -.25f, -3, 16.45f, .25f, 52, 0x9c8d75, FLOOR);
@@ -270,8 +286,23 @@ static void hall_mesh(Mesh *m, const Game *g)
             rod(m, xyz(3.45f + s * .56f, 1.22f, z), xyz(3.45f + s * .56f, 1.25f, z), .22f, .23f, 10,
                 0xd9cbb0, PAINT);
         }
-    if (g->completed)
-        present(m, 3.45f, 1.24f, -7.2f, .35f, .16f, 0xe3ad65);
+    if ((g->completed & 0x3f) == 0x3f) {
+        box(m, 0, 2.8f, -27.4f, 4.6f, 2.8f, .12f, 0xd9cfa8, GLOW);
+        star(m, xyz(0, 4.23f, -27.25f), .8f, 6, 0xb57657, 0x7e654d);
+    }
+    if ((g->completed & 0xfc0) == 0xfc0)
+        for (int i = 0; i < 20; i++)
+            box(m, .89f, .05f, 20 - i * 2.25f, .075f, .02f, 2.1f, 0x98c9aa, GLOW);
+    if ((g->completed & 0x3f000) == 0x3f000)
+        for (int i = 0; i < 6; i++)
+            star(m, xyz(3.45f, 2.9f, -7.3f - i * .8f), .20f, 4, 0xf0d59a, 0xa97455);
+    if (g->completed & (1 << 23)) {
+        box(m, 0, 0, -27.15f, 2.8f, 2.35f, .14f, 0xeac28d, GLOW);
+        box(m, 1.65f, 0, -26.6f, .16f, 2.45f, 1.35f, 0x716247, OAK);
+    }
+    for (int i = 0; i < 24; i++)
+        if (g->completed & (1 << i))
+            keepsake(m, i + 1, 2.86f + (i % 3) * .56f, 1.24f, -7.2f - (i / 3) * .65f, .055f);
 }
 
 static void cinema_mesh(Mesh *m, const Game *g)
@@ -322,23 +353,180 @@ static void cinema_mesh(Mesh *m, const Game *g)
         box(m, -.62f + i * 1.24f, .95f, 10.63f, .17f, .36f, .12f, 0xe1b77c, PAINT);
 }
 
+static void district_landmark(Mesh *m, const Game *g, float x, float z)
+{
+    /* The landmark sits on a solid tile, leaving the four-metre passages clear. */
+    if (g->door == 1) {
+        switch (g->area) {
+        case 0:
+            box(m, x, 3.6f, z, 3.4f, 1.6f, 2, 0x41817a, PAINT);
+            for (int i = -1; i <= 1; i++)
+                box(m, x + i, 4.2f, z, .72f, .65f, 2.02f, 0xf3cf91, GLOW);
+            break;
+        case 1:
+            box(m, x, 4.1f, z, 3.9f, .85f, 3.9f, 0x713544, PAINT);
+            for (int i = -2; i <= 2; i++)
+                box(m, x + .68f * i, 4.44f, z, .2f, .24f, 3.92f, 0xffdb82, GLOW);
+            break;
+        case 2:
+            for (int i = -1; i <= 1; i++) {
+                box(m, x + i, 3.7f, z, .8f, .25f, .84f, 0xb35453, PAINT);
+                box(m, x + i, 3.94f, z + .35f, .8f, .74f, .18f, 0x8e3c46, OAK);
+            }
+            break;
+        case 3:
+            box(m, x, 3.7f, z, 2, 1, 1.6f, 0x426964, PAINT);
+            for (int i = -1; i <= 1; i += 2)
+                rod(m, xyz(x + .6f * i, 5, z), xyz(x + .6f * i, 5, z + .45f), .64f, .64f, 9,
+                    0xe4b56c, PAINT);
+            break;
+        case 4:
+            box(m, x, 3.7f, z, 3.9f, 2.7f, .3f, 0xeddbac, GLOW);
+            star(m, xyz(x, 5.02f, z + .17f), .9f, 8, 0x9b6353, 0xbe865f);
+            break;
+        }
+    } else if (g->door == 3) {
+        for (int j = -1; j <= 1; j++)
+            rod(m, xyz(x + j, 3.7f, z), xyz(x + j + .3f, 5.5f + .55f * (j == 0), z), .64f, .04f, 5,
+                j ? 0x6bb878 : 0xacdf9a, GLOW);
+    }
+}
+static void arrival_court(Mesh *m, const Game *g)
+{
+    const Expedition *e = &expeditions[g->door - 1];
+    unsigned col = e->colour;
+    const float x = 14, z = 84;
+    box(m, x, 0, z, 7.9f, .24f, 3.9f, 0x8c8278, STONE);
+    if (g->door == 1 && g->area == 0) {
+        /* Brass trolley, illuminated windows, roof collector and two street rails. */
+        for (int j = -1; j <= 1; j += 2) {
+            box(m, x, .26f, z + j * .97f, 9.5f, .075f, .13f, 0xbba787, PAINT);
+            for (int i = -1; i <= 1; i += 2)
+                rod(m, xyz(x + i * 2.65f, .63f, z + j * .83f),
+                    xyz(x + i * 2.65f, .63f, z + j * 1.15f), .50f, .50f, 10, 0x38444b, PAINT);
+        }
+        box(m, x, .75f, z, 7.65f, 1.25f, 2.72f, 0x366960, PAINT);
+        box(m, x, 1.64f, z, 7.68f, .14f, 2.77f, 0xe3b778, PAINT);
+        box(m, x, 1.98f, z, 7.30f, 1.2f, 2.6f, 0x775347, OAK);
+        for (int j = -3; j <= 3; j++)
+            box(m, x + j, 2.09f, z, .79f, .91f, 2.65f, 0xf5cc8d, GLOW);
+        box(m, x, 3.18f, z, 7.78f, .24f, 2.88f, 0x405256, PAINT);
+        rod(m, xyz(x, 3.42f, z), xyz(x - 1.8f, 4.35f, z), .045f, .045f, 5, 0xd8b47e, PAINT);
+        rod(m, xyz(1.9f, 4.45f, z), xyz(24, 4.45f, z), .024f, .024f, 5, 0x8c7f70, PAINT);
+    } else if (g->door == 3) {
+        box(m, x, .55f, z, 5.4f, 1.15f, 2.75f, 0x58846a, PAINT);
+        for (int j = -1; j <= 1; j += 2)
+            box(m, x, .24f, z + j * 1.24f, 5.8f, .65f, .64f, 0x394748, STONE);
+        box(m, x - 1.5f, 1.7f, z, 1.7f, 1.12f, 2.15f, 0x53787b, PAINT);
+        box(m, x - 1.5f, 2.01f, z, 1.52f, .53f, 2.17f, 0xc4dfb4, GLOW);
+        for (int j = 0; j < 5; j++)
+            rod(m, xyz(x + j * .42f, 1.72f, z), xyz(x + j * .42f + .2f, 2.6f + (j % 2) * .45f, z),
+                .39f, .04f, 5, 0x8be091, GLOW);
+    } else if (e->architecture == WILD) {
+        rod(m, xyz(x, .24f, z), xyz(x, 3.2f, z), 1.25f, .52f, 7, 0x765340, OAK);
+        for (int j = -1; j <= 1; j++) {
+            rod(m, xyz(x, 1.85f, z), xyz(x + j * 2.1f, 3.6f, z + j * .3f), .31f, .14f, 6, 0x8f654b,
+                OAK);
+            rod(m, xyz(x + j * 2.1f, 3, z), xyz(x + j * 2.1f, 5.5f - (j != 0) * .8f, z), 1.65f,
+                .05f, 7, col, PAINT);
+        }
+    } else if (e->architecture == DOCK) {
+        rod(m, xyz(x - 3.1f, 1.1f, z), xyz(x + 3.1f, 1.1f, z), .55f, 1.20f, 5, col, OAK);
+        rod(m, xyz(x, .4f, z), xyz(x, 4.95f, z), .12f, .075f, 7, 0xb29572, OAK);
+        tri(m, xyz(x + .14f, 4.7f, z), xyz(x + 2.9f, 2.30f, z), xyz(x + .14f, 2.20f, z), 0xe3cfa2,
+            PAINT);
+    } else if (e->architecture == VAULT) {
+        for (int i = -1; i <= 1; i += 2) {
+            rod(m, xyz(x + i * 2.4f, .24f, z), xyz(x + i * 2.4f, 3.8f, z), .68f, .45f, 7, col,
+                STONE);
+            box(m, x + i * 2.4f, 3.7f, z, 1.5f, .45f, 1.5f, 0xd3b484, STONE);
+        }
+        box(m, x, 4.15f, z, 6.4f, .75f, 1.55f, col, STONE);
+        star(m, xyz(x, 3.5f, z + .83f), .8f, 6, 0xe9d28f, 0xc79967);
+    } else {
+        box(m, x, .24f, z, 6.9f, 1.3f, 3.45f, col, STONE);
+        box(m, x, 1.54f, z, 5.7f, 1.65f, 2.55f, 0x4d6267, PAINT);
+        for (int i = -2; i <= 2; i++)
+            box(m, x + i, 1.96f, z, .66f, .67f, 2.57f, 0xe8c481, GLOW);
+        box(m, x, 3.19f, z, 6.30f, .22f, 2.94f, col, PAINT);
+    }
+    for (int j = -1; j <= 1; j += 2) {
+        box(m, x + j * 3.65f, .23f, z + 1.55f, .18f, 2.12f, .18f, 0x6e5945, OAK);
+        box(m, x + j * 3.65f, 2.35f, z + 1.55f, .48f, .61f, .48f, 0xffce7d, GLOW);
+    }
+}
+static void expedition_mesh(Mesh *m, const Game *g)
+{
+    const Expedition *e = &expeditions[g->door - 1];
+    static const unsigned grounds[] = {0x746872, 0x536d58, 0x617176, 0x746754, 0x736555};
+    box(m, 48, -.3f, 48, 100, .3f, 100, grounds[e->architecture], FLOOR);
+    arrival_court(m, g);
+    for (int z = 0; z < MAP_SIZE; z++)
+        for (int x = 0; x < MAP_SIZE; x++) {
+            if ((z == 21 && (x == 3 || x == 4)) || !campaign_wall(g, x, z))
+                continue;
+            float a = x * CELL, b = z * CELL;
+            int variation = (x * 7 + z * 11 + g->area) % 5;
+            float height = 3.6f + variation * .55f;
+            unsigned col = e->colour;
+            if ((g->door == 1 || g->door == 3) && variation == 0) {
+                box(m, a, 0, b, CELL, 3.7f, CELL, col, STONE);
+                district_landmark(m, g, a, b);
+                continue;
+            }
+            switch (e->architecture) {
+            case CITY:
+                box(m, a, 0, b, CELL, height, CELL, col, STONE);
+                box(m, a, height - .65f, b, 4.02f, .29f, 4.02f, 0xe8b879, GLOW);
+                if (variation == 0)
+                    box(m, a, height, b, 3, .8f, 2.7f, 0x566974, PAINT);
+                break;
+            case WILD:
+                box(m, a, 0, b, CELL, 2, CELL, 0x766c60, STONE);
+                rod(m, xyz(a, 1.9f, b), xyz(a, height + 2, b), 2.45f, .05f, 7, col, OAK);
+                break;
+            case WORKS:
+                box(m, a, 0, b, CELL, height - .6f, CELL, 0x59666b, PAINT);
+                box(m, a, height - .8f, b, 4.01f, .3f, 4.01f, col, GLOW);
+                rod(m, xyz(a, height - .6f, b), xyz(a, height + 1, b), 1.35f, 1.05f, 8, col, PAINT);
+                break;
+            case VAULT:
+                box(m, a, 0, b, CELL, height, CELL, col, STONE);
+                box(m, a, height - .45f, b, 4.06f, .4f, 4.06f, 0xc2ab85, STONE);
+                break;
+            case DOCK:
+                box(m, a, 0, b, CELL, 2.8f, CELL, 0x795d47, OAK);
+                box(m, a, 2.8f, b, 3.8f, height - 2, 3.8f, col, PAINT);
+                rod(m, xyz(a, height + .7f, b), xyz(a, height + 2.2f, b), .12f, .1f, 5, 0xdecdae,
+                    OAK);
+                break;
+            }
+        }
+    for (int i = 1; i <= 7; i++) {
+        Cell c = campaign_site(g, i);
+        float x = c.x * CELL, z = c.z * CELL;
+        box(m, x, .005f, z, 2.8f, .055f, 2.8f, e->colour, PAINT);
+        for (int sign = -1; sign <= 1; sign += 2)
+            box(m, x + sign * 1.3f, .06f, z, .12f, .09f, 2.8f, 0xeccc87, GLOW);
+    }
+}
 void scene_static(Mesh *m, const Game *g)
 {
     m->count = 0;
     if (g->room == HALL)
         hall_mesh(m, g);
+    else if (g->room == EXPEDITION)
+        expedition_mesh(m, g);
     else
         cinema_mesh(m, g);
 }
 
 /* Billboard paper actors are cut from a tiny original pixel pattern. */
-static void usher(Mesh *m, int id, int folded)
+static void paper_usher(Mesh *m, float x, float z, int folded)
 {
     static const char *pattern[] = {"...ggg...", "..ggggg..", ".ggggggg.", "...fff...", "...f.f...",
                                     "...fff...", "..rrrrr..", ".rrggrrr.", "rrrgggrrr", "ffrgggrff",
                                     "..rrrrr..", "..bb.bb..", "..bb.bb..", ".bbb.bbb."};
-    float x, z;
-    usher_position(id, &x, &z);
     float unit = folded ? .053f : .235f;
     for (int row = 0; row < 14; row++)
         for (int c = 0; c < 9; c++) {
@@ -355,6 +543,17 @@ static void usher(Mesh *m, int id, int folded)
         }
 }
 
+static void attach_tool(Mesh *m, const Player *p, int start)
+{
+    float sy = sinf(p->yaw), cy = cosf(p->yaw), sp = sinf(p->pitch), cp = cosf(p->pitch);
+    Vec right = xyz(cy, 0, sy), forward = xyz(sy * cp, sp, -cy * cp), up = cross(right, forward);
+    Vec eye = xyz(p->x, p->y + 1.55f, p->z);
+    for (int i = start; i < m->count; i++) {
+        Vec v = m->v[i].pos, n = m->v[i].normal;
+        m->v[i].pos = plus(eye, plus(scale(right, v.x), plus(scale(up, v.y), scale(forward, v.z))));
+        m->v[i].normal = plus(scale(right, n.x), plus(scale(up, n.y), scale(forward, n.z)));
+    }
+}
 static void pocket_projector(Mesh *m, const Player *p, float flash)
 {
     int start = m->count;
@@ -371,22 +570,133 @@ static void pocket_projector(Mesh *m, const Player *p, float flash)
     rod(m, xyz(.206f, -.09f, .64f), xyz(.206f, -.09f, .644f), .04f, .04f, 8,
         flash > .06f ? 0xffe6a2 : 0x9ac9b9, GLOW);
     box(m, .26f, -.187f, .363f, .092f, .094f, .132f, 0xa4694b, PAINT);
-    float sy = sinf(p->yaw), cy = cosf(p->yaw), sp = sinf(p->pitch), cp = cosf(p->pitch);
-    Vec right = xyz(cy, 0, sy), forward = xyz(sy * cp, sp, -cy * cp), up = cross(right, forward);
-    Vec eye = xyz(p->x, p->y + 1.55f, p->z);
-    for (int i = start; i < m->count; i++) {
-        Vec v = m->v[i].pos, n = m->v[i].normal;
-        m->v[i].pos = plus(eye, plus(scale(right, v.x), plus(scale(up, v.y), scale(forward, v.z))));
-        m->v[i].normal = plus(scale(right, n.x), plus(scale(up, n.y), scale(forward, n.z)));
-    }
+    attach_tool(m, p, start);
 }
 
+static void expedition_tool(Mesh *m, const Game *g, int viewer)
+{
+    const Player *p = &g->player[viewer];
+    int k = campaign_kind(g);
+    if (g->door == 1) {
+        pocket_projector(m, p, g->flash[viewer]);
+        return;
+    }
+    int start = m->count;
+    unsigned col = expeditions[g->door - 1].colour;
+    unsigned lamp = g->charge[viewer] > .64f || g->flash[viewer] > .05f ? 0xffec9c : 0x91c4b6;
+    if (k == CHARGE && (g->door == 14 || g->door == 17 || g->door == 19)) {
+        rod(m, xyz(.16f, -.28f, .36f), xyz(.27f, .14f, .58f), .029f, .021f, 6, 0xb18b68, OAK);
+        rod(m, xyz(.27f, .14f, .58f), xyz(.29f, .22f, .61f), .047f, .005f, 6, lamp, GLOW);
+    } else if (k == SHOT || k == CHARGE) {
+        box(m, .20f, -.17f, .47f, .15f, .10f, .29f, col, PAINT);
+        for (int j = -1; j <= 1; j += 2)
+            rod(m, xyz(.20f + j * .042f, -.11f, .5f), xyz(.20f + j * .042f, -.11f, .74f), .031f,
+                .025f, 6, lamp, PAINT);
+    } else if (k == ESCORT || k == ROUTE) {
+        rod(m, xyz(.21f, -.24f, .48f), xyz(.21f, .12f, .50f), .012f, .010f, 6, 0xd0a870, OAK);
+        tri(m, xyz(.21f, .11f, .50f), xyz(.36f, .078f, .51f), xyz(.21f, .004f, .50f), col, GLOW);
+    } else if (k == CARRY && g->phase) {
+        present(m, .20f, -.24f, .54f, .22f, .18f, col);
+    } else {
+        box(m, .21f, -.20f, .47f, .20f, .12f, .16f, col, PAINT);
+        for (int j = 0; j < 4; j++)
+            box(m, .145f + j * .043f, -.075f, .47f, .027f, .01f, .08f,
+                j == g->dial ? lamp : 0x46514e, PAINT);
+    }
+    box(m, .21f, -.25f, .39f, .1f, .11f, .1f, 0x9a674b, OAK);
+    attach_tool(m, p, start);
+}
+static void sentinel(Mesh *m, const Game *g, float x, float z, float time)
+{
+    const Expedition *e = &expeditions[g->door - 1];
+    float y = g->stun > 0 ? .10f : .82f;
+    if (g->door == 1) {
+        paper_usher(m, x, z, g->stun > 0);
+        return;
+    }
+    unsigned body = e->colour;
+    if (e->architecture == WILD) {
+        float wing = .18f * sinf(time * 6.0f);
+        rod(m, xyz(x, y, z), xyz(x, y + .62f, z), .18f, .37f, 6, body, PAINT);
+        for (int i = -1; i <= 1; i += 2)
+            tri(m, xyz(x + i * .14f, y + .48f, z), xyz(x + i * 1.15f, y + .82f + wing, z - .2f),
+                xyz(x + i * .62f, y + .19f, z + .26f), 0xe4be8f, PAINT);
+    } else if (e->architecture == WORKS) {
+        box(m, x, y, z, .9f, .58f, .68f, body, PAINT);
+        for (int i = -1; i <= 1; i += 2) {
+            box(m, x + i * .52f, y - .24f, z, .25f, .50f, .9f, 0x535454, STONE);
+            box(m, x + i * .28f, y + .59f, z, .16f, .15f, .2f, 0xfad299, GLOW);
+        }
+    } else if (e->architecture == VAULT) {
+        rod(m, xyz(x, y - .2f, z), xyz(x, y + .78f, z), .68f, .21f, 5, body, OAK);
+        rod(m, xyz(x, y + .65f, z), xyz(x, y + 1.15f, z), .4f, .03f, 5, 0xd0a986, PAINT);
+    } else {
+        box(m, x, y, z, .60f, .68f, .52f, body, PAINT);
+        box(m, x, y + .69f, z, .50f, .33f, .43f, 0xebc891, GLOW);
+        box(m, x, y + 1.02f, z, .76f, .13f, .67f, 0x4a514c, PAINT);
+    }
+}
 void scene_actors(Mesh *m, const Game *g, int viewer, float time, int held_tool)
 {
     m->count = 0;
+    if (g->room == EXPEDITION) {
+        float x, z, gx, gz;
+        campaign_target(g, &x, &z);
+        campaign_guard(g, &gx, &gz);
+        unsigned col = expeditions[g->door - 1].colour;
+        int kind = campaign_action(g);
+        if (g->task == 3) {
+            if (g->area == 4)
+                keepsake(m, g->door, x, 1.0f, z, .12f);
+            for (int s = -1; s <= 1; s += 2)
+                box(m, x + s, 0, z, .3f, 3.4f, .5f, col, STONE);
+            box(m, x, 3.1f, z, 2.3f, .3f, .5f, 0xe2be77, GLOW);
+        } else if (g->door == 1 && kind == SHOT) {
+            paper_usher(m, x, z, 0);
+            if (g->phase) {
+                Cell first = campaign_site(g, 1 + 2 * g->task);
+                paper_usher(m, first.x * CELL, first.z * CELL, 1);
+            }
+        } else if (kind == FLY) {
+            rod(m, xyz(x, 0, z), xyz(x, 3.4f, z), .33f, .2f, 6, col, PAINT);
+            box(m, x, 3.4f, z, 1.75f, .24f, 1.4f, 0xd6aa66, GLOW);
+        } else if (kind == SHOT || kind == CHARGE) {
+            rod(m, xyz(x, .8f, z), xyz(x, 1.6f, z), .12f, .7f, 6, col, PAINT);
+            rod(m, xyz(x, 1.6f, z), xyz(x, 2.4f, z), .7f, .06f, 6, 0xeacc99, GLOW);
+        } else if (kind == GRID) {
+            box(m, x, 0, z, 1.2f, 1.45f, .8f, col, PAINT);
+            for (int i = 0; i < 4; i++)
+                box(m, x - .45f + i * .3f, 1.46f, z, .18f, .14f, .4f,
+                    i == g->dial ? 0xffd962 : 0x524b47, i == g->dial ? GLOW : PAINT);
+        } else
+            present(m, x, .07f, z, 1.2f, .85f, col);
+        star(m, xyz(x, (kind == FLY && g->task < 3 ? 4.4f : 3.9f) + .18f * sinf(time * 2), z), .57f,
+             6, 0xffde86, 0xcc9a50);
+        if (kind == ESCORT && g->task < 3) {
+            box(m, g->escort_x, .35f, g->escort_z, 1.25f, .8f, 1.7f, col, PAINT);
+            box(m, g->escort_x, .11f, g->escort_z, 1.45f, .34f, 1.35f, 0x494647, STONE);
+        }
+        /* An in-world guide remains visible in stereo and native split-screen. */
+        const Player *p = &g->player[viewer];
+        Cell from = {(int)roundf(p->x / CELL), (int)roundf(p->z / CELL)};
+        Cell next = campaign_next(g, from, (Cell){(int)(x / CELL), (int)(z / CELL)});
+        float ax = next.x - from.x, az = next.z - from.z;
+        if (ax || az) {
+            float cx = from.x * CELL, cz = from.z * CELL;
+            tri(m, xyz(cx + ax * 1.45f, .09f, cz + az * 1.45f),
+                xyz(cx + ax * .45f + az * .35f, .09f, cz + az * .45f - ax * .35f),
+                xyz(cx + ax * .45f - az * .35f, .09f, cz + az * .45f + ax * .35f), 0xf3cc80, GLOW);
+        }
+        sentinel(m, g, gx, gz, time);
+        if (held_tool)
+            expedition_tool(m, g, viewer);
+    }
     if (g->room == CINEMA) {
-        for (int i = 0; i < 2; i++)
-            usher(m, i, g->folded & (1 << i));
+        for (int i = 0; i < 2; i++) {
+            float x, z;
+            usher_position(i, &x, &z);
+            paper_usher(m, x, z, g->folded & (1 << i));
+        }
         if (held_tool)
             pocket_projector(m, &g->player[viewer], g->flash[viewer]);
     }

@@ -39,8 +39,7 @@ static void run(int seats, int rehearsal)
     Game g;
     game_start(&g, seats, rehearsal ? 0 : 1, rehearsal, 0);
     if (!rehearsal) {
-        walk(&g, 0, -6.8f, 18.5f, 0);
-        act(&g, 0, USE);
+        game_enter(&g,0);
         assert(g.room == CINEMA && g.event == ENTERED);
     }
     for (int i = 0; i < 2; i++) {
@@ -62,6 +61,7 @@ static void run(int seats, int rehearsal)
     assert(g.room == HALL && g.completed == !rehearsal);
     assert(g.event == (rehearsal ? REHEARSAL_TICKET : TICKET));
 }
+#include "campaign_replay.h"
 int main(void)
 {
     run(1, 1);
@@ -69,5 +69,7 @@ int main(void)
     run(2, 1);
     run(2, 0);
     puts("Four complete input replays passed: solo/split, rehearsal/live.");
+    for(int d=1;d<=24;d++){drive_campaign(d,1,0);drive_campaign(d,2,1);}
+    puts("All 24 expeditions cleared through player inputs, solo calendar and split practice.");
     return 0;
 }

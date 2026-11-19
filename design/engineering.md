@@ -65,3 +65,10 @@ Browser automation drives ordinary UI entry points over HTTP. Exercise all 24 lo
 | Release candidate | Exercise all dates with injected clocks, all 24 return paths, four seats, save versions and a real headset. Publish tagged content manifests through the tested main-to-pages build. |
 
 All development work goes to `main`. The `gh-pages` branch holds built static files. See the repository README for reproducible commands and the exact boundary of this playtest.
+
+
+## Campaign playtest implementation
+
+The current numeric protocol is version 2. Each host snapshot contains 32 numeric words covering both poses, the 24-bit completion ledger, sector, task, phase, dial, escort position, local encounter clock, stun and two charge values. The receiver validates the full frame before applying it. Guest input uses seven numbers. Update both clients and the relay together when moving from the tutorial build. The optional native Python transport drives the same compiled SDL3/OpenGL runtime used by the executable.
+
+The five-sector routes use deterministic layouts with connected passages, mapped landmarks and shared tool state. Native preferences and browser local storage preserve sector entrances independently by day and mode. A completed calendar mission adds its bit to the keepsake ledger. The old single-ticket save maps to Door 01. The playtest does not yet provide join-in-progress recovery or mixed local and online seats.

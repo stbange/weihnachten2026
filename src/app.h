@@ -2,12 +2,15 @@
 #define LANTERN_APP_H
 #ifndef __EMSCRIPTEN__
 int lh_saved(void);
-void lh_save_ticket(void);
+void lh_save_ticket(int earned);
 #endif
 int lh_init(void);
 void lh_close(void);
 void lh_resize(int w, int h);
 void lh_start(int seats, int open, int rehearsal, int completed);
+int lh_chart(int x,int z);
+int lh_preview(int day);
+const char *lh_prompt(int seat);
 void lh_open(int open);
 int lh_today(double epoch);
 void lh_input(int who, float forward, float side, float turn, float tilt, int buttons);

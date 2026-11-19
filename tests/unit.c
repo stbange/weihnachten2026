@@ -1,4 +1,4 @@
-#include "hall.h"
+#include "campaign.h"
 #include "scene.h"
 #ifdef NDEBUG
 #undef NDEBUG
@@ -14,10 +14,7 @@ static void once(Game *g, int who, Input action)
     in[who] = action;
     game_step(g, in, step);
 }
-static int approximately(float x, float y)
-{
-    return fabsf(x - y) < .001f;
-}
+static int approximately(float x, float y) { return fabsf(x - y) < .001f; }
 
 static void test_calendar(void)
 {
@@ -45,11 +42,11 @@ static void test_hall(void)
     }
     g.open = 24;
     once(&g, 1, (Input){.buttons = USE});
-    assert(g.event == OPEN_BRIEF && g.door == 24);
+    assert(g.event == ENTERED && g.door == 24);
     game_hall(&g);
     portal_position(1, &g.player[0].x, &g.player[0].z);
     once(&g, 0, (Input){0});
-    assert(g.room == CINEMA && g.event == ENTERED);
+    assert(g.room == EXPEDITION && g.event == ENTERED);
     assert(game_near(&g, 0) == 0);
     game_hall(&g);
     g.player[0].x = 7;
@@ -164,7 +161,7 @@ static void test_geometry(void)
 {
     static Vertex v[150000];
     Game g;
-    game_start(&g, 2, 12, 0, 1);
+    game_start(&g, 2, 12, 0, 0xffffff);
     Mesh m = {v, 0, 150000};
     scene_static(&m, &g);
     assert(m.count > 25000 && m.count < m.capacity);
@@ -189,8 +186,96 @@ static void test_geometry(void)
     camera_matrix(b, (Vec){0, 1, 3}, .3f, .1f, 1.5f);
     assert(!approximately(a[0], b[0]) && a[11] < 0 && a[15] > 0);
 }
+static void test_expeditions(void)
+{
+    static Vertex vertices[150000];
+    Mesh mesh = {vertices, 0, 150000};
+    Game g, copy;
+    char prompt[320];
+    float wire[SNAP_WORDS];
+    game_start(&g, 2, 24, 0, 2);
+    for (int day = 1; day <= 24; day++) {
+        campaign_enter(&g, day, day % 2, 0);
+        scene_static(&mesh, &g);
+        assert(mesh.count > 1000 && mesh.count < mesh.capacity);
+        for (int area = 0; area < AREA_COUNT; area++) {
+            scene_static(&mesh, &g);
+            assert(mesh.count < mesh.capacity);
+            for (int task = 0; task < 4; task++) {
+                assert(g.task == task);
+                for (int part = 0; part < 2; part++) {
+                    int kind = campaign_action(&g);
+                    float x, z;
+                    campaign_target(&g, &x, &z);
+                    Cell target = {(int)x / CELL, (int)z / CELL};
+                    Cell adjacent = campaign_next(&g, target, (Cell){1, 23});
+                    assert(!campaign_wall(&g, adjacent.x, adjacent.z));
+                    Player *p = &g.player[1];
+                    p->x = x + (adjacent.x - target.x) * 1.95f;
+                    p->z = z + (adjacent.z - target.z) * 1.95f;
+                    p->yaw = atan2f(x - p->x, p->z - z);
+                    p->pitch = 0;
+                    p->y = 0;
+                    p->fuel = 1;
+                    campaign_prompt(&g, 1, prompt, sizeof(prompt));
+                    assert(strstr(prompt, expeditions[day - 1].areas[area]));
+                    scene_actors(&mesh, &g, 0, 1, 1);
+                    assert(mesh.count > 0);
+                    game_pack(&g, wire);
+                    assert(game_unpack(&copy, wire));
+                    assert(copy.area == area && copy.task == task);
+                    once(&g, 1, (Input){0});
+                    int b = USE;
+                    if (task != 3) {
+                        if (kind == GRID) {
+                            while (g.dial != 1 + (day + task + area) % 3) {
+                                once(&g, 1, (Input){.buttons = USE});
+                                once(&g, 1, (Input){0});
+                            }
+                            b = FIRE;
+                        }
+                        if (kind == CHARGE) {
+                            for (int i = 0; i < 43; i++)
+                                once(&g, 1, (Input){.buttons = FIRE});
+                            b = 0;
+                        }
+                        if (kind == FLY) {
+                            for (int i = 0; i < 42; i++)
+                                once(&g, 1, (Input){.buttons = BOOST});
+                            b |= BOOST;
+                        }
+                        if (kind == SHOT)
+                            b = FIRE;
+                        if (kind == ESCORT && g.phase) {
+                            g.escort_x = x;
+                            g.escort_z = z;
+                        }
+                    }
+                    once(&g, 1, (Input){.buttons = b});
+                    if (g.room != EXPEDITION || g.task != task || g.area != area)
+                        break;
+                    assert(g.phase == 1);
+                }
+            }
+        }
+        assert(g.room == HALL);
+        if (day % 2 == 0)
+            assert(g.completed & (1 << (day - 1)));
+    }
+    campaign_enter(&g, 3, 1, 0);
+    assert(campaign_wall(&g, -1, 0));
+    Cell c = campaign_next(&g, (Cell){0, 0}, (Cell){2, 2});
+    assert(c.x == 0 && c.z == 0);
+    game_pack(&g, wire);
+    wire[22] = 5;
+    assert(!game_unpack(&copy, wire));
+    wire[22] = 0;
+    wire[8] = 0;
+    assert(!game_unpack(&copy, wire));
+}
 int main(void)
 {
+    test_expeditions();
     test_calendar();
     test_hall();
     test_cinema_rules();

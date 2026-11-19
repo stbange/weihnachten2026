@@ -32,3 +32,11 @@ Two browsers SHALL be able to run the same host-authoritative game through a use
 - **GIVEN** a host creates a relay room and a guest joins with its code
 - **WHEN** the guest pulses an upright usher
 - **THEN** both players see the same incremented folded-usher count
+
+### Requirement: Native relay participation
+A native SDL3 client SHALL be able to host or join a two-seat game through the same WebSocket relay and room code as a web client.
+
+#### Scenario: Shared expedition over the relay
+- **GIVEN** a native host starts a playtest and another client joins
+- **WHEN** the guest moves
+- **THEN** the host updates the second player and sends the active door, sector, objectives and both player poses back to the guest

@@ -1,4 +1,5 @@
 #include "draw.h"
+#include "campaign.h"
 #include <SDL3/SDL.h>
 #include <stddef.h>
 #ifdef __EMSCRIPTEN__
@@ -60,7 +61,7 @@ static const char *vert =
               "void main(){p=pos;n=norm;c=colour;gl_Position=camera*vec4(pos,1.0);}";
 
 static const char *frag = VERSION_F
-    "varying vec3 p,n; varying vec4 c; uniform float clock,room,flash; uniform vec3 hand,mate;"
+    "varying vec3 p,n; varying vec4 c; uniform float clock,room,flash; uniform vec3 hand,mate,beacon,watcher;"
     "float hash(vec2 a){return fract(sin(dot(a,vec2(12.9898,78.233)))*4375.5453);}"
     "float shade(vec2 point,vec2 caster,float height,float rad,vec3 light){"
     " vec2 a=caster-light.xz; vec2 end=caster+a*height/max(1.0,light.y-height);"
@@ -84,10 +85,12 @@ static const char *frag = VERSION_F
     " float pool=1./(1.+.38*dot(toSconce,toSconce));"
     " lit+=base*vec3(.54,.26,.065)*(local+.4*aisle)+vec3(.17,.086,.022)*pool;"
     " float torch=(.13+flash*3.4)/(1.+.27*dot(hand-p,hand-p));lit+=vec3(1.,.65,.27)*torch;"
+    " if(room>1.5){vec3 d=beacon-p;lit+=vec3(.36,.22,.085)*(1.+.16*sin(clock*2.5))/(1.+.09*dot(d,d));}"
     " if(p.y<.08&&normal.y>.55){float s=shade(p.xz,mate.xz,1.4,.30,hand+vec3(.35,1.6,.25));"
     " if(room<.5)s=max(s,shade(p.xz,vec2(0.,-20.5),2.6,1.75,lamp));"
-    " if(room>.5){s=max(s,shade(p.xz,vec2(-2.2,.2),1.2,.48,vec3(-4.,4.5,2.2)));"
+    " if(room>.5&&room<1.5){s=max(s,shade(p.xz,vec2(-2.2,.2),1.2,.48,vec3(-4.,4.5,2.2)));"
     " s=max(s,shade(p.xz,vec2(2.4,-4.4),1.2,.48,vec3(4.,4.5,-2.)));}"
+    " if(room>1.5)s=max(s,shade(p.xz,watcher.xz,watcher.y,.41,hand+vec3(.4,2.1,.6)));"
     " lit*=1.-.38*s;}"
     " if(mat>.9)lit=base*(1.04+.035*sin(clock*2.3+p.z));"
     " float grain=(hash(floor(gl_FragCoord.xy))-.5)*.017;"
@@ -97,6 +100,8 @@ static Vertex architecture[150000], actors[4000];
 static Mesh solid = {architecture, 0, 150000}, moving = {actors, 0, 4000};
 static GLuint prog, buffers[2];
 static GLint position, normal, colour, camera, clock_id, room_id, flash_id, hand_id, mate_id;
+static GLint beacon_id,watcher_id;
+static int prev_day=-1,prev_area=-1;
 static int prev_room = -1, prev_open = -1, prev_done = -1, prev_projected = -1;
 
 static GLuint shader(GLenum kind, const char *source)
@@ -142,6 +147,7 @@ int draw_init(void)
     flash_id = G(GetUniformLocation)(prog, "flash");
     hand_id = G(GetUniformLocation)(prog, "hand");
     mate_id = G(GetUniformLocation)(prog, "mate");
+    beacon_id=G(GetUniformLocation)(prog,"beacon");watcher_id=G(GetUniformLocation)(prog,"watcher");
     G(GenBuffers)(2, buffers);
     prev_room = -1;
     return 1;
@@ -163,11 +169,11 @@ void draw_view(const Game *g, int viewer, float time, const float matrix[16], in
                int h, int held_tool)
 {
     if (g->room != prev_room || g->open != prev_open || g->completed != prev_done ||
-        g->projected != prev_projected) {
+        g->projected != prev_projected || (g->room==EXPEDITION && (g->area!=prev_area || g->door!=prev_day))) {
         scene_static(&solid, g);
         G(BindBuffer)(GL_ARRAY_BUFFER, buffers[0]);
         G(BufferData)(GL_ARRAY_BUFFER, solid.count * sizeof(Vertex), solid.v, GL_STATIC_DRAW);
-        prev_room = g->room;
+        prev_room = g->room; prev_area=g->area;prev_day=g->door;
         prev_open = g->open;
         prev_done = g->completed;
         prev_projected = g->projected;
@@ -180,7 +186,10 @@ void draw_view(const Game *g, int viewer, float time, const float matrix[16], in
     G(Enable)(GL_SCISSOR_TEST);
     G(Viewport)(x, y, w, h);
     G(Scissor)(x, y, w, h);
-    G(ClearColor)(.12f, .19f, .187f, 1);
+    if(g->room==EXPEDITION){
+        unsigned sky=expeditions[g->door-1].colour;
+        G(ClearColor)(.065f+(sky>>16)*.0012f,.09f+((sky>>8)&255)*.0012f,.15f+(sky&255)*.0015f,1);
+    }else G(ClearColor)(.12f, .19f, .187f, 1);
     G(Clear)(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     G(EnableVertexAttribArray)(position);
     G(EnableVertexAttribArray)(normal);
@@ -192,6 +201,10 @@ void draw_view(const Game *g, int viewer, float time, const float matrix[16], in
     G(Uniform1f)(flash_id, g->flash[viewer]);
     G(Uniform3f)(hand_id, p->x, p->y + 1.15f, p->z);
     G(Uniform3f)(mate_id, g->seats == 2 ? other->x : 60, other->y, other->z);
+    if(g->room==EXPEDITION){
+        float x,z;campaign_target(g,&x,&z);G(Uniform3f)(beacon_id,x,3.1f,z);
+        campaign_guard(g,&x,&z);G(Uniform3f)(watcher_id,x,g->stun>0?.45f:1.5f,z);
+    }
     batch(buffers[0], &solid);
     batch(buffers[1], &moving);
 }

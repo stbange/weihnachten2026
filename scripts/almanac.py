@@ -15,7 +15,7 @@ def read_almanac(path):
             raise ValueError(f"Invalid portal {number}")
         cards.append(dict(day=int(number), title=title, reference=reference,
                           mission=fields["Mission"], kit=signatures, place=fields["Art and opposition"],
-                          route=fields["Twenty-minute route"], coop=fields["Solo and co-op"]))
+                          gift=fields["Back in the hall"], route=fields["Twenty-minute route"], coop=fields["Solo and co-op"]))
     if len(cards) != 24:
         raise ValueError("The hall must have 24 doors")
     return cards

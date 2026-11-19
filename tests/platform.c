@@ -13,8 +13,8 @@ int main(void)
     int ready = lh_init();
     assert(ready);
     assert(lh_saved() == 0);
-    lh_save_ticket();
-    lh_save_ticket();
+    lh_save_ticket(1);
+    lh_save_ticket(1);
     assert(lh_saved() == 1);
     lh_start(2, 4, 0, 0);
     lh_draw(1, 0, 0);
@@ -33,7 +33,7 @@ int main(void)
     assert(s[2] == 24 && s[12] != s[18]);
     s[0] = 8;
     assert(!lh_receive());
-    s[0] = 1;
+    s[0] = 2;
     assert(lh_receive());
     assert(lh_wire() == s && lh_near(0) == 0);
     lh_start(1, 1, 1, 0);
@@ -41,6 +41,32 @@ int main(void)
     assert(lh_event() == ENTERED);
     camera_matrix(lh_matrix(), (Vec){0, 1.6f, 5}, 0, 0, 1);
     lh_xr_eye(0, 0, 0, 160, 320);
+    assert(lh_preview(24) && !lh_preview(25) && lh_prompt(0)[0]);
+    assert(lh_chart(-1, 0) == 1 && lh_chart(1, 23) == 0);
+    lh_draw(0, 0, 0);
+    /* Use the actual sector exit, restart, and verify independent practice and live slots. */
+    s = lh_state();
+    s[23] = 3;
+    assert(lh_receive());
+    for (int z = 0; z < 25; z++)
+        for (int x = 0; x < 25; x++)
+            if (lh_chart(x, z) == 2) {
+                s[10] = x * 4;
+                s[12] = z * 4;
+            }
+    assert(lh_receive());
+    lh_input(0, 0, 0, 0, 0, 0);
+    lh_tick(.04f, 1);
+    lh_input(0, 0, 0, 0, 0, USE);
+    lh_tick(.04f, 1);
+    assert(lh_state()[22] == 1);
+    assert(lh_preview(24) && lh_state()[22] == 1);
+    lh_start(1, 24, 0, 0);
+    s = lh_state();
+    portal_position(24, &s[10], &s[12]);
+    assert(lh_receive());
+    lh_tick(.04f, 1);
+    assert(lh_state()[22] == 0 && lh_state()[3] == 0);
     lh_close();
     char *args[] = {"lantern-hall", "--split", "--rehearsal", "--smoke"};
     assert(lh_native_main(4, args) == 0);

@@ -8,19 +8,19 @@ dir=build/coverage
 mkdir -p "$dir"
 rm -f "$dir"/*.gcda "$dir"/*.gcov.json.gz
 flags=(-std=c11 -O0 -g --coverage -Isrc)
-for name in hall scene draw app; do
+for name in campaign hall scene draw app; do
   extra=()
   if [[ $name == app ]]; then extra=(-Dmain=lh_native_main); fi
   gcc "${flags[@]}" $SDL_CFLAGS "${extra[@]}" -c "src/$name.c" -o "$dir/$name.o"
 done
-gcc "${flags[@]}" tests/unit.c "$dir/hall.o" "$dir/scene.o" -lm -o "$dir/unit"
-gcc "${flags[@]}" tests/platform.c "$dir/app.o" "$dir/draw.o" "$dir/hall.o" "$dir/scene.o" $SDL_LIBS -lm -o "$dir/platform"
+gcc "${flags[@]}" tests/unit.c "$dir/hall.o" "$dir/campaign.o" "$dir/scene.o" -lm -o "$dir/unit"
+gcc "${flags[@]}" tests/platform.c "$dir/app.o" "$dir/draw.o" "$dir/hall.o" "$dir/campaign.o" "$dir/scene.o" $SDL_LIBS -lm -o "$dir/platform"
 "$dir/unit"
 prefs=$(mktemp -d)
 trap 'rm -rf "$prefs"' EXIT
 XDG_DATA_HOME="$prefs" SDL_VIDEODRIVER=${SDL_VIDEODRIVER:-offscreen} "$dir/platform"
-(cd "$dir" && gcov --json-format hall.gcno scene.gcno draw.gcno app.gcno >/dev/null)
+(cd "$dir" && gcov --json-format hall.gcno campaign.gcno scene.gcno draw.gcno app.gcno >/dev/null)
 python3 scripts/coverage.py "$dir"
 # Keep the game replay independent of the reported unit percentage.
-gcc -std=c11 -O2 -Isrc tests/replay.c src/hall.c -lm -o "$dir/replay"
+gcc -std=c11 -O2 -Isrc tests/replay.c src/hall.c src/campaign.c -lm -o "$dir/replay"
 "$dir/replay"

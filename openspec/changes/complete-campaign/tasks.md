@@ -12,5 +12,14 @@
 
 ## 3. Acceptance
 
-- [ ] 3.1 Run seeded solo and party clears for all 24 doors.
+- [x] 3.1 Run seeded solo and party clears for all 24 doors.
 - [ ] 3.2 Gate release on coverage, all civil-date boundaries, connection recovery and observed 17–23 minute median first clears.
+
+
+## Delivered for campaign playtesting
+
+- [x] All 24 dated arches load five-sector routes with shared objectives, practice access and independent keepsakes.
+- [x] Native and browser clients save sector checkpoints separately for practice and calendar play.
+- [x] Two-seat native relay hosting and joining use the browser relay protocol.
+- [x] The hall displays earned keepsakes, three six-piece chapter effects and the latecomer opening on day 24.
+- [ ] Finish bespoke encounters, milestone recordings and human pacing sessions before marking the content milestones complete.
