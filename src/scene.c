@@ -1181,8 +1181,13 @@ static void expedition_mesh(Mesh *m, const Game *g)
         } else if (move == 'l') {
             floor_strip(m, x - 4.6f, x + 4.6f, z - .4f, z + .4f, .055f, colour, GLOW);
         } else {
-            box(m, x, .03f, z, .26f, 1.4f, .25f, colour, PAINT);
-            box(m, x, 1.42f, z, move == 'c' ? .9f : .48f, .32f, .42f, 0xa9d7bd, GLOW);
+            /* Mount the signs at the edges so both seats can look through a mark. */
+            for (int side = -1; side <= 1; side += 2) {
+                box(m, x + 1.35f * side, .03f, z, .15f, 1.32f, .18f, colour, PAINT);
+                box(m, x + 1.35f * side, 1.35f, z, move == 'c' ? .55f : .35f, .18f, .24f,
+                    0xa9d7bd, GLOW);
+            }
+            floor_strip(m, x - 1.4f, x + 1.4f, z - .18f, z + .18f, .055f, colour, GLOW);
         }
     }
     Cell vault = campaign_vault(g);
@@ -1434,7 +1439,9 @@ void scene_actors(Mesh *m, const Game *g, int viewer, float time, int held_tool)
             char move = fieldwork[g->door - 1].moves[mark.slot];
             float height = move == 'h' ? 2.45f : move == 'l' ? .35f : 1.55f;
             unsigned light = move == 't' && fmodf(g->clock, 2) >= 1 ? 0x926742 : 0x83f4bc;
-            box(m, mark.at.x * CELL, height, mark.at.z * CELL, .6f, .22f, .6f, light, GLOW);
+            float distance = hypotf(viewer_pos->x - mark.at.x * CELL, viewer_pos->z - mark.at.z * CELL);
+            if (distance > 1.8f)
+                box(m, mark.at.x * CELL, height, mark.at.z * CELL, .5f, .16f, .38f, light, GLOW);
         }
         if (g->task == TRANSMISSION) {
             /* A two-part field station: first recover the recording, then answer it. */

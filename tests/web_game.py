@@ -61,6 +61,18 @@ def desktop(browser, url, errors):
     page.locator("#close").click()
     page.locator("#featured").click()
     expect(page.locator(".viewinfo")).to_contain_text("Tram terminus")
+    colours = page.evaluate("""() => new Promise(resolve => requestAnimationFrame(() => {
+        const gl=canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+        const w=gl.drawingBufferWidth,h=gl.drawingBufferHeight;
+        const pixels=new Uint8Array(w*h*4), palette=new Set();
+        gl.readPixels(0,0,w,h,gl.RGBA,gl.UNSIGNED_BYTE,pixels);
+        for(let y=0;y<h;y+=3) for(let x=0;x<w;x+=3) {
+          const i=4*(y*w+x);
+          palette.add((pixels[i]>>5)*64+(pixels[i+1]>>5)*8+(pixels[i+2]>>5));
+        }
+        resolve(palette.size);
+    }))""")
+    assert colours >= 10, f"Cinema arrival is obscured ({colours} world colours)"
     page.evaluate("document.exitPointerLock?.()")
     page.locator("#chart").click()
     expect(page.locator("#chartmap")).to_be_visible()
