@@ -53,3 +53,14 @@ The flat-screen renderer SHALL cap the scene at 320 pixels along its long edge, 
 #### Scenario: Rotate during local play
 - **WHEN** the browser stage changes from landscape to portrait
 - **THEN** the world canvas changes from at most 320 pixels wide to at most 320 pixels tall and the touch overlay continues to use the full stage
+
+### Requirement: Browser mouse look
+The web game SHALL request pointer lock when a player uses a mouse to start or resume play, or clicks the active game view. Mouse movement SHALL turn the active seat without a held button while captured. The game SHALL choose touch controls when the player touches the screen and support drag look if the browser declines capture.
+
+#### Scenario: Switch input on a touchscreen laptop
+- **WHEN** a player enters by touch and then clicks the touch look area with a mouse
+- **THEN** the touch overlay gives way and the same click requests capture for the canvas
+
+#### Scenario: Return to play from the map or menu
+- **WHEN** the player opens the map or menu, then clicks Resume with a mouse
+- **THEN** the panel releases capture while open and the resume gesture requests it again

@@ -7,6 +7,7 @@ import { immersive } from './xr.js';
 const $ = (id) => document.getElementById(id),
   stage = $('stage'),
   canvas = $('canvas'),
+  touchControls = $('touch'),
   dialog = $('panel'),
   body = $('panelbody');
 let storage;
@@ -62,8 +63,8 @@ const keys = new Set(),
   touch = { f: 0, s: 0, bits: 0 },
   taps = [0, 0];
 let focusSeat = 0;
-const coarse =
-  matchMedia('(pointer:coarse)').matches || navigator.maxTouchPoints > 0;
+let usingTouch = matchMedia('(pointer: coarse)').matches;
+let mouseHeld = false;
 const state = () =>
   Array.from(M.HEAPF32.subarray(M._lh_state() / 4, M._lh_wire() / 4 + 39));
 const currentDay = () => M._lh_today(Date.now() / 1000);
@@ -126,13 +127,14 @@ $('sound').onclick = () => {
 };
 function resetInput() {
   keys.clear();
+  mouseHeld = false;
   touch.f = touch.s = touch.bits = 0;
   taps.fill(0);
   pendingLook = [0, 0];
   $('stick').firstElementChild.style.transform = '';
 }
 function modal(section, html) {
-  if (document.pointerLockElement) document.exitPointerLock();
+  if (document.pointerLockElement === canvas) document.exitPointerLock();
   if (role !== 'host') fieldLog.pause(performance.now());
   resetInput();
   $('section').textContent = section;
@@ -145,7 +147,11 @@ function closePanel() {
   resetInput();
   if (playing) canvas.focus();
 }
-$('close').onclick = closePanel;
+function resumePlay() {
+  closePanel();
+  captureMouse();
+}
+$('close').onclick = resumePlay;
 dialog.addEventListener('cancel', (e) => {
   e.preventDefault();
   closePanel();
@@ -154,12 +160,59 @@ function notify(s) {
   $('toast').textContent = s;
   toastUntil = performance.now() + 4200;
 }
+function mousePlayActive() {
+  return playing && !dialog.open && !xrActive && !usingTouch;
+}
+function captureFailed() {
+  if (mousePlayActive() && document.pointerLockElement !== canvas)
+    notify('Mouse capture unavailable · drag to look or use the arrow keys');
+}
+function captureMouse() {
+  if (!mousePlayActive() || document.pointerLockElement === canvas) return;
+  if (!canvas.requestPointerLock) {
+    captureFailed();
+    return;
+  }
+  try {
+    // Older browsers report the result only through pointerlockchange/error.
+    canvas.requestPointerLock()?.catch(captureFailed);
+  } catch {
+    captureFailed();
+  }
+}
+document.addEventListener('pointerlockerror', captureFailed);
+document.addEventListener('pointerlockchange', () => {
+  if (document.pointerLockElement === canvas) {
+    if (!mousePlayActive()) document.exitPointerLock();
+  } else {
+    mouseHeld = false;
+    if (mousePlayActive()) notify('Click the game to capture the mouse');
+  }
+});
+function updateTouchControls() {
+  touchControls.hidden = !(playing && usingTouch);
+  stage.classList.toggle('touching', !touchControls.hidden);
+}
+// A touchscreen laptop can enter or resume play with either input device.
+document.addEventListener(
+  'pointerdown',
+  (e) => {
+    const direct = e.pointerType === 'touch' || e.pointerType === 'pen';
+    if ((!direct && e.pointerType !== 'mouse') || direct === usingTouch) return;
+    usingTouch = direct;
+    resetInput();
+    updateTouchControls();
+    lastHud = '';
+    if (usingTouch && document.pointerLockElement === canvas)
+      document.exitPointerLock();
+  },
+  true,
+);
 function locationUI(active) {
   playing = active;
   for (const id of ['shade', 'mast', 'welcome', 'strip']) $(id).hidden = active;
   $('hud').hidden = !active;
-  $('touch').hidden = !(active && coarse);
-  stage.classList.toggle('touching', active && coarse);
+  updateTouchControls();
   $('views').innerHTML = Array.from(
     { length: split ? 2 : 1 },
     () =>
@@ -196,10 +249,9 @@ function start(
   else if (preview) M._lh_preview(preview);
   locationUI(true);
   canvas.focus();
+  if (lock && !online) captureMouse();
   chime([294, 370, 440]);
   last = 0;
-  if (lock && !online && !coarse)
-    canvas.requestPointerLock?.()?.catch?.(() => {});
 }
 function home() {
   fieldLog.end('Stopped', performance.now());
@@ -212,7 +264,7 @@ function home() {
   M._lh_start(1, currentDay(), 0, persisted());
   locationUI(false);
   $('enter').focus();
-  if (document.pointerLockElement) document.exitPointerLock();
+  if (document.pointerLockElement === canvas) document.exitPointerLock();
 }
 function hallStory(bits) {
   const guests = Array.from({ length: 24 }, (_, i) => (bits >> i) & 1).reduce(
@@ -278,7 +330,7 @@ function briefing(day) {
     $('trydoor').onclick = () => start(false, split, '', true, day);
 }
 function controlsText() {
-  return '<p><b>Player 1</b> · WASD move, mouse or arrows look, F or click pulses, E uses, Space lifts. Drag to look if your browser releases the mouse.</p><p><b>Player 2</b> · IJKL move, U/O turn, Y pulses, H uses, N lifts. On a touchscreen the first seat uses the on-screen controls.</p>';
+  return '<p><b>Player 1</b> · WASD move, mouse or arrows look, F or left click pulses, E uses, Space lifts. Escape releases the mouse. Click the game to capture it again, or drag to look.</p><p><b>Player 2</b> · IJKL move, U/O turn, Y pulses, H uses, N lifts. On a touchscreen the first seat uses the on-screen controls.</p>';
 }
 function menu() {
   modal(
@@ -286,7 +338,7 @@ function menu() {
     `<h2>At the landing</h2><div class="buttons"><button id="resume" class="primary">Resume</button><button id="browse" class="choice">Portal almanac</button><button id="notebook" class="choice">Playtest log</button><button id="leave" class="choice">Return to title</button></div><details open><summary>Controls</summary>${controlsText()}</details>${!role && !split && xrSupported ? vrOptions() + '<button id="xrhere" class="choice">Enter VR</button>' : ''}`,
   );
   $('notebook').onclick = showFieldLog;
-  $('resume').onclick = closePanel;
+  $('resume').onclick = resumePlay;
   $('browse').onclick = almanac;
   $('leave').onclick = home;
   if ($('xrhere')) {
@@ -348,14 +400,18 @@ $('chart').onclick = () => {
     ctx.fill();
     ctx.restore();
   }
-  $('backgame').onclick = closePanel;
+  $('backgame').onclick = resumePlay;
 };
 function connected(newRole) {
   const timed = newRole === 'host' && friendsDay && networkTrial;
   start(friendsRehearse, false, newRole, true, friendsDay, timed);
   if (timed)
     fieldLog.begin(friendsDay, 'Network host', networkFirst, performance.now());
-  notify('Connected · two seats at the table');
+  notify(
+    usingTouch
+      ? 'Connected · two seats at the table'
+      : 'Connected · click the game to capture the mouse',
+  );
 }
 function incoming(msg) {
   if (!Array.isArray(msg) || !msg.every(Number.isFinite)) return;
@@ -537,16 +593,23 @@ addEventListener(
 );
 addEventListener('keyup', (e) => keys.delete(e.code), true);
 addEventListener('blur', resetInput);
-let dragging = false;
-canvas.onpointerdown = (e) => {
-  if (!playing || dialog.open || e.pointerType === 'touch') return;
-  dragging = true;
-  canvas.setPointerCapture?.(e.pointerId);
+stage.addEventListener('pointerdown', (e) => {
+  if (e.pointerType !== 'mouse' || e.button !== 0 || !mousePlayActive()) return;
+  if (e.target !== canvas && !touchControls.contains(e.target)) return;
+  canvas.focus();
+  mouseHeld = true;
   taps[0] |= 2;
-  if (!document.pointerLockElement)
-    canvas.requestPointerLock?.()?.catch?.(() => {});
-};
-addEventListener('pointerup', () => (dragging = false));
+  captureMouse();
+});
+function releaseMouse(e) {
+  if (
+    e.pointerType === 'mouse' &&
+    (e.type === 'pointercancel' || !(e.buttons & 1))
+  )
+    mouseHeld = false;
+}
+addEventListener('pointerup', releaseMouse);
+addEventListener('pointercancel', releaseMouse);
 function aim(x, y) {
   if (role === 'guest') {
     pendingLook[0] += x;
@@ -555,16 +618,15 @@ function aim(x, y) {
 }
 addEventListener('mousemove', (e) => {
   if (
-    playing &&
-    !dialog.open &&
-    (document.pointerLockElement === canvas || dragging)
+    mousePlayActive() &&
+    (document.pointerLockElement === canvas || (mouseHeld && e.buttons & 1))
   )
     aim(e.movementX * 0.0032, -e.movementY * 0.0032);
 });
 function pointerArea(el, begin, move, end) {
   let id = null;
   el.onpointerdown = (e) => {
-    if (id !== null) return;
+    if (e.pointerType === 'mouse' || id !== null) return;
     id = e.pointerId;
     el.setPointerCapture(id);
     e.preventDefault();
@@ -642,7 +704,9 @@ function input(seat) {
     k('ArrowRight') - k('ArrowLeft'),
     k('ArrowUp') - k('ArrowDown'),
     k('KeyE') |
-      ((k('KeyF') || Number(dragging && !!document.pointerLockElement)) * 2) |
+      ((k('KeyF') ||
+        Number(mouseHeld && document.pointerLockElement === canvas)) *
+        2) |
       (k('Space') * 4) |
       touch.bits |
       taps[0],
@@ -780,7 +844,7 @@ function hud(s) {
       sub = nearDay
         ? (nearDay > s[2] ? 'Sealed · opens December ' + nearDay : 'Ready') +
           (nearDay > s[2] ? ' · Use for briefing' : ' · Walk through')
-        : coarse
+        : usingTouch
           ? 'Left stick moves · drag right to look · tap Use'
           : 'WASD moves · mouse or arrows look · E inspects';
     } else if (s[1] === 2) {
@@ -789,7 +853,7 @@ function hud(s) {
       sub = [action, ...extra].join(' · ');
     } else if (n < 2) {
       goal = 'Fold the two paper ushers · ' + n + '/2';
-      sub = coarse
+      sub = usingTouch
         ? 'Aim and tap Pulse'
         : split && i === 1
           ? 'Aim at the cardboard figures · Y pulses'
@@ -797,7 +861,7 @@ function hud(s) {
     } else if (!s[5]) {
       goal = 'Start the projector on the left balcony.';
       sub =
-        (coarse
+        (usingTouch
           ? 'Hold Lift, then tap Use'
           : 'Hold ' +
             (p ? 'N' : 'Space') +
@@ -809,7 +873,7 @@ function hud(s) {
         '%';
     } else {
       goal = 'Bring the ticket to the green entrance door.';
-      sub = coarse
+      sub = usingTouch
         ? 'Tap Use at the door'
         : 'Press ' + (p ? 'H' : 'E') + ' at the entrance';
     }
@@ -998,7 +1062,7 @@ async function boot() {
     open = currentDay();
     M._lh_start(1, open, 0, persisted());
     $('loading').textContent = '';
-    $('enter').disabled = $('practice').disabled = false;
+    for (const id of ['enter', 'practice', 'featured']) $(id).disabled = false;
     requestAnimationFrame(render);
     if (navigator.xr)
       try {

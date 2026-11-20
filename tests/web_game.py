@@ -22,8 +22,17 @@ def visit(context, url, when, errors):
     return page
 
 
+def wait_mouse_lock(page, wanted):
+    page.wait_for_function(
+        "wanted => (document.pointerLockElement === document.getElementById('canvas')) === wanted",
+        arg=wanted,
+        timeout=7000,
+    )
+
+
 def open_menu(page):
     page.evaluate("document.exitPointerLock?.()")
+    wait_mouse_lock(page, False)
     page.locator("#menu").click()
     expect(page.locator("#panel")).to_be_visible()
 
@@ -36,7 +45,16 @@ def home(page):
 
 def desktop(browser, url, errors):
     context = browser.new_context(viewport={"width": 960, "height": 600})
+    featured_during_boot = []
+
+    def observe_boot(route):
+        featured = route.request.frame.page.locator("#featured")
+        featured_during_boot.append(featured.is_disabled())
+        route.continue_()
+
+    context.route("**/lantern.wasm", observe_boot, times=1)
     page = visit(context, url, 1796079599, errors)
+    assert featured_during_boot == [True], "Featured mission enabled during boot"
     page.wait_for_function("document.querySelector('#canvas').width === 320")
     assert page.evaluate("Math.abs(canvas.width/canvas.height-canvas.clientWidth/canvas.clientHeight)<.02")
     page.locator("#book").click()
@@ -73,10 +91,24 @@ def desktop(browser, url, errors):
         resolve(palette.size);
     }))""")
     assert colours >= 10, f"Cinema arrival is obscured ({colours} world colours)"
+    wait_mouse_lock(page, True)
+    expect(page.locator(".viewinfo")).to_contain_text("(ahead,")
+    page.mouse.move(140, 300, steps=5)
+    expect(page.locator(".viewinfo")).not_to_contain_text("(ahead,")
+    page.mouse.down()
+    page.mouse.up()
+    page.keyboard.press("Escape")
+    wait_mouse_lock(page, False)
+    if not page.locator("#panel").is_visible():
+        page.locator("#menu").click()
+    page.locator("#resume").click()
+    wait_mouse_lock(page, True)
     page.evaluate("document.exitPointerLock?.()")
+    wait_mouse_lock(page, False)
     page.locator("#chart").click()
     expect(page.locator("#chartmap")).to_be_visible()
     page.locator("#backgame").click()
+    wait_mouse_lock(page, True)
     home(page)
     page.locator("#enter").click()
     expect(page.locator("#location")).to_contain_text("0/24 open")
@@ -102,10 +134,54 @@ def touch(browser, url, errors):
     assert page.evaluate("canvas.width<320 && Math.abs(canvas.width/canvas.height-canvas.clientWidth/canvas.clientHeight)<.02")
     page.locator("#practice").tap()
     expect(page.locator("#touch")).to_be_visible()
+    wait_mouse_lock(page, False)
     expect(page.locator(".viewinfo")).to_contain_text("tap Pulse")
     page.locator('[data-bit="2"]').tap()
     page.locator("#menu").tap()
     expect(page.locator("#panelbody")).to_contain_text("Controls")
+    context.close()
+
+
+def hybrid_mouse(browser, url, errors):
+    context = browser.new_context(viewport={"width": 880, "height": 540}, has_touch=True)
+    page = visit(context, url, 1796079600, errors)
+    page.locator("#practice").tap()
+    expect(page.locator("#lookpad")).to_be_visible()
+    wait_mouse_lock(page, False)
+    # Click where the touch look pad currently sits, like switching to a trackpad mid-game.
+    pad = page.locator("#lookpad").bounding_box()
+    page.mouse.click(pad["x"] + pad["width"] / 2, pad["y"] + pad["height"] / 2)
+    wait_mouse_lock(page, True)
+    expect(page.locator("#touch")).to_be_hidden()
+    page.touchscreen.tap(320, 270)
+    wait_mouse_lock(page, False)
+    expect(page.locator("#lookpad")).to_be_visible()
+    home(page)
+    page.locator("#featured").click()
+    wait_mouse_lock(page, True)
+    home(page)
+    page.locator("#practice").tap()
+    expect(page.locator("#touch")).to_be_visible()
+    wait_mouse_lock(page, False)
+    context.close()
+
+
+def blocked_mouse_capture(browser, url, errors):
+    context = browser.new_context(viewport={"width": 960, "height": 600})
+    context.add_init_script("""Element.prototype.requestPointerLock = () =>
+        Promise.reject(new DOMException('Capture denied', 'NotAllowedError'));""")
+    page = visit(context, url, 1796079600, errors)
+    page.locator("#featured").click()
+    expect(page.locator(".viewinfo")).to_contain_text("(ahead,")
+    page.mouse.move(140, 300)
+    page.mouse.down()
+    try:
+        expect(page.locator("#toast")).to_contain_text("drag to look")
+        page.mouse.move(800, 300, steps=5)
+        expect(page.locator(".viewinfo")).not_to_contain_text("(ahead,")
+    finally:
+        page.mouse.up()
+    wait_mouse_lock(page, False)
     context.close()
 
 
@@ -251,6 +327,7 @@ def peers(browser, url, errors, relay_url=None):
     guest.locator("#browse").click()
     expect(guest.locator(".day.ready")).to_have_count(1)
     guest.locator("#close").click()
+    wait_mouse_lock(guest, True)
     # Use a snapshot actually received by the guest to stop on the usher sightline.
     # The only commands sent to the game are ordinary keyboard events.
     guest.bring_to_front()
@@ -269,6 +346,9 @@ def peers(browser, url, errors, relay_url=None):
             break
     expect(host.locator(".viewinfo")).to_contain_text("1/2", timeout=7000)
     expect(guest.locator(".viewinfo")).to_contain_text("1/2", timeout=7000)
+    host.bring_to_front()
+    host.locator("#canvas").click()
+    wait_mouse_lock(host, True)
     first.close()
     second.close()
 
@@ -345,6 +425,8 @@ if __name__ == "__main__":
         )
         desktop(browser, url, errors)
         touch(browser, url, errors)
+        hybrid_mouse(browser, url, errors)
+        blocked_mouse_capture(browser, url, errors)
         timed_trial(browser, url, errors)
         simulated_xr(browser, url, errors)
         browser_clear(browser, url, rehearsal=True)
@@ -374,5 +456,5 @@ if __name__ == "__main__":
         browser.close()
     assert not errors, errors
     print(
-        "Browser acceptance passed: 24 briefings, midnight rollover, split views, mobile touch, simulated stereo XR, tutorial extraction and live campaign entry, and two networked browsers."
+        "Browser acceptance passed: 24 briefings, midnight rollover, split views, mouse capture and look, hybrid and touch controls, simulated stereo XR, tutorial extraction and live campaign entry, and two networked browsers."
     )
