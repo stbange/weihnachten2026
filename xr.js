@@ -51,6 +51,7 @@ export async function immersive(M, update, state, finish, caption, settings) {
     const layer = new XRWebGLLayer(session, gl, {
       alpha: false,
       antialias: false,
+      framebufferScaleFactor: 0.7,
     });
     session.updateRenderState({
       baseLayer: layer,

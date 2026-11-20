@@ -13,6 +13,27 @@
     "gift": "A punched ticket sets the first place. There is a twenty-fifth seat number on the back.",
     "route": "0–4 punch into the foyer. 4–9 shrink the ushers at the counter. 9–15 boost from pit to booth. 15–20 run the film and carry the ticket out through the lit theatre.",
     "coop": "A partner folds the balcony usher while the operator climbs. Alone, clear the balcony from below.",
+    "purpose": "Make an ordinary cinema run by operating its fixtures.",
+    "twist": "The switchboard in the stalls becomes a shooting gallery upstairs. Aim for the mischief of finding a working backstage door.",
+    "decisions": "Shoot the passing frame or keep moving. Spend lift reaching the splice in the cutting room or save it for the booth. Return to the marquee through the staff line or approach the last screen from the stalls.",
+    "wardRoom": "Marquee cutting room",
+    "wardSightline": "Two staggered editing screens give a clear shot at a passing frame from either aisle.",
+    "prize": "Matinee splice",
+    "shelter": "Empty stalls",
+    "marks": [
+      {
+        "name": "Marquee bulb",
+        "move": "aim and pulse"
+      },
+      {
+        "name": "Changeover frame",
+        "move": "pulse on the bright beat"
+      },
+      {
+        "name": "Ticket slot",
+        "move": "press Use"
+      }
+    ],
     "feature": "Backstage shutter",
     "featureHint": "Punch the tickets to open the staff passage.",
     "stride": 14,
@@ -37,6 +58,10 @@
         "start": "u",
         "exit": "y",
         "link": "qn",
+        "fork": "dei",
+        "required": [
+          "Marquee bulb"
+        ],
         "tools": [
           "Ticket punch",
           "Pleated usher",
@@ -61,6 +86,10 @@
         "start": "a",
         "exit": "l",
         "link": "cn",
+        "fork": "lkg",
+        "required": [
+          "Changeover frame"
+        ],
         "tools": [
           "Pleated usher",
           "Ticket punch",
@@ -85,6 +114,11 @@
         "start": "k",
         "exit": "m",
         "link": "lr",
+        "fork": "qvr",
+        "required": [
+          "Marquee bulb",
+          "Ticket slot"
+        ],
         "tools": [
           "Pleated usher",
           "Booth lift",
@@ -109,6 +143,10 @@
         "start": "y",
         "exit": "r",
         "link": "ih",
+        "fork": "gbh",
+        "required": [
+          "Changeover frame"
+        ],
         "tools": [
           "Booth lift",
           "Ticket punch",
@@ -133,6 +171,12 @@
         "start": "p",
         "exit": "m",
         "link": "cm",
+        "fork": "fba",
+        "required": [
+          "Marquee bulb",
+          "Changeover frame",
+          "Ticket slot"
+        ],
         "tools": [
           "Booth lift",
           "Pleated usher",
@@ -172,6 +216,27 @@
     "gift": "The candle is still warm. Someone paid for the return journey in advance.",
     "route": "0–4 glide through a wind arch. 4–9 tag embers around ice mites. 9–15 raise a ridge against a rival kite. 15–20 escort the loaded balloon through the vent.",
     "coop": "One player spots thermal lanes while another protects the balloon. A solo pilot uses visible mooring points.",
+    "purpose": "Read altitude to harvest embers and get a balloon home.",
+    "twist": "Skimming the lee side pays where climbing into the wind previously paid. The pilot should feel the weight of looking after a slower companion.",
+    "decisions": "Fly the thermal or skim the low trail. Break off for the ember vial or stay with the balloon. Board the return with the balloon close or let it follow the sheltered ground route.",
+    "wardRoom": "Balloon lee pocket",
+    "wardSightline": "An open crescent lets the player dive into the lee and see the thermal on the way out.",
+    "prize": "Ember vial",
+    "shelter": "Sheltered mooring",
+    "marks": [
+      {
+        "name": "Thermal arch",
+        "move": "lift through the crown"
+      },
+      {
+        "name": "Lee ember",
+        "move": "cross at ground height"
+      },
+      {
+        "name": "Mooring rune",
+        "move": "press Use"
+      }
+    ],
     "feature": "Thermal current",
     "featureHint": "Hold Lift in the amber current to climb and sail faster.",
     "stride": 15,
@@ -196,6 +261,10 @@
         "start": "u",
         "exit": "m",
         "link": "gm",
+        "fork": "pqk",
+        "required": [
+          "Thermal arch"
+        ],
         "tools": [
           "Thermal sail",
           "Ember balloon",
@@ -220,6 +289,10 @@
         "start": "a",
         "exit": "e",
         "link": "mw",
+        "fork": "mnh",
+        "required": [
+          "Lee ember"
+        ],
         "tools": [
           "Earth rune",
           "Thermal sail"
@@ -243,6 +316,11 @@
         "start": "w",
         "exit": "m",
         "link": "rm",
+        "fork": "dej",
+        "required": [
+          "Thermal arch",
+          "Mooring rune"
+        ],
         "tools": [
           "Ember balloon",
           "Thermal sail",
@@ -267,6 +345,10 @@
         "start": "e",
         "exit": "o",
         "link": "hg",
+        "fork": "idh",
+        "required": [
+          "Lee ember"
+        ],
         "tools": [
           "Earth rune",
           "Ember balloon",
@@ -291,6 +373,12 @@
         "start": "m",
         "exit": "e",
         "link": "mn",
+        "fork": "nih",
+        "required": [
+          "Thermal arch",
+          "Lee ember",
+          "Mooring rune"
+        ],
         "tools": [
           "Thermal sail",
           "Earth rune",
@@ -330,6 +418,27 @@
     "gift": "A brass loading token carries the same punch as the cinema ticket.",
     "route": "0–4 survey two seams. 4–9 guide the first load past scrap beetles. 9–15 build a loading bay. 15–20 switch power between the fence and the returning convoy.",
     "coop": "Two players can scout and operate the substation separately. A solo player recalls the sled to a holding point.",
+    "purpose": "Make one complete survey, harvest and delivery circuit.",
+    "twist": "The ore road that made the outbound run quick has to serve a loaded harvester on the return. Aim for a working supply line.",
+    "decisions": "Mark the survey posts or commission the service road. Work the assay room or go straight to the scale. Lead the harvester along the return line or handle the relay at the weighbridge on foot.",
+    "wardRoom": "Assay weighbridge",
+    "wardSightline": "Parallel loading cheeks leave a straight haul lane through the sample scale.",
+    "prize": "Glass assay",
+    "shelter": "Survey cab",
+    "marks": [
+      {
+        "name": "Survey stake",
+        "move": "press Use"
+      },
+      {
+        "name": "Ore glint",
+        "move": "aim and pulse"
+      },
+      {
+        "name": "Haul lane",
+        "move": "cross at ground height"
+      }
+    ],
     "feature": "Staked haul road",
     "featureHint": "Complete the survey stakes to clear the cross-field road.",
     "stride": 16,
@@ -354,6 +463,10 @@
         "start": "u",
         "exit": "y",
         "link": "km",
+        "fork": "cbh",
+        "required": [
+          "Survey stake"
+        ],
         "tools": [
           "Route stakes",
           "Substation",
@@ -378,6 +491,10 @@
         "start": "e",
         "exit": "a",
         "link": "ol",
+        "fork": "mhl",
+        "required": [
+          "Ore glint"
+        ],
         "tools": [
           "Glass harvester",
           "Route stakes",
@@ -402,6 +519,11 @@
         "start": "k",
         "exit": "w",
         "link": "ln",
+        "fork": "ihn",
+        "required": [
+          "Survey stake",
+          "Haul lane"
+        ],
         "tools": [
           "Glass harvester",
           "Substation",
@@ -426,6 +548,10 @@
         "start": "a",
         "exit": "e",
         "link": "km",
+        "fork": "kpl",
+        "required": [
+          "Ore glint"
+        ],
         "tools": [
           "Substation",
           "Route stakes",
@@ -450,6 +576,12 @@
         "start": "v",
         "exit": "y",
         "link": "lo",
+        "fork": "mhn",
+        "required": [
+          "Survey stake",
+          "Ore glint",
+          "Haul lane"
+        ],
         "tools": [
           "Substation",
           "Glass harvester",
@@ -489,6 +621,27 @@
     "gift": "The clapper has a loop of LAN cable where a rope should be.",
     "route": "0–4 read a practice jump. 4–9 move the first weight above a dry basin. 9–15 traverse the rising water. 15–20 find a new route down to ring the exposed bell.",
     "coop": "A partner can call landing spots from a gallery. A missed grab drops into a shallow recovery pool.",
+    "purpose": "Learn the cistern by recognising a ledge from above and below.",
+    "twist": "Releasing the counterweight turns the route you saw across the water into a crossing. Aim for the moment a ruin makes sense.",
+    "decisions": "Read the landing from the shelf or commit to the jump. Spend lift at the bellmaker's rubbing or carry it to the grapple. Re-enter from the lip or follow the basin floor.",
+    "wardRoom": "Bellmaker's shelf",
+    "wardSightline": "Two L-shaped plinths frame the rubbing from below and give the grapple a visible landing.",
+    "prize": "Bellmaker's rubbing",
+    "shelter": "Dry landing",
+    "marks": [
+      {
+        "name": "Stone brow",
+        "move": "lift through the crown"
+      },
+      {
+        "name": "Weight cradle",
+        "move": "press Use"
+      },
+      {
+        "name": "Clockwork bat",
+        "move": "aim and pulse"
+      }
+    ],
     "feature": "Drained ledge",
     "featureHint": "Release the upper latch to expose a ledge across the cistern.",
     "stride": 16,
@@ -513,6 +666,10 @@
         "start": "a",
         "exit": "k",
         "link": "hr",
+        "fork": "bgc",
+        "required": [
+          "Stone brow"
+        ],
         "tools": [
           "Ledge grapple",
           "Counterweight",
@@ -537,6 +694,10 @@
         "start": "y",
         "exit": "c",
         "link": "ml",
+        "fork": "rsm",
+        "required": [
+          "Weight cradle"
+        ],
         "tools": [
           "Counterweight",
           "Ledge grapple",
@@ -561,6 +722,11 @@
         "start": "f",
         "exit": "j",
         "link": "ln",
+        "fork": "stn",
+        "required": [
+          "Stone brow",
+          "Clockwork bat"
+        ],
         "tools": [
           "Clockwork bat",
           "Ledge grapple"
@@ -584,6 +750,10 @@
         "start": "c",
         "exit": "o",
         "link": "hm",
+        "fork": "him",
+        "required": [
+          "Weight cradle"
+        ],
         "tools": [
           "Counterweight",
           "Clockwork bat",
@@ -608,6 +778,12 @@
         "start": "m",
         "exit": "c",
         "link": "mi",
+        "fork": "baf",
+        "required": [
+          "Stone brow",
+          "Weight cradle",
+          "Clockwork bat"
+        ],
         "tools": [
           "Clockwork bat",
           "Ledge grapple",
@@ -647,6 +823,27 @@
     "gift": "A little wooden ship gives the first table its centrepiece. Its manifest lists guests as cargo.",
     "route": "0–4 learn the pennant at the sawmill. 4–9 restart the oil run. 9–15 map bells through fog gulls. 15–20 steer the barges out as wooden raiders close in.",
     "coop": "One player pilots while another signals from shore. Solo orders remain active after leaving the pier.",
+    "purpose": "Keep a little port supplied by timber, a scout and a loaded tanker.",
+    "twist": "The berth used for scouting also carries a following tanker. Aim for the bustle of a port waking up.",
+    "decisions": "Sound the pilot lights or use the ordinary quay. Detour for the chart or stay with the tanker. Board together at the sail berth or escort along the shoreline.",
+    "wardRoom": "Pilot's chart house",
+    "wardSightline": "Offset piers make a dogleg around the chart table with a view back toward the berth.",
+    "prize": "Pilot's chart",
+    "shelter": "Harbourmaster's loft",
+    "marks": [
+      {
+        "name": "Pier bell",
+        "move": "press Use"
+      },
+      {
+        "name": "Pilot light",
+        "move": "pulse on the bright beat"
+      },
+      {
+        "name": "Tanker wake",
+        "move": "cross at ground height"
+      }
+    ],
     "feature": "Scout skiff",
     "featureHint": "Use a sail berth to cross the harbour with a nearby tanker.",
     "stride": 14,
@@ -671,6 +868,10 @@
         "start": "a",
         "exit": "o",
         "link": "lr",
+        "fork": "fgk",
+        "required": [
+          "Pier bell"
+        ],
         "tools": [
           "Repair pennant",
           "Scout pennant"
@@ -694,6 +895,10 @@
         "start": "u",
         "exit": "s",
         "link": "qn",
+        "fork": "gfb",
+        "required": [
+          "Pilot light"
+        ],
         "tools": [
           "Oil tanker",
           "Repair pennant",
@@ -718,6 +923,11 @@
         "start": "e",
         "exit": "p",
         "link": "il",
+        "fork": "lkq",
+        "required": [
+          "Pier bell",
+          "Tanker wake"
+        ],
         "tools": [
           "Scout pennant",
           "Oil tanker",
@@ -742,6 +952,10 @@
         "start": "k",
         "exit": "c",
         "link": "ko",
+        "fork": "mhn",
+        "required": [
+          "Pilot light"
+        ],
         "tools": [
           "Repair pennant",
           "Oil tanker",
@@ -766,6 +980,12 @@
         "start": "w",
         "exit": "y",
         "link": "pn",
+        "fork": "mrn",
+        "required": [
+          "Pier bell",
+          "Pilot light",
+          "Tanker wake"
+        ],
         "tools": [
           "Oil tanker",
           "Scout pennant",
@@ -805,6 +1025,27 @@
     "gift": "A folding chair clicks open and six recovered settings reveal footage from a party shot by an unseen guest.",
     "route": "0–4 calibrate feet and torso. 4–9 escort the chair crate. 9–15 rotate between ice vents as rival salvage rigs close. 15–20 send the companion to brace the bridge and cross.",
     "coop": "A friend pilots the second walker. Solo orders give the same two-vehicle bridge solution.",
+    "purpose": "Choose where a heavy walker can fire, cool and carry its load.",
+    "twist": "The useful cooling stops sit off the companion's route. Aim for deliberate control of a heavy machine.",
+    "decisions": "Line up a range shutter or head for coolant. Reclaim the heat-sink vane or keep pace with the walker. Use the return line with company or finish across the salt road.",
+    "wardRoom": "Salt-road machine bay",
+    "wardSightline": "Broken rows of cooling fins offer openings from different firing angles.",
+    "prize": "Heat-sink vane",
+    "shelter": "Cold manifold",
+    "marks": [
+      {
+        "name": "Salvage plate",
+        "move": "charge and release on the plate"
+      },
+      {
+        "name": "Heat shutter",
+        "move": "pulse on the bright beat"
+      },
+      {
+        "name": "Range vane",
+        "move": "aim and pulse"
+      }
+    ],
     "feature": "Cooling manifold",
     "featureHint": "On the blue cooling grates the heat beam reaches full charge sooner.",
     "stride": 19,
@@ -829,6 +1070,10 @@
         "start": "p",
         "exit": "y",
         "link": "gn",
+        "fork": "fag",
+        "required": [
+          "Salvage plate"
+        ],
         "tools": [
           "Chair crate",
           "Heat beam",
@@ -853,6 +1098,10 @@
         "start": "a",
         "exit": "e",
         "link": "qn",
+        "fork": "noi",
+        "required": [
+          "Heat shutter"
+        ],
         "tools": [
           "Heat beam",
           "Companion walker",
@@ -877,6 +1126,11 @@
         "start": "o",
         "exit": "b",
         "link": "sl",
+        "fork": "stx",
+        "required": [
+          "Salvage plate",
+          "Range vane"
+        ],
         "tools": [
           "Heat beam",
           "Chair crate",
@@ -906,6 +1160,10 @@
         "start": "u",
         "exit": "y",
         "link": "ri",
+        "fork": "hci",
+        "required": [
+          "Heat shutter"
+        ],
         "tools": [
           "Companion walker",
           "Heat beam"
@@ -929,6 +1187,12 @@
         "start": "e",
         "exit": "r",
         "link": "nr",
+        "fork": "otn",
+        "required": [
+          "Salvage plate",
+          "Heat shutter",
+          "Range vane"
+        ],
         "tools": [
           "Chair crate",
           "Companion walker",
@@ -968,6 +1232,27 @@
     "gift": "A station timetable gives the first address of the machine that held the invitations.",
     "route": "0–4 learn a rescue route. 4–9 earn vouchers on platform one. 9–15 choose a second approach after gates change. 15–20 bring the last porter out through the clock hall.",
     "coop": "A spectator can mark a porter. A failed solo round restarts at the kiosk and retains rescued groups.",
+    "purpose": "Read a station twice, once to find the porter and once to extract him.",
+    "twist": "The quick approach is exposed on the way back. Aim for tension followed by relief when both reach the cordon.",
+    "decisions": "Track a platform silhouette or take cover on the green line. Recover the left-luggage tag or stay close to the porter. Bring him through the return line or escort him through the concourse.",
+    "wardRoom": "Left-luggage wicket",
+    "wardSightline": "Two short banks of lockers separate the sheltered rescue aisle from the quick crossing.",
+    "prize": "Left-luggage tag",
+    "shelter": "Porter's shelter",
+    "marks": [
+      {
+        "name": "Platform silhouette",
+        "move": "aim and pulse"
+      },
+      {
+        "name": "Green cordon",
+        "move": "cross at ground height"
+      },
+      {
+        "name": "Rescue locker",
+        "move": "press Use"
+      }
+    ],
     "feature": "Rescue cordon",
     "featureHint": "The porter and party can cross the green rescue lane under cover.",
     "stride": 17,
@@ -992,6 +1277,10 @@
         "start": "v",
         "exit": "r",
         "link": "qh",
+        "fork": "cdh",
+        "required": [
+          "Platform silhouette"
+        ],
         "tools": [
           "Rescue kit",
           "Night porter",
@@ -1016,6 +1305,10 @@
         "start": "a",
         "exit": "c",
         "link": "kr",
+        "fork": "hic",
+        "required": [
+          "Green cordon"
+        ],
         "tools": [
           "Night porter",
           "Exit whistle"
@@ -1039,6 +1332,11 @@
         "start": "e",
         "exit": "b",
         "link": "il",
+        "fork": "lkg",
+        "required": [
+          "Platform silhouette",
+          "Rescue locker"
+        ],
         "tools": [
           "Rescue kit",
           "Exit whistle",
@@ -1068,6 +1366,10 @@
         "start": "p",
         "exit": "y",
         "link": "ro",
+        "fork": "idj",
+        "required": [
+          "Green cordon"
+        ],
         "tools": [
           "Exit whistle",
           "Night porter",
@@ -1092,6 +1394,12 @@
         "start": "w",
         "exit": "n",
         "link": "rn",
+        "fork": "qpl",
+        "required": [
+          "Platform silhouette",
+          "Green cordon",
+          "Rescue locker"
+        ],
         "tools": [
           "Night porter",
           "Rescue kit",
@@ -1131,6 +1439,27 @@
     "gift": "A tram transfer is timestamped one minute before every other delivery.",
     "route": "0–4 ride an uneventful tram. 4–9 free a technician after a cold breach. 9–15 move heat between pumps to draw moths away. 15–20 restart the tram and ride it out.",
     "coop": "A partner watches a gauge from the gantry. A solo operator reads the mirrored dial beside the pump.",
+    "purpose": "Restore a chain of machinery that a technician can actually ride.",
+    "twist": "Repairing the tram changes how you move the person who repairs it. Aim for the surprise of a machine becoming transportation.",
+    "decisions": "Work the points or take the service walk. Search the switch room for a fuse or stick with the technician. Board the tram together or lead the technician past the pumps.",
+    "wardRoom": "Tram switch room",
+    "wardSightline": "The service corridor winds past two pump casings to the points cabinet.",
+    "prize": "Switch-room fuse",
+    "shelter": "Unpowered cab",
+    "marks": [
+      {
+        "name": "Service panel",
+        "move": "press Use"
+      },
+      {
+        "name": "Live points",
+        "move": "pulse on the bright beat"
+      },
+      {
+        "name": "Breaker contact",
+        "move": "aim and pulse"
+      }
+    ],
     "feature": "Service tram",
     "featureHint": "Recruit the technician to run the tram. Use either stop to ride.",
     "stride": 18,
@@ -1155,6 +1484,10 @@
         "start": "u",
         "exit": "j",
         "link": "rh",
+        "fork": "dei",
+        "required": [
+          "Service panel"
+        ],
         "tools": [
           "Pry bar",
           "Technician"
@@ -1178,6 +1511,10 @@
         "start": "k",
         "exit": "t",
         "link": "km",
+        "fork": "edj",
+        "required": [
+          "Live points"
+        ],
         "tools": [
           "Pump controls",
           "Pry bar",
@@ -1202,6 +1539,11 @@
         "start": "y",
         "exit": "e",
         "link": "rh",
+        "fork": "rwq",
+        "required": [
+          "Service panel",
+          "Breaker contact"
+        ],
         "tools": [
           "Technician",
           "Pump controls",
@@ -1231,6 +1573,10 @@
         "start": "f",
         "exit": "o",
         "link": "ln",
+        "fork": "hci",
+        "required": [
+          "Live points"
+        ],
         "tools": [
           "Pump controls",
           "Technician",
@@ -1255,6 +1601,12 @@
         "start": "b",
         "exit": "j",
         "link": "ht",
+        "fork": "nio",
+        "required": [
+          "Service panel",
+          "Live points",
+          "Breaker contact"
+        ],
         "tools": [
           "Technician",
           "Pry bar",
@@ -1270,6 +1622,11 @@
             "name": "Tram points",
             "at": "t",
             "instruction": "Pulse while the live contact lines up with the points"
+          },
+          {
+            "name": "Jammed panel",
+            "at": "j",
+            "instruction": "Use the pry bar on the service hatch"
           }
         ]
       }
@@ -1289,6 +1646,27 @@
     "gift": "The windsock’s cloth is cut from one of the old hall curtains.",
     "route": "0–4 learn the bowl below home. 4–9 open a ridge route past kite sentries. 9–15 steal the windsock. 15–20 improvise a fast return as the valley gates swing.",
     "coop": "A partner clears the crest or takes a dropped flag. Solo falls return the pennant to the last wind gate.",
+    "purpose": "Turn descent speed and a short jet climb into a flag run.",
+    "twist": "The pennant has to come back through terrain first learned empty-handed. Aim for a clean linked descent and crest.",
+    "decisions": "Skim the trough or climb the crest. Peel off for the race pennant or keep the line. Use the unlocked return or ride the ridge home.",
+    "wardRoom": "Pennant bowl",
+    "wardSightline": "Two pylons occupy the shoulders of a broad landing strip and leave room for a low pass.",
+    "prize": "Race pennant",
+    "shelter": "Lee of the mast",
+    "marks": [
+      {
+        "name": "Ski trough",
+        "move": "cross at ground height"
+      },
+      {
+        "name": "Jet crest",
+        "move": "lift through the crown"
+      },
+      {
+        "name": "Disc gate",
+        "move": "aim and pulse"
+      }
+    ],
     "feature": "Ski line",
     "featureHint": "Hold Lift and move along the blue ski line to carry speed into a jet climb.",
     "stride": 14,
@@ -1313,6 +1691,10 @@
         "start": "w",
         "exit": "m",
         "link": "qm",
+        "fork": "klf",
+        "required": [
+          "Ski trough"
+        ],
         "tools": [
           "Jet crest",
           "Tower pennant",
@@ -1337,6 +1719,10 @@
         "start": "u",
         "exit": "r",
         "link": "qs",
+        "fork": "qvr",
+        "required": [
+          "Jet crest"
+        ],
         "tools": [
           "Disc target",
           "Jet crest"
@@ -1360,6 +1746,11 @@
         "start": "a",
         "exit": "f",
         "link": "gr",
+        "fork": "rql",
+        "required": [
+          "Ski trough",
+          "Disc gate"
+        ],
         "tools": [
           "Disc target",
           "Jet crest",
@@ -1384,6 +1775,10 @@
         "start": "v",
         "exit": "w",
         "link": "qx",
+        "fork": "ijn",
+        "required": [
+          "Jet crest"
+        ],
         "tools": [
           "Disc target",
           "Tower pennant",
@@ -1408,6 +1803,12 @@
         "start": "e",
         "exit": "w",
         "link": "iw",
+        "fork": "kfg",
+        "required": [
+          "Ski trough",
+          "Jet crest",
+          "Disc gate"
+        ],
         "tools": [
           "Tower pennant",
           "Jet crest",
@@ -1447,6 +1848,27 @@
     "gift": "A courier gives you a stamped envelope bearing the order to hold the mail.",
     "route": "0–4 identify a false sign. 4–9 win the couriers’ trust. 9–15 split them to open the tram depot. 15–20 lower a facade and walk everyone out.",
     "coop": "Partners can lead different groups. A solo leader leaves a persistent rally marker.",
+    "purpose": "Read the city as a network of couriers and operable facades.",
+    "twist": "A frontage that hid the route folds away once the stamp is charged. Aim for the pleasure of seeing through the city plan.",
+    "decisions": "Follow the messenger light or take the street. Go behind the hoardings for a dispatch seal or stay with the courier. Use the back line together or circle the visible block.",
+    "wardRoom": "Courier print shop",
+    "wardSightline": "Shelves form a false frontage. A break in the shelving gives a second view of the seal.",
+    "prize": "Dispatch seal",
+    "shelter": "Unmarked alley",
+    "marks": [
+      {
+        "name": "Courier drop",
+        "move": "press Use"
+      },
+      {
+        "name": "Facade seal",
+        "move": "charge and release on the plate"
+      },
+      {
+        "name": "Rally light",
+        "move": "pulse on the bright beat"
+      }
+    ],
     "feature": "Folded frontage",
     "featureHint": "Stamp the condemned frontage to open a cut through the block.",
     "stride": 16,
@@ -1471,6 +1893,10 @@
         "start": "a",
         "exit": "f",
         "link": "cl",
+        "fork": "cbh",
+        "required": [
+          "Courier drop"
+        ],
         "tools": [
           "Rally marker",
           "Courier beacon",
@@ -1495,6 +1921,10 @@
         "start": "u",
         "exit": "b",
         "link": "qi",
+        "fork": "mlh",
+        "required": [
+          "Facade seal"
+        ],
         "tools": [
           "Courier beacon",
           "Rally marker",
@@ -1519,6 +1949,11 @@
         "start": "o",
         "exit": "p",
         "link": "jm",
+        "fork": "rwq",
+        "required": [
+          "Courier drop",
+          "Rally light"
+        ],
         "tools": [
           "Facade stamp",
           "Courier beacon",
@@ -1548,6 +1983,10 @@
         "start": "f",
         "exit": "e",
         "link": "ks",
+        "fork": "lgm",
+        "required": [
+          "Facade seal"
+        ],
         "tools": [
           "Courier beacon",
           "Facade stamp"
@@ -1571,6 +2010,12 @@
         "start": "b",
         "exit": "d",
         "link": "lo",
+        "fork": "lkq",
+        "required": [
+          "Courier drop",
+          "Facade seal",
+          "Rally light"
+        ],
         "tools": [
           "Facade stamp",
           "Rally marker",
@@ -1610,6 +2055,27 @@
     "gift": "A miner returns an ornament that always points toward the hall, even when upside down.",
     "route": "0–4 learn translation in a spherical dock. 4–9 free miners from side chambers. 9–15 trace the core route past drill drones. 15–20 trigger shutdown and fly the marked escape.",
     "coop": "A navigator can mark junctions. Solo and VR have horizon-lock and a forgiving escape reset at the switch.",
+    "purpose": "Find a route through a mine by altitude and by leaving bearings.",
+    "twist": "The rescue route reverses the high and low approach. Aim for disorientation that resolves into mastery.",
+    "decisions": "Fly high to the hatch or follow low bearings. Duck into the survey pocket for a gyroscope or keep the core in view. Lift into the airlock or retrace the mine.",
+    "wardRoom": "Gyroscope bore",
+    "wardSightline": "Alternating ribs mark the two bore mouths, making the return bearing legible from the centre.",
+    "prize": "Survey gyroscope",
+    "shelter": "Pressure refuge",
+    "marks": [
+      {
+        "name": "Upper airway",
+        "move": "lift through the crown"
+      },
+      {
+        "name": "Inverted bore",
+        "move": "cross at ground height"
+      },
+      {
+        "name": "Bearing lamp",
+        "move": "aim and pulse"
+      }
+    ],
     "feature": "Rescue airlock",
     "featureHint": "Lift and use either overhead airlock to traverse the return bore.",
     "stride": 16,
@@ -1634,6 +2100,10 @@
         "start": "m",
         "exit": "r",
         "link": "mr",
+        "fork": "fgk",
+        "required": [
+          "Upper airway"
+        ],
         "tools": [
           "Map breadcrumb",
           "Rescue pod",
@@ -1658,6 +2128,10 @@
         "start": "e",
         "exit": "q",
         "link": "hr",
+        "fork": "idh",
+        "required": [
+          "Inverted bore"
+        ],
         "tools": [
           "Rescue pod",
           "Core switch",
@@ -1682,6 +2156,11 @@
         "start": "u",
         "exit": "y",
         "link": "hn",
+        "fork": "lqm",
+        "required": [
+          "Upper airway",
+          "Bearing lamp"
+        ],
         "tools": [
           "Rescue pod",
           "Map breadcrumb",
@@ -1706,6 +2185,10 @@
         "start": "a",
         "exit": "d",
         "link": "lm",
+        "fork": "lgm",
+        "required": [
+          "Inverted bore"
+        ],
         "tools": [
           "Core switch",
           "Map breadcrumb",
@@ -1730,6 +2213,12 @@
         "start": "y",
         "exit": "w",
         "link": "sm",
+        "fork": "gfa",
+        "required": [
+          "Upper airway",
+          "Inverted bore",
+          "Bearing lamp"
+        ],
         "tools": [
           "Core switch",
           "Rescue pod",
@@ -1769,6 +2258,27 @@
     "gift": "The guest register contains everyone’s name. Its final column reads HOLD UNTIL ALL PRESENT.",
     "route": "0–4 hear the sexton’s request. 4–9 descend to find an unnamed relic. 9–15 identify it and use its light on a sealed nave. 15–20 carry the register past its wax guardian.",
     "coop": "A shared scroll lets friends resupply together. Solo and co-op seeds guarantee the relic and the exit.",
+    "purpose": "Descend for an unnamed relic, identify it and bind a way home.",
+    "twist": "The room that looks like loot is also the safest route back up. Aim for curiosity competing with the urge to leave.",
+    "decisions": "Test the ward pulse or follow the bare stair. Identify the votive in the side chapel or protect the main relic. Use the return circle or keep exploring the crypt.",
+    "wardRoom": "Votive side chapel",
+    "wardSightline": "The altar stands between offset pews with a sightline through to the way home.",
+    "prize": "Unmarked votive",
+    "shelter": "Warm vestry",
+    "marks": [
+      {
+        "name": "Votive altar",
+        "move": "press Use"
+      },
+      {
+        "name": "Rune flame",
+        "move": "pulse on the bright beat"
+      },
+      {
+        "name": "Ward sigil",
+        "move": "aim and pulse"
+      }
+    ],
     "feature": "Return scroll",
     "featureHint": "Identify the relic to bind two scroll circles. Use either circle to return.",
     "stride": 12,
@@ -1793,6 +2303,10 @@
         "start": "c",
         "exit": "r",
         "link": "hw",
+        "fork": "him",
+        "required": [
+          "Votive altar"
+        ],
         "tools": [
           "Return scroll",
           "Identification shrine",
@@ -1817,6 +2331,10 @@
         "start": "u",
         "exit": "o",
         "link": "km",
+        "fork": "him",
+        "required": [
+          "Rune flame"
+        ],
         "tools": [
           "Unnamed relic",
           "Identification shrine",
@@ -1841,6 +2359,11 @@
         "start": "e",
         "exit": "x",
         "link": "iv",
+        "fork": "qpv",
+        "required": [
+          "Votive altar",
+          "Ward sigil"
+        ],
         "tools": [
           "Identification shrine",
           "Unnamed relic",
@@ -1870,6 +2393,10 @@
         "start": "k",
         "exit": "r",
         "link": "cr",
+        "fork": "cdh",
+        "required": [
+          "Rune flame"
+        ],
         "tools": [
           "Identification shrine",
           "Return scroll",
@@ -1894,6 +2421,12 @@
         "start": "y",
         "exit": "w",
         "link": "iw",
+        "fork": "ghl",
+        "required": [
+          "Votive altar",
+          "Rune flame",
+          "Ward sigil"
+        ],
         "tools": [
           "Unnamed relic",
           "Return scroll",
@@ -1933,6 +2466,27 @@
     "gift": "A choirbook margin says the lights once stayed on for somebody who was late.",
     "route": "0–4 learn to circle a cold grate. 4–9 recover two keys on a looping walk. 9–15 bring opposing choirs into the mixing room. 15–20 turn the last valve during a moving-floor fight.",
     "coop": "Friends can divide keys or draw different choirs. Solo encounters include cover pillars and space to keep moving.",
+    "purpose": "Read furnace colours and keys while moving across an arena.",
+    "twist": "A key carried across the firing line opens the route back through it. Aim for the rhythm of moving between safe islands.",
+    "decisions": "Pulse the bellows or skim past. Investigate the brass offcut or follow the shaped socket. Take the blast door or return through the grates.",
+    "wardRoom": "Furnace jacket",
+    "wardSightline": "Paired baffles create two safe islands facing the same bellows mouth.",
+    "prize": "Brass offcut",
+    "shelter": "Cold boiler jacket",
+    "marks": [
+      {
+        "name": "Bellows mouth",
+        "move": "aim and pulse"
+      },
+      {
+        "name": "Grate valve",
+        "move": "pulse on the bright beat"
+      },
+      {
+        "name": "Ash channel",
+        "move": "cross at ground height"
+      }
+    ],
     "feature": "Keyed blast door",
     "featureHint": "Deliver the boiler key to open the crossfire lane.",
     "stride": 20,
@@ -1957,6 +2511,10 @@
         "start": "p",
         "exit": "w",
         "link": "km",
+        "fork": "bcg",
+        "required": [
+          "Bellows mouth"
+        ],
         "tools": [
           "Bellows gun",
           "Boiler key"
@@ -1980,6 +2538,10 @@
         "start": "e",
         "exit": "x",
         "link": "hs",
+        "fork": "inh",
+        "required": [
+          "Grate valve"
+        ],
         "tools": [
           "Boiler key",
           "Furnace choir",
@@ -2004,6 +2566,11 @@
         "start": "u",
         "exit": "j",
         "link": "qn",
+        "fork": "vwq",
+        "required": [
+          "Bellows mouth",
+          "Ash channel"
+        ],
         "tools": [
           "Furnace choir",
           "Bellows gun",
@@ -2028,6 +2595,10 @@
         "start": "a",
         "exit": "n",
         "link": "ln",
+        "fork": "him",
+        "required": [
+          "Grate valve"
+        ],
         "tools": [
           "Boiler key",
           "Bellows gun",
@@ -2052,6 +2623,12 @@
         "start": "y",
         "exit": "w",
         "link": "om",
+        "fork": "jei",
+        "required": [
+          "Bellows mouth",
+          "Grate valve",
+          "Ash channel"
+        ],
         "tools": [
           "Furnace choir",
           "Boiler key",
@@ -2091,6 +2668,27 @@
     "gift": "A small seed bell remembers a friend humming between matches.",
     "route": "0–4 practice the recharge in a nursery. 4–9 swing between frozen boughs. 9–15 find notes by answering root sprites. 15–20 combine a clear cut and the right note at the heartwood.",
     "coop": "Friends queue different notes while the world runs. Solo note queues persist while the player changes tools.",
+    "purpose": "Link a charged cut, a ribbon crossing and a seed's answering note.",
+    "twist": "A ribbon first cut as an obstacle becomes the way across a gap. Aim for an orchard that responds to the player's rhythm.",
+    "decisions": "Answer a bud on the beat or keep travelling. Spend lift on the grafted seed or save it for a high peg. Swing to the far bough or return along the roots.",
+    "wardRoom": "Grafting circle",
+    "wardSightline": "The curling root path exposes the graft a little at a time before opening at the peg.",
+    "prize": "Grafted seed",
+    "shelter": "Root hollow",
+    "marks": [
+      {
+        "name": "Pruning knot",
+        "move": "charge and release on the plate"
+      },
+      {
+        "name": "Ribbon peg",
+        "move": "lift through the crown"
+      },
+      {
+        "name": "Answering bud",
+        "move": "pulse on the bright beat"
+      }
+    ],
     "feature": "Ribbon crossing",
     "featureHint": "Lift and use the ribbon peg to swing to the far bough.",
     "stride": 13,
@@ -2115,6 +2713,10 @@
         "start": "u",
         "exit": "y",
         "link": "qm",
+        "fork": "gbh",
+        "required": [
+          "Pruning knot"
+        ],
         "tools": [
           "Pruning blade",
           "Ribbon peg",
@@ -2139,6 +2741,10 @@
         "start": "f",
         "exit": "k",
         "link": "is",
+        "fork": "lgk",
+        "required": [
+          "Ribbon peg"
+        ],
         "tools": [
           "Ribbon peg",
           "Pruning blade",
@@ -2163,6 +2769,11 @@
         "start": "a",
         "exit": "h",
         "link": "gm",
+        "fork": "gfk",
+        "required": [
+          "Pruning knot",
+          "Answering bud"
+        ],
         "tools": [
           "Elemental notes",
           "Pruning blade"
@@ -2186,6 +2797,10 @@
         "start": "w",
         "exit": "m",
         "link": "pn",
+        "fork": "kfl",
+        "required": [
+          "Ribbon peg"
+        ],
         "tools": [
           "Elemental notes",
           "Pruning blade",
@@ -2210,6 +2825,12 @@
         "start": "e",
         "exit": "h",
         "link": "mh",
+        "fork": "cdh",
+        "required": [
+          "Pruning knot",
+          "Ribbon peg",
+          "Answering bud"
+        ],
         "tools": [
           "Ribbon peg",
           "Elemental notes",
@@ -2249,6 +2870,27 @@
     "gift": "The surveyor’s notebook records a successful rescue after the official deadline.",
     "route": "0–4 inspect a safe landing tile. 4–9 light two barns. 9–15 conserve reactions through a mimic ambush. 15–20 recover the surveyor and extract a live snow mimic.",
     "coop": "Everyone plans in the same short phase and commits independently. Solo has a commandable lantern drone.",
+    "purpose": "Search a dark field by revealing one safe position at a time.",
+    "twist": "A glimpse from cover matters more than rushing the next footprint. Aim for suspense that can be managed by watching.",
+    "decisions": "Pulse from a blind or approach the next light. Cross to the sample plate or keep the surveyor close. Take the return passage together or sweep back across the field.",
+    "wardRoom": "Blind in the orchard",
+    "wardSightline": "Two crooked orchard rows give the surveyor cover while keeping the sample plate in sight.",
+    "prize": "Sample plate",
+    "shelter": "Lit barn",
+    "marks": [
+      {
+        "name": "Mimic flash",
+        "move": "pulse on the bright beat"
+      },
+      {
+        "name": "Survey blind",
+        "move": "press Use"
+      },
+      {
+        "name": "Track flare",
+        "move": "aim and pulse"
+      }
+    ],
     "feature": "Reaction blind",
     "featureHint": "Pulse from a survey blind to illuminate the patrol and interrupt it at a distance.",
     "stride": 17,
@@ -2273,6 +2915,10 @@
         "start": "u",
         "exit": "j",
         "link": "lh",
+        "fork": "cdh",
+        "required": [
+          "Mimic flash"
+        ],
         "tools": [
           "Survey flare",
           "Reaction flash",
@@ -2297,6 +2943,10 @@
         "start": "e",
         "exit": "p",
         "link": "nr",
+        "fork": "otn",
+        "required": [
+          "Survey blind"
+        ],
         "tools": [
           "Reaction flash",
           "Survey flare",
@@ -2321,6 +2971,11 @@
         "start": "a",
         "exit": "c",
         "link": "kn",
+        "fork": "noi",
+        "required": [
+          "Mimic flash",
+          "Track flare"
+        ],
         "tools": [
           "Survey flare",
           "Reaction flash"
@@ -2344,6 +2999,10 @@
         "start": "y",
         "exit": "b",
         "link": "sm",
+        "fork": "ijn",
+        "required": [
+          "Survey blind"
+        ],
         "tools": [
           "Lost surveyor",
           "Reaction flash",
@@ -2373,6 +3032,12 @@
         "start": "k",
         "exit": "d",
         "link": "vh",
+        "fork": "stn",
+        "required": [
+          "Mimic flash",
+          "Survey blind",
+          "Track flare"
+        ],
         "tools": [
           "Lost surveyor",
           "Survey flare",
@@ -2412,6 +3077,27 @@
     "gift": "A foundry nail fixes a torn corner of the original invitation. The writing underneath says START.",
     "route": "0–4 swap a stair with a gate. 4–9 pin two counterweights. 9–15 cross the shaft during a gargoyle attack. 15–20 unlock the bell room from above and descend by a new route.",
     "coop": "Partners can hold opposite sightlines. A ratchet and a longer stair route support solo and comfort play.",
+    "purpose": "Connect a vertical rivet gallery with paired runes.",
+    "twist": "The high ledge you fired at becomes the landing for your return. Aim for the confidence of recognising a room across a vertical drop.",
+    "decisions": "Shoot the distant stop or climb before firing. Jet for the maker's die or approach the next rune. Use a slipgate or climb the stair again.",
+    "wardRoom": "Rivet die gallery",
+    "wardSightline": "A diagonal break between paired buttresses lines up the sight from the lower landing.",
+    "prize": "Maker's die",
+    "shelter": "Lower landing",
+    "marks": [
+      {
+        "name": "Rivet stop",
+        "move": "aim and pulse"
+      },
+      {
+        "name": "Impulse lip",
+        "move": "lift through the crown"
+      },
+      {
+        "name": "Rune socket",
+        "move": "press Use"
+      }
+    ],
     "feature": "Paired slipgate",
     "featureHint": "Mark both runes to link the slipgates. Use a lit mouth to cross the shaft.",
     "stride": 14,
@@ -2436,6 +3122,10 @@
         "start": "u",
         "exit": "s",
         "link": "km",
+        "fork": "bgc",
+        "required": [
+          "Rivet stop"
+        ],
         "tools": [
           "Rivet caster",
           "Impulse pad",
@@ -2460,6 +3150,10 @@
         "start": "e",
         "exit": "v",
         "link": "iv",
+        "fork": "gfl",
+        "required": [
+          "Impulse lip"
+        ],
         "tools": [
           "Paired gate",
           "Rivet caster",
@@ -2484,6 +3178,11 @@
         "start": "a",
         "exit": "t",
         "link": "gn",
+        "fork": "nio",
+        "required": [
+          "Rivet stop",
+          "Rune socket"
+        ],
         "tools": [
           "Rivet caster",
           "Paired gate",
@@ -2508,6 +3207,10 @@
         "start": "w",
         "exit": "o",
         "link": "lh",
+        "fork": "ijn",
+        "required": [
+          "Impulse lip"
+        ],
         "tools": [
           "Impulse pad",
           "Rivet caster",
@@ -2532,6 +3235,12 @@
         "start": "m",
         "exit": "h",
         "link": "mh",
+        "fork": "onj",
+        "required": [
+          "Rivet stop",
+          "Impulse lip",
+          "Rune socket"
+        ],
         "tools": [
           "Impulse pad",
           "Paired gate",
@@ -2571,6 +3280,27 @@
     "gift": "The apprentice remembers the rest of the correction and writes ANYWAY below START.",
     "route": "0–4 learn the staff in a gallery. 4–9 pull weights along the ravine crossing. 9–15 leap between moving lenses. 15–20 release the apprentice by disarming the keeper or realigning the dome.",
     "coop": "A friend holds a beam while another leaps. A locking gimbal keeps the solo route open.",
+    "purpose": "Alternate a timed light parry with focus movement.",
+    "twist": "The parry sightline ends at a counterweight the apprentice must pull. Aim for calm precision at height.",
+    "decisions": "Meet the flash or conserve attention for the jump. Reach the prism chip or hold lift for the gallery. Cross on the focus lens or take the grounded approach.",
+    "wardRoom": "Prism cloister",
+    "wardSightline": "Facing plinths leave a diagonal line through the glint and back to the landing.",
+    "prize": "Prism chip",
+    "shelter": "Prism cloister",
+    "marks": [
+      {
+        "name": "Parry glint",
+        "move": "pulse on the bright beat"
+      },
+      {
+        "name": "Focus step",
+        "move": "lift through the crown"
+      },
+      {
+        "name": "Hanging weight",
+        "move": "charge and release on the plate"
+      }
+    ],
     "feature": "Focus crossing",
     "featureHint": "Leap and use the suspended focus lens to reach the opposite gallery.",
     "stride": 15,
@@ -2595,6 +3325,10 @@
         "start": "a",
         "exit": "x",
         "link": "gn",
+        "fork": "dei",
+        "required": [
+          "Parry glint"
+        ],
         "tools": [
           "Prism staff",
           "Focus leap",
@@ -2619,6 +3353,10 @@
         "start": "u",
         "exit": "o",
         "link": "ln",
+        "fork": "hci",
+        "required": [
+          "Focus step"
+        ],
         "tools": [
           "Lens weight",
           "Prism staff",
@@ -2643,6 +3381,11 @@
         "start": "e",
         "exit": "b",
         "link": "om",
+        "fork": "rsm",
+        "required": [
+          "Parry glint",
+          "Hanging weight"
+        ],
         "tools": [
           "Focus leap",
           "Prism staff",
@@ -2667,6 +3410,10 @@
         "start": "k",
         "exit": "v",
         "link": "im",
+        "fork": "mlr",
+        "required": [
+          "Focus step"
+        ],
         "tools": [
           "Lens weight",
           "Focus leap",
@@ -2691,6 +3438,12 @@
         "start": "y",
         "exit": "p",
         "link": "im",
+        "fork": "idc",
+        "required": [
+          "Parry glint",
+          "Focus step",
+          "Hanging weight"
+        ],
         "tools": [
           "Focus leap",
           "Lens weight",
@@ -2730,6 +3483,27 @@
     "gift": "A cooperative signal unlocks the second film. The host wrote the correction, but the machine never got it.",
     "route": "0–4 restore an isolated relay. 4–9 grow a route across the cut. 9–15 route resource deliveries while frost mites strip the roof. 15–20 overlap all three shelter systems to transmit.",
     "coop": "Partners can tend different shelters. A solo player leaves one queued order per fabricator.",
+    "purpose": "Connect three different forms of shelter into one evacuation route.",
+    "twist": "The last shelter needs a power field, living ground and a repaired hull. Aim for recognition of three different building logics in one place.",
+    "decisions": "Work the relay or follow the mat. Repair the shelter pocket for a field wafer or push on. Cross the completed mat or return through the relay court.",
+    "wardRoom": "Three shelter annexes",
+    "wardSightline": "Three isolated footings leave an open overlap at the centre for the field wafer.",
+    "prize": "Field wafer",
+    "shelter": "Ivory shelter",
+    "marks": [
+      {
+        "name": "Pylon pulse",
+        "move": "pulse on the bright beat"
+      },
+      {
+        "name": "Growth node",
+        "move": "press Use"
+      },
+      {
+        "name": "Repair contact",
+        "move": "charge and release on the plate"
+      }
+    ],
     "feature": "Living mat",
     "featureHint": "Mark the growth front to extend the mat to the next shelter.",
     "stride": 17,
@@ -2754,6 +3528,10 @@
         "start": "k",
         "exit": "o",
         "link": "gm",
+        "fork": "bcg",
+        "required": [
+          "Pylon pulse"
+        ],
         "tools": [
           "Relay radius",
           "Repair fabricator"
@@ -2777,6 +3555,10 @@
         "start": "u",
         "exit": "y",
         "link": "ln",
+        "fork": "ijn",
+        "required": [
+          "Growth node"
+        ],
         "tools": [
           "Living mat",
           "Repair fabricator",
@@ -2801,6 +3583,11 @@
         "start": "e",
         "exit": "h",
         "link": "im",
+        "fork": "tys",
+        "required": [
+          "Pylon pulse",
+          "Repair contact"
+        ],
         "tools": [
           "Repair fabricator",
           "Relay radius",
@@ -2825,6 +3612,10 @@
         "start": "a",
         "exit": "j",
         "link": "qn",
+        "fork": "mhn",
+        "required": [
+          "Growth node"
+        ],
         "tools": [
           "Repair fabricator",
           "Living mat",
@@ -2854,6 +3645,12 @@
         "start": "p",
         "exit": "x",
         "link": "lo",
+        "fork": "lqm",
+        "required": [
+          "Pylon pulse",
+          "Growth node",
+          "Repair contact"
+        ],
         "tools": [
           "Relay radius",
           "Living mat",
@@ -2869,6 +3666,11 @@
             "name": "Fabricator",
             "at": "o",
             "instruction": "Hold the repair beam on the shelter until its hull is sealed"
+          },
+          {
+            "name": "Living mat",
+            "at": "s",
+            "instruction": "Plant the living node with Use to connect its shelter"
           }
         ]
       }
@@ -2888,6 +3690,27 @@
     "gift": "The keeper’s letter asks the hall for a route in, the first invitation written from outside.",
     "route": "0–4 climb out of a wrecked lift. 4–9 translate the aqueduct’s route signs. 9–15 use orb bursts to lift distant sluices. 15–20 escort the keeper while opening the waterfall path.",
     "coop": "A partner can strike a teammate’s orb. Solo orbs linger briefly when aimed at puzzle sockets.",
+    "purpose": "Translate a valley's signs and learn the two-shot light orb.",
+    "twist": "A pictograph becomes a timing instruction for a shot in the sluice. Aim for wonder followed by comprehension.",
+    "decisions": "Inspect the keeper stone or go to the water. Wait for the echo pearl's answering light or stay with the keeper. Take the translated crossing or retrace the aqueduct.",
+    "wardRoom": "Echo grotto",
+    "wardSightline": "A hooked viewing shelf faces an open pool with space to track the answering light.",
+    "prize": "Echo pearl",
+    "shelter": "Dry basin",
+    "marks": [
+      {
+        "name": "Blooming echo",
+        "move": "pulse on the bright beat"
+      },
+      {
+        "name": "Sluice lens",
+        "move": "aim and pulse"
+      },
+      {
+        "name": "Keeper stone",
+        "move": "press Use"
+      }
+    ],
     "feature": "Keeper's sluice",
     "featureHint": "Translate the glyph to expose the aqueduct crossing.",
     "stride": 17,
@@ -2912,6 +3735,10 @@
         "start": "a",
         "exit": "e",
         "link": "km",
+        "fork": "gbh",
+        "required": [
+          "Blooming echo"
+        ],
         "tools": [
           "Light orb",
           "Stone translator"
@@ -2935,6 +3762,10 @@
         "start": "u",
         "exit": "n",
         "link": "ln",
+        "fork": "gfb",
+        "required": [
+          "Sluice lens"
+        ],
         "tools": [
           "Stone translator",
           "Light orb",
@@ -2959,6 +3790,11 @@
         "start": "e",
         "exit": "l",
         "link": "nr",
+        "fork": "otn",
+        "required": [
+          "Blooming echo",
+          "Keeper stone"
+        ],
         "tools": [
           "Light orb",
           "Stone translator",
@@ -2983,6 +3819,10 @@
         "start": "k",
         "exit": "y",
         "link": "mr",
+        "fork": "cdh",
+        "required": [
+          "Sluice lens"
+        ],
         "tools": [
           "Valley keeper",
           "Stone translator",
@@ -3007,6 +3847,12 @@
         "start": "v",
         "exit": "e",
         "link": "go",
+        "fork": "pqk",
+        "required": [
+          "Blooming echo",
+          "Sluice lens",
+          "Keeper stone"
+        ],
         "tools": [
           "Valley keeper",
           "Light orb",
@@ -3046,6 +3892,27 @@
     "gift": "A spool of message tape records the Steward practising the words COME IN.",
     "route": "0–4 hear a contradictory log. 4–9 trace a message through two decks. 9–15 lower surveillance while repair spiders interfere. 15–20 enter the network to release the dispatcher.",
     "coop": "A partner can guide the diver from a physical map. A solo diver carries a copy of the same diagram.",
+    "purpose": "Reconstruct an address by disabling surveillance and reconnecting a circuit.",
+    "twist": "A network jack links rooms that are far apart on the physical deck. Aim for a moment of clarity inside an untrustworthy station.",
+    "decisions": "Blind the eye or skirt its room. Trace the archive fork for a log spool or follow the dispatch address. Jack back across the deck or stay in physical space.",
+    "wardRoom": "Archive fork",
+    "wardSightline": "Three short equipment racks divide the physical ward into bays around one jack.",
+    "prize": "Archive spool",
+    "shelter": "Silent ward",
+    "marks": [
+      {
+        "name": "Tracking eye",
+        "move": "aim and pulse"
+      },
+      {
+        "name": "Log jack",
+        "move": "press Use"
+      },
+      {
+        "name": "Circuit pulse",
+        "move": "pulse on the bright beat"
+      }
+    ],
     "feature": "Network jack",
     "featureHint": "Blind the surveillance lens to activate both network jacks. Use to enter.",
     "stride": 17,
@@ -3070,6 +3937,10 @@
         "start": "u",
         "exit": "d",
         "link": "lh",
+        "fork": "gfb",
+        "required": [
+          "Tracking eye"
+        ],
         "tools": [
           "Log fragments",
           "Circuit nodes",
@@ -3094,6 +3965,10 @@
         "start": "e",
         "exit": "b",
         "link": "om",
+        "fork": "ihn",
+        "required": [
+          "Log jack"
+        ],
         "tools": [
           "Surveillance lens",
           "Log fragments",
@@ -3118,6 +3993,11 @@
         "start": "a",
         "exit": "w",
         "link": "hn",
+        "fork": "afb",
+        "required": [
+          "Tracking eye",
+          "Circuit pulse"
+        ],
         "tools": [
           "Surveillance lens",
           "Circuit nodes",
@@ -3142,6 +4022,10 @@
         "start": "m",
         "exit": "q",
         "link": "mw",
+        "fork": "eji",
+        "required": [
+          "Log jack"
+        ],
         "tools": [
           "Circuit nodes",
           "Log fragments",
@@ -3166,6 +4050,12 @@
         "start": "y",
         "exit": "k",
         "link": "nh",
+        "fork": "nsm",
+        "required": [
+          "Tracking eye",
+          "Log jack",
+          "Circuit pulse"
+        ],
         "tools": [
           "Circuit nodes",
           "Surveillance lens",
@@ -3205,6 +4095,27 @@
     "gift": "A loaf carved from alder wood marks a place for anyone who arrives hungry.",
     "route": "0–4 feed the hearth. 4–9 staff forest and quarry. 9–15 advance an age to repair a flood crossing. 15–20 complete a feast house as boars scatter the supply carts.",
     "coop": "Friends lay different foundations. Solo villagers remember jobs and use a bell to regroup after raids.",
+    "purpose": "Bring labour, food and a working crossing together for a winter feast.",
+    "twist": "The ford becomes more valuable once you have something to carry. Aim for satisfaction at improving a small settlement.",
+    "decisions": "Ring a work bell or carry food straight through. Recover the mill tally or return to the foundation. Cross the finished ford or take the bank with the stores.",
+    "wardRoom": "Counting mill",
+    "wardSightline": "The grain track circles a milling stone and rejoins the cart road by the tally.",
+    "prize": "Mill tally",
+    "shelter": "Hearth bench",
+    "marks": [
+      {
+        "name": "Work bell",
+        "move": "press Use"
+      },
+      {
+        "name": "Cart track",
+        "move": "cross at ground height"
+      },
+      {
+        "name": "Roof joint",
+        "move": "charge and release on the plate"
+      }
+    ],
     "feature": "Timber ford",
     "featureHint": "Finish the foundation to give the village a working cart crossing.",
     "stride": 14,
@@ -3229,6 +4140,10 @@
         "start": "m",
         "exit": "v",
         "link": "mh",
+        "fork": "bgc",
+        "required": [
+          "Work bell"
+        ],
         "tools": [
           "Work orders",
           "Food stores",
@@ -3253,6 +4168,10 @@
         "start": "a",
         "exit": "h",
         "link": "km",
+        "fork": "mnh",
+        "required": [
+          "Cart track"
+        ],
         "tools": [
           "Work orders",
           "Feast foundation",
@@ -3277,6 +4196,11 @@
         "start": "e",
         "exit": "l",
         "link": "iv",
+        "fork": "otn",
+        "required": [
+          "Work bell",
+          "Roof joint"
+        ],
         "tools": [
           "Food stores",
           "Work orders"
@@ -3300,6 +4224,10 @@
         "start": "u",
         "exit": "y",
         "link": "lo",
+        "fork": "hci",
+        "required": [
+          "Cart track"
+        ],
         "tools": [
           "Feast foundation",
           "Work orders",
@@ -3324,6 +4252,12 @@
         "start": "w",
         "exit": "o",
         "link": "rc",
+        "fork": "jio",
+        "required": [
+          "Work bell",
+          "Cart track",
+          "Roof joint"
+        ],
         "tools": [
           "Food stores",
           "Feast foundation",
@@ -3363,6 +4297,27 @@
     "gift": "A carnival handbill advertises the reunion with its correct, previously unprinted return address.",
     "route": "0–4 board the rear carriage. 4–9 tag the wax ticket-takers. 9–15 light mirrored signals at the midway. 15–20 direct the train back through a procession of false silhouettes.",
     "coop": "A partner can identify reflections from the opposite platform. Solo uses scorch marks to distinguish the real signal.",
+    "purpose": "Recognise the real carnival signal by priming a flare and reading its bloom.",
+    "twist": "The familiar light becomes a decoy in the mirror tent. Aim for suspicion giving way to a well-timed shot.",
+    "decisions": "Mark the flare on its beat or skim past. Search the sideshow for a mirror ticket or stay near the carriage. Return through the service line or work the midway again.",
+    "wardRoom": "Mirror-ticket booth",
+    "wardSightline": "Staggered flats hide the second approach without concealing the bright timing signal.",
+    "prize": "Mirror ticket",
+    "shelter": "Empty carriage",
+    "marks": [
+      {
+        "name": "Mirror glint",
+        "move": "pulse on the bright beat"
+      },
+      {
+        "name": "Wax silhouette",
+        "move": "aim and pulse"
+      },
+      {
+        "name": "Flare wick",
+        "move": "charge and release on the plate"
+      }
+    ],
     "feature": "Flare gallery",
     "featureHint": "Pulse from the gallery to light up the wax patrol across the midway.",
     "stride": 14,
@@ -3387,6 +4342,10 @@
         "start": "u",
         "exit": "v",
         "link": "kq",
+        "fork": "bcg",
+        "required": [
+          "Mirror glint"
+        ],
         "tools": [
           "Lantern flare",
           "Burst caster",
@@ -3411,6 +4370,10 @@
         "start": "b",
         "exit": "q",
         "link": "ir",
+        "fork": "ijn",
+        "required": [
+          "Wax silhouette"
+        ],
         "tools": [
           "Burst caster",
           "Lantern flare"
@@ -3434,6 +4397,11 @@
         "start": "k",
         "exit": "w",
         "link": "gm",
+        "fork": "gbc",
+        "required": [
+          "Mirror glint",
+          "Flare wick"
+        ],
         "tools": [
           "Twin-caster token",
           "Burst caster",
@@ -3458,6 +4426,10 @@
         "start": "y",
         "exit": "x",
         "link": "os",
+        "fork": "ihn",
+        "required": [
+          "Wax silhouette"
+        ],
         "tools": [
           "Burst caster",
           "Lantern flare",
@@ -3482,6 +4454,12 @@
         "start": "a",
         "exit": "n",
         "link": "kn",
+        "fork": "xys",
+        "required": [
+          "Mirror glint",
+          "Wax silhouette",
+          "Flare wick"
+        ],
         "tools": [
           "Twin-caster token",
           "Lantern flare",
@@ -3495,12 +4473,12 @@
           },
           {
             "name": "Delayed flare",
-            "at": "n",
+            "at": "h",
             "instruction": "Tag the wax signal and pulse it again as the flare blooms"
           },
           {
             "name": "Mirror signal",
-            "at": "h",
+            "at": "n",
             "instruction": "Pulse the real signal on the bright beat"
           }
         ]
@@ -3521,6 +4499,27 @@
     "gift": "A transmitter aerial rises from the hall roof. Its first reply is a knock at tomorrow’s door.",
     "route": "0–4 reclaim a fallen chassis. 4–9 find a wind source for the grid. 9–15 complete two relay arms under recycler pressure. 15–20 repurpose the last rival hulk as an aerial.",
     "coop": "A partner balances power while the builder works. Solo can pause a queue to restore throughput.",
+    "purpose": "Reclaim metal and reconnect power before finishing a constructor order.",
+    "twist": "The bridge over the wreck field is built from what you found below it. Aim for a visible connection between salvage and construction.",
+    "decisions": "Stop on a reclaim contact or go to the power bus. Recover the armature from the scrap pocket or carry on building. Use the completed trestle or follow the wreck-bed route.",
+    "wardRoom": "Armature bed",
+    "wardSightline": "A split wreck hull frames the reclaim plate and leaves two ways to reach the winding.",
+    "prize": "Spare armature",
+    "shelter": "Lee of the windmill",
+    "marks": [
+      {
+        "name": "Reclaim contact",
+        "move": "charge and release on the plate"
+      },
+      {
+        "name": "Power winding",
+        "move": "pulse on the bright beat"
+      },
+      {
+        "name": "Constructor stud",
+        "move": "press Use"
+      }
+    ],
     "feature": "Rebuilt trestle",
     "featureHint": "Finish the constructor order to span the wreck basin.",
     "stride": 16,
@@ -3545,6 +4544,10 @@
         "start": "a",
         "exit": "i",
         "link": "lm",
+        "fork": "gfl",
+        "required": [
+          "Reclaim contact"
+        ],
         "tools": [
           "Reclaim beam",
           "Constructor queue",
@@ -3569,6 +4572,10 @@
         "start": "e",
         "exit": "b",
         "link": "nl",
+        "fork": "qpl",
+        "required": [
+          "Power winding"
+        ],
         "tools": [
           "Power balance",
           "Reclaim beam",
@@ -3593,6 +4600,11 @@
         "start": "u",
         "exit": "o",
         "link": "qh",
+        "fork": "nso",
+        "required": [
+          "Reclaim contact",
+          "Constructor stud"
+        ],
         "tools": [
           "Constructor queue",
           "Reclaim beam",
@@ -3617,6 +4629,10 @@
         "start": "k",
         "exit": "w",
         "link": "ci",
+        "fork": "hmg",
+        "required": [
+          "Power winding"
+        ],
         "tools": [
           "Power balance",
           "Constructor queue",
@@ -3641,6 +4657,12 @@
         "start": "y",
         "exit": "r",
         "link": "nr",
+        "fork": "lkg",
+        "required": [
+          "Reclaim contact",
+          "Power winding",
+          "Constructor stud"
+        ],
         "tools": [
           "Constructor queue",
           "Power balance",
@@ -3680,6 +4702,27 @@
     "gift": "The last keepsake is a blank place card. Write a name locally or leave it blank. The Steward unlocks the front doors and the clock strikes twelve.",
     "route": "0–4 receive the Steward’s final dispatch. 4–9 fund the frozen convoy. 9–15 choose which coils protect its route. 15–20 shift the mail van into the hall and manually release the minute hand.",
     "coop": "Friends coordinate relay, convoy and clock. Every relay latches for solo. Earlier clears restore extra voices in the ending; all players can send the invitations.",
+    "purpose": "Put a powered chrono network in the service of a mail convoy.",
+    "twist": "The last cargo is an invitation and the van can ride with you. Aim for a dramatic change of scale followed by a personal delivery.",
+    "decisions": "Work the coil contacts or take the service road. Visit the post room for a sorting die or keep the van close. Shift the convoy together or escort it to the minute hand on the ground.",
+    "wardRoom": "Dead-letter siding",
+    "wardSightline": "Two offset loading bays form a through track with a clearly visible sorting platform.",
+    "prize": "Sorting die",
+    "shelter": "Dead-letter office",
+    "marks": [
+      {
+        "name": "Mail siding",
+        "move": "press Use"
+      },
+      {
+        "name": "Chrono contact",
+        "move": "pulse on the bright beat"
+      },
+      {
+        "name": "Coil cap",
+        "move": "aim and pulse"
+      }
+    ],
     "feature": "Chrono pads",
     "featureHint": "Divert coil power, then use a pad to shift yourself and a nearby mail van.",
     "stride": 16,
@@ -3704,6 +4747,10 @@
         "start": "u",
         "exit": "t",
         "link": "km",
+        "fork": "fag",
+        "required": [
+          "Mail siding"
+        ],
         "tools": [
           "Coil power",
           "Convoy credits",
@@ -3728,6 +4775,10 @@
         "start": "a",
         "exit": "x",
         "link": "hr",
+        "fork": "hgm",
+        "required": [
+          "Chrono contact"
+        ],
         "tools": [
           "Convoy credits",
           "Coil power",
@@ -3752,6 +4803,11 @@
         "start": "e",
         "exit": "c",
         "link": "om",
+        "fork": "qpv",
+        "required": [
+          "Mail siding",
+          "Coil cap"
+        ],
         "tools": [
           "Coil power",
           "Mail van",
@@ -3776,6 +4832,10 @@
         "start": "k",
         "exit": "w",
         "link": "lw",
+        "fork": "dei",
+        "required": [
+          "Chrono contact"
+        ],
         "tools": [
           "Mail van",
           "Convoy credits",
@@ -3800,6 +4860,12 @@
         "start": "y",
         "exit": "w",
         "link": "ow",
+        "fork": "him",
+        "required": [
+          "Mail siding",
+          "Chrono contact",
+          "Coil cap"
+        ],
         "tools": [
           "Mail van",
           "Coil power",

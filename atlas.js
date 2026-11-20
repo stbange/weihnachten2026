@@ -8,9 +8,9 @@ export function missionAtlas({ cards, day, modal, esc, engine, back, play }) {
     <p id="atlasReference" class="source"></p>
     <canvas id="atlasPlan" width="420" height="420" style="width:min(100%,420px);height:auto"
       aria-label="Sector floor plan"></canvas>
-    <p class="source">IN and OUT mark the entrance and exit. Numbers mark the encounters below. Brighter ground sits higher.</p>
+    <p class="source">IN and OUT mark the entrance and exit. Numbers mark the encounters below. V marks the optional ward room. Its return line leads back to IN. Brighter ground sits higher.</p>
     <label><input type="checkbox" id="atlasOpen"> Show commissioned routes</label>
-    <p id="atlasBrief"></p><p id="atlasFeature"></p><ol id="atlasBeats"></ol>
+    <p id="atlasBrief"></p><p id="atlasFeature"></p><p id="atlasField"></p><ol id="atlasBeats"></ol><details><summary>Choices on this expedition</summary><p id="atlasPurpose"></p><p id="atlasChoices"></p></details>
     <div class="buttons"><button class="choice" id="atlasBack">Mission briefing</button>
     ${play ? '<button class="primary" id="atlasPlay">Play this door</button>' : ''}</div>`,
   );
@@ -63,6 +63,7 @@ export function missionAtlas({ cards, day, modal, esc, engine, back, play }) {
     tag(field.start, 'IN');
     field.encounters.forEach((beat, i) => tag(beat.at, String(i + 1)));
     tag(field.exit, 'OUT');
+    tag(field.fork[1], 'V');
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.font = 'bold 12px sans-serif';
@@ -80,6 +81,22 @@ export function missionAtlas({ cards, day, modal, esc, engine, back, play }) {
     canvas.setAttribute('aria-label', field.name + '. ' + field.brief);
     $('atlasReference').textContent = card.reference;
     $('atlasBrief').textContent = field.brief;
+    $('atlasPurpose').textContent = card.purpose + ' ' + card.twist;
+    $('atlasChoices').textContent = card.decisions + ' ' + card.wardSightline;
+    const wardMove = card.marks[(area + 1) % 3].move;
+    $('atlasField').textContent =
+      'Roadside practice · ' +
+      field.required.join(', ') +
+      '. ' +
+      card.wardRoom +
+      ' · ' +
+      wardMove +
+      ' for the ' +
+      card.prize +
+      ' in the mint side room for one ward and a passage back to the entrance.' +
+      (area === 4
+        ? ' Rest at ' + card.shelter + ' before the final three encounters.'
+        : '');
     $('atlasFeature').textContent = card.feature + ' · ' + card.featureHint;
     $('atlasBeats').innerHTML = field.encounters
       .map(
