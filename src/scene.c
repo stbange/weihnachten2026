@@ -1167,6 +1167,47 @@ static void expedition_mesh(Mesh *m, const Game *g)
         if (pad)
             box(m, x, 4, z, 5.35f, .28f, .58f, lit, GLOW);
     }
+    const FieldPost *marks;
+    int count = campaign_posts(g, &marks);
+    const Fieldwork *field = &fieldwork[g->door - 1];
+    for (int i = 0; i < count; i++) {
+        float x = marks[i].at.x * CELL, z = marks[i].at.z * CELL;
+        char move = field->moves[marks[i].slot];
+        unsigned colour = blend(e->colour, 0x76d9c5);
+        if (move == 'h') {
+            for (int side = -1; side <= 1; side += 2)
+                box(m, x + 4.6f * side, 0, z, .22f, 2.6f, .24f, colour, PAINT);
+            box(m, x, 2.6f, z, 9.45f, .16f, .25f, 0x9ee4d1, GLOW);
+        } else if (move == 'l') {
+            floor_strip(m, x - 4.6f, x + 4.6f, z - .4f, z + .4f, .055f, colour, GLOW);
+        } else {
+            box(m, x, .03f, z, .26f, 1.4f, .25f, colour, PAINT);
+            box(m, x, 1.42f, z, move == 'c' ? .9f : .48f, .32f, .42f, 0xa9d7bd, GLOW);
+        }
+    }
+    Cell vault = campaign_vault(g);
+    const WardRoom *ward = &ward_rooms[g->door - 1];
+    for (int row = 0; row < 7; row++)
+        for (int col = 0; col < 7; col++) {
+            char decoration = ward->rows[row][col];
+            float x = (vault.x + col - 3) * CELL, z = (vault.z + row - 3) * CELL;
+            if (decoration == ':')
+                floor_strip(m, x - 1.8f, x + 1.8f, z - .48f, z + .48f, .075f,
+                            blend(0x88dbbf, e->colour), PAINT);
+            if (decoration == '!') {
+                box(m, x, 0, z, .38f, 1.65f, .38f, e->colour, STONE);
+                box(m, x, 1.65f, z, .55f, .45f, .55f, 0xf5b55e, GLOW);
+            }
+        }
+    for (int end = 0; end < 2; end++) {
+        Cell c = end ? campaign_home_line(g) : campaign_vault(g);
+        float x = c.x * CELL, z = c.z * CELL;
+        for (int side = -1; side <= 1; side += 2) {
+            box(m, x + side * 2.8f, 0, z, .45f, 4.3f, .6f, 0x466c66, STONE);
+            box(m, x + side * 2.8f, 4.3f, z, .6f, .36f, .7f, 0x8ce9c9, GLOW);
+        }
+        floor_strip(m, x - 2.7f, x + 2.7f, z - .65f, z + .65f, .065f, 0x568480, PAINT);
+    }
     for (int i = 1; i <= 7; i++) {
         Cell c = campaign_site(g, i);
         float x = c.x * CELL, z = c.z * CELL;
@@ -1373,6 +1414,28 @@ void scene_actors(Mesh *m, const Game *g, int viewer, float time, int held_tool)
         campaign_guard(g, &gx, &gz);
         unsigned col = expeditions[g->door - 1].colour;
         int kind = campaign_action(g);
+        Cell vault = campaign_vault(g);
+        float vx = vault.x * CELL, vz = vault.z * CELL;
+        if (!g->field_open) {
+            keepsake(m, g->door, vx, 1.1f, vz, .095f);
+            float sx, sz;
+            campaign_sweep(g, &sx, &sz);
+            box(m, sx, .18f, sz, .55f, 1.65f, .55f, campaign_quiet(g) ? 0x90aeac : 0xf5a34d, GLOW);
+        } else {
+            box(m, vx, 3.4f, vz, 5.4f, .18f, .42f, 0x8ae5ac, GLOW);
+        }
+        const Player *viewer_pos = &g->player[viewer];
+        Cell viewer_cell = {(int)roundf(viewer_pos->x / CELL), (int)roundf(viewer_pos->z / CELL)};
+        int field_id = campaign_near_post(g, viewer_cell);
+        if (field_id) {
+            const FieldPost *marks;
+            campaign_posts(g, &marks);
+            FieldPost mark = marks[field_id - 1];
+            char move = fieldwork[g->door - 1].moves[mark.slot];
+            float height = move == 'h' ? 2.45f : move == 'l' ? .35f : 1.55f;
+            unsigned light = move == 't' && fmodf(g->clock, 2) >= 1 ? 0x926742 : 0x83f4bc;
+            box(m, mark.at.x * CELL, height, mark.at.z * CELL, .6f, .22f, .6f, light, GLOW);
+        }
         if (g->task == TRANSMISSION) {
             /* A two-part field station: first recover the recording, then answer it. */
             box(m, x, .01f, z, 2.65f, .09f, 2.65f, 0x3d6262, PAINT);
@@ -1385,6 +1448,14 @@ void scene_actors(Mesh *m, const Game *g, int viewer, float time, int held_tool)
         }
         if (g->task == SET_PIECE) {
             encounter_actor(m, g);
+        } else if (g->task == SHELTER) {
+            box(m, x, .15f, z, 3.6f, .5f, 1.4f, 0x55897b, PAINT);
+            box(m, x, .65f, z + .55f, 3.6f, .9f, .25f, 0x85c9a7, GLOW);
+        } else if (g->task == MAIL_RUN) {
+            box(m, x, .48f, z, 1.9f, 1.45f, 3.1f, 0xaa423c, PAINT);
+            box(m, x, 1.36f, z - .9f, 1.94f, .48f, .4f, 0xb5dfc8, GLOW);
+            for (int s = -1; s <= 1; s += 2)
+                box(m, x + s * .94f, .12f, z, .32f, .52f, 2.55f, 0x484b52, STONE);
         } else if (g->task == 3) {
             if (g->area == 4)
                 keepsake(m, g->door, x, 1.0f, z, .12f);
@@ -1463,7 +1534,7 @@ void scene_actors(Mesh *m, const Game *g, int viewer, float time, int held_tool)
                 xyz(cx + ax * .45f + az * .35f, .09f, cz + az * .45f - ax * .35f),
                 xyz(cx + ax * .45f - az * .35f, .09f, cz + az * .45f + ax * .35f), 0xf3cc80, GLOW);
         }
-        if (g->task != SET_PIECE)
+        if (g->task != SET_PIECE && !campaign_quiet(g))
             sentinel(m, g, gx, gz, time);
     }
     if (g->room == CINEMA) {

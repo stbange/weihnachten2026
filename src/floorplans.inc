@@ -103,7 +103,7 @@
      "Two exchanger galleries fold around the same hot pipe. Reconnect the cold side from the far valve."},
     {"fglqvwxsno", "ghin rsm", "fglvsn", "ln", "210", "2l1n",
      "The maintenance line dives under the tram. Follow its elbows to the buried points cabinet."},
-    {"bchmrwxytj", "hmnol cg", "bchmwt", "ht", "102", "1h2t",
+    {"bchmrwxytj", "hmnol cg", "bchmwt", "ht", "102", "1h2t0j",
      "The last stop lies beyond the track fan. Route the restored tram from the platform cabin."},
 },
 /* Flag in the Whiteout */
@@ -233,7 +233,7 @@
      "Industrial bays surround a square maintenance apron. Bring construction supplies through the foundry."},
     {"agmqwsniej", "lmn qrs", "agmwne", "qn", "210", "1q0n2m",
      "Three shelter lobes touch at one contested junction. Connect the live mat to the powered relay."},
-    {"pklgcdjosx", "lmno rsm", "pkcgox", "lo", "012", "0l2o",
+    {"pklgcdjosx", "lmno rsm", "pkcgox", "lo", "012", "0l2o1s",
      "The signal mast overlooks the evacuation crescent. Finish the shared repair at the point where the shelters meet."},
 },
 /* Letters in the Falls */
@@ -285,7 +285,7 @@
      "The mirror tent doubles back around its painted centre. Take the twin token past the false silhouettes."},
     {"ytojedinsx", "onm xwr", "ytoedx", "os", "102", "0o2s",
      "Twin signal galleries run side by side. A flare distinguishes the wax conductor at the far head."},
-    {"afkpuvwxsn", "qrl gch kl fg", "afkuwn", "kn", "201", "1k0n2h",
+    {"afkpuvwxsn", "qrl gch kl fg", "afkuwn", "kn", "201", "1k0h2n",
      "The return train follows an L-shaped platform. Prime the last false signal before the procession arrives."},
 },
 /* What the Winter Leaves */

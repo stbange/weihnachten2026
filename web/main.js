@@ -65,7 +65,7 @@ let focusSeat = 0;
 const coarse =
   matchMedia('(pointer:coarse)').matches || navigator.maxTouchPoints > 0;
 const state = () =>
-  Array.from(M.HEAPF32.subarray(M._lh_state() / 4, M._lh_wire() / 4 + 32));
+  Array.from(M.HEAPF32.subarray(M._lh_state() / 4, M._lh_wire() / 4 + 39));
 const currentDay = () => M._lh_today(Date.now() / 1000);
 const persisted = () => {
   try {
@@ -315,7 +315,7 @@ $('chart').onclick = () => {
     cards[s[8] - 1].title,
     '<h2>Sector map</h2><p>' +
       esc(M.UTF8ToString(M._lh_sector_brief())) +
-      '</p><canvas id="chartmap" width="350" height="350" aria-label="Sector plan with player positions and objective" style="max-width:100%;height:auto"></canvas><p>Gold marks the objective. Copper marks the special route and its two stations. Green and blue mark the two player positions. The arrow shows which way you face.</p><button id="backgame" class="primary">Resume</button>',
+      '</p><canvas id="chartmap" width="350" height="350" aria-label="Sector plan with player positions and objective" style="max-width:100%;height:auto"></canvas><p>Gold marks the objective. Copper marks the special route and its two stations. Mint marks the optional ward room and its return line. Green and blue mark the two player positions. The arrow shows which way you face.</p><button id="backgame" class="primary">Resume</button>',
   );
   const ctx = $('chartmap').getContext('2d'),
     extent = M._lh_extent(),
@@ -323,9 +323,15 @@ $('chart').onclick = () => {
   for (let z = 0; z < extent; z++)
     for (let x = 0; x < extent; x++) {
       const tile = M._lh_chart(x, z);
-      ctx.fillStyle = ['#566d60', '#162c2b', '#f3c366', '#e59e7a', '#967661'][
-        tile
-      ];
+      ctx.fillStyle = [
+        '#566d60',
+        '#162c2b',
+        '#f3c366',
+        '#e59e7a',
+        '#967661',
+        '#7ef1d8',
+        '#4bb5b0',
+      ][tile];
       ctx.fillRect(x * cell, z * cell, Math.ceil(cell), Math.ceil(cell));
     }
   for (let p = 0; p < s[9]; p++) {
@@ -372,8 +378,8 @@ function incoming(msg) {
       Math.max(-1, Math.min(1, yaw)),
       Math.max(-1, Math.min(1, pitch)),
     );
-  } else if (role === 'guest' && msg.length === 32) {
-    if (msg[0] !== M.HEAPF32[M._lh_state() / 4]) {
+  } else if (role === 'guest' && (msg.length === 39 || msg.length === 32)) {
+    if (msg.length !== 39 || msg[0] !== M.HEAPF32[M._lh_state() / 4]) {
       home();
       modal(
         'MULTIPLAYER',
@@ -937,11 +943,7 @@ function render(t) {
     if (role !== 'guest') M._lh_open(open);
     lastClock = t;
   }
-  const factor = Math.min(1, 840 / Math.max(innerWidth, innerHeight));
-  M._lh_resize(
-    Math.max(160, Math.round(innerWidth * factor)),
-    Math.max(140, Math.round(innerHeight * factor)),
-  );
+  M._lh_resize(canvas.clientWidth, canvas.clientHeight);
   if (playing) {
     const v = input(0);
     if (role === 'guest') {

@@ -7,6 +7,9 @@
 #include <stdio.h>
 #include "scene.h"
 #include "app.h"
+#include "draw.h"
+#include <SDL3/SDL.h>
+#include <SDL3/SDL_opengl.h>
 int lh_native_main(int, char **);
 static void extract_sector(void)
 {
@@ -25,10 +28,39 @@ static void extract_sector(void)
     lh_input(0, 0, 0, 0, 0, USE);
     lh_tick(.04f, 1);
 }
+static void test_nearest_presentation(void)
+{
+    void(APIENTRY * scissor)(GLint, GLint, GLsizei, GLsizei) =
+        (void(APIENTRY *)(GLint, GLint, GLsizei, GLsizei))SDL_GL_GetProcAddress("glScissor");
+    void(APIENTRY * enable)(GLenum) = (void(APIENTRY *)(GLenum))SDL_GL_GetProcAddress("glEnable");
+    void(APIENTRY * clear_colour)(GLfloat, GLfloat, GLfloat, GLfloat) =
+        (void(APIENTRY *)(GLfloat, GLfloat, GLfloat, GLfloat))SDL_GL_GetProcAddress("glClearColor");
+    void(APIENTRY * clear)(GLbitfield) =
+        (void(APIENTRY *)(GLbitfield))SDL_GL_GetProcAddress("glClear");
+    void(APIENTRY * read_pixels)(GLint, GLint, GLsizei, GLsizei, GLenum, GLenum, void *) =
+        (void(APIENTRY *)(GLint, GLint, GLsizei, GLsizei, GLenum, GLenum,
+                          void *))SDL_GL_GetProcAddress("glReadPixels");
+    assert(scissor && enable && clear_colour && clear && read_pixels);
+    lh_resize(640, 360);
+    enable(GL_SCISSOR_TEST);
+    scissor(0, 0, 320, 180);
+    clear_colour(0, 0, 0, 1);
+    clear(GL_COLOR_BUFFER_BIT);
+    scissor(11, 8, 1, 1);
+    clear_colour(1, 1, 1, 1);
+    clear(GL_COLOR_BUFFER_BIT);
+    draw_present(320, 180, 640, 360);
+    unsigned char pixels[4][4][4];
+    read_pixels(21, 15, 4, 4, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
+    for (int y = 0; y < 4; y++)
+        for (int x = 0; x < 4; x++)
+            assert(pixels[y][x][0] == ((x == 1 || x == 2) && (y == 1 || y == 2) ? 255 : 0));
+}
 int main(void)
 {
     int ready = lh_init();
     assert(ready);
+    test_nearest_presentation();
     assert(lh_saved() == 0);
     lh_save_ticket(1);
     lh_save_ticket(1);

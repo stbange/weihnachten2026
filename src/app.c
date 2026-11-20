@@ -56,8 +56,17 @@ API void lh_close(void)
     window = NULL;
 }
 
+static void render_size(int w, int h, int *rw, int *rh)
+{
+    float scale = fminf(1, 320.f / fmaxf(1, fmaxf(w, h)));
+    *rw = (int)fmaxf(1, roundf(w * scale));
+    *rh = (int)fmaxf(1, roundf(h * scale));
+}
 API void lh_resize(int w, int h)
 {
+#ifdef __EMSCRIPTEN__
+    render_size(w, h, &w, &h);
+#endif
     if (w == width && h == height)
         return;
     width = w;
@@ -135,6 +144,11 @@ API int lh_chart(int x, int z)
     campaign_target(&game, &tx, &tz);
     if (tx == x * CELL && tz == z * CELL)
         return 2;
+    Cell vault = campaign_vault(&game), home = campaign_home_line(&game);
+    if (x == vault.x && z == vault.z)
+        return 5;
+    if (x == home.x && z == home.z)
+        return 6;
     int surface = campaign_surface(&game, x, z);
     return surface == FEATURE_PAD ? 3 : surface == FEATURE_LANE ? 4 : 0;
 }
@@ -235,20 +249,25 @@ API void lh_xr_eye(int viewer, int x, int y, int w, int h)
 
 API void lh_draw(int title, int split, int viewer)
 {
-    int views = split ? 2 : 1;
+    int drawable_w, drawable_h, rw, rh;
+    SDL_GetWindowSizeInPixels(window, &drawable_w, &drawable_h);
+    if (drawable_w < 1 || drawable_h < 1)
+        return;
+    render_size(drawable_w, drawable_h, &rw, &rh);
+    int views = split && (rw > 1 || rh > 1) ? 2 : 1;
     for (int i = 0; i < views; i++) {
-        int w = width, h = height, x = 0, y = 0, seat = split ? i : viewer;
-        if (split && width >= height) {
-            w = width / 2;
+        int w = rw, h = rh, x = 0, y = 0, seat = split ? i : viewer;
+        if (views == 2 && rw >= rh) {
+            w = rw / 2;
             x = i * w;
             if (i)
-                w = width - x;
+                w = rw - x;
         }
-        if (split && width < height) {
-            h = height / 2;
+        if (views == 2 && rw < rh) {
+            h = rh / 2;
             y = i ? 0 : h;
             if (!i)
-                h = height - y;
+                h = rh - y;
         }
         const Player *p = &game.player[seat];
         Vec eye = {p->x, p->y + lh_elevation(seat) + 1.55f, p->z};
@@ -262,6 +281,10 @@ API void lh_draw(int title, int split, int viewer)
         camera_matrix(matrix, eye, yaw, pitch, (float)w / h);
         draw_view(&game, seat, elapsed, matrix, x, y, w, h, 1);
     }
+#ifndef __EMSCRIPTEN__
+    if (rw != drawable_w || rh != drawable_h)
+        draw_present(rw, rh, drawable_w, drawable_h);
+#endif
     SDL_GL_SwapWindow(window);
 }
 #ifndef __EMSCRIPTEN__

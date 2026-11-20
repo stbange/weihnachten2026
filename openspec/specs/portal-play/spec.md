@@ -74,3 +74,26 @@ Each of the 120 sectors SHALL specify its own entrance, passages, courts, object
 #### Scenario: First-pass pacing
 - **WHEN** normal-input solo and split replays take each expedition from arrival through extraction
 - **THEN** every clear takes 17 to 23 simulated minutes and the test reports each measured duration separately from human first-clear observations
+
+### Requirement: Field practice and optional return rooms
+Each of the 24 expeditions SHALL use an authored two-approach ward room in each sector. The party SHALL earn the return to the entrance from the ward room. Field actions SHALL provide a benefit in transit, with guidance for missed compulsory skills. Each final sector SHALL include a safe rest and three signature encounters before extraction.
+
+#### Scenario: Scout a return path together
+- **GIVEN** a party at a fresh sector entrance
+- **WHEN** one seat performs the indicated field action in the side room
+- **THEN** both seats gain access to a two-way return line and share protection against one sentry contact
+
+#### Scenario: Reach a missed skill and close the mission
+- **WHEN** a runner reaches the end of their tools without completing the sector's field practice
+- **THEN** the compass leads them to an appropriate reachable mark, and they can finish without restarting or spending a finite resource
+
+#### Scenario: Bring the van home
+- **WHEN** the party boards its loaded van for the final chrono shift
+- **THEN** the driver and the van arrive at the matching station and the party may rest before the final three actions
+
+### Requirement: Validate authored maps and play styles
+The validator SHALL check reachability on arrival and after commissioning, search the ward lock in both states, report optional rooms, cycles, dead ends, reward spacing and critical travel, and print any requested sector as an ASCII map.
+
+#### Scenario: Validate the December campaign
+- **WHEN** the complete route audit runs
+- **THEN** all 120 sectors are reachable and each mission clears through guided solo, guided split, rush, exploration and cautious input policies, with the final demonstration beginning in the last quarter

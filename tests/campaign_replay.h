@@ -1,12 +1,47 @@
 /* Drive the route with player inputs. The bot reads its compass, just as a player can. */
 #include "campaign.h"
-static int journey_frames;
+#include "field_inputs.h"
+enum { GUIDED, RUSH, EXPLORE, CAUTIOUS };
+static int journey_frames, policy, awards, prizes, longest_gap, last_action, returns_used,
+    final_stage;
+
+#include "route_audit.h"
+static int last_room, reward_rooms, widest_reward_gap;
 static void drive_frame(Game *g, int seat, Input action)
 {
     journey_frames++;
     Input in[2] = {{0}};
     in[seat] = action;
+    int old_post = g->last_post[seat], old_open = g->field_open, old_task = g->task,
+        old_phase = g->phase, old_area = g->area;
     game_step(g, in, 1.f / 30.f);
+    if (g->room == EXPEDITION) {
+        int stride = districts[g->door - 1].stride;
+        float gx = (g->player[seat].x / CELL - 8) / stride,
+              gz = (g->player[seat].z / CELL - 8) / stride;
+        int col = (int)roundf(gx), row = (int)roundf(gz);
+        int room =
+            (fabsf(gx - col) * stride <= 2 && fabsf(gz - row) * stride <= 2) ? row * 5 + col : -1;
+        if (room >= 0 && room != last_room) {
+            if (++reward_rooms > widest_reward_gap)
+                widest_reward_gap = reward_rooms;
+        }
+        last_room = room;
+    }
+    if (g->last_post[seat] && g->last_post[seat] != old_post)
+        awards++;
+    if (g->field_open && !old_open)
+        prizes++;
+    if (old_area != g->area || old_task != g->task || old_phase != g->phase ||
+        old_post != g->last_post[seat] || old_open != g->field_open || g->room == HALL) {
+        reward_rooms = 0;
+        int gap = journey_frames - last_action;
+        if (gap > longest_gap)
+            longest_gap = gap;
+        last_action = journey_frames;
+    }
+    if (g->room == EXPEDITION && g->area == 4 && g->task == SET_PIECE && !final_stage)
+        final_stage = journey_frames;
 }
 static void drive_towards(Game *g, int seat, float x, float z, float stop)
 {
@@ -14,18 +49,55 @@ static void drive_towards(Game *g, int seat, float x, float z, float stop)
     for (int n = 0; n < 900; n++) {
         if (hypotf(x - p->x, z - p->z) <= stop)
             return;
-        game_look(g, seat, atan2f(x - p->x, p->z - z) - p->yaw, -p->pitch);
-        drive_frame(g, seat, (Input){.forward = 1});
+        float heading = atan2f(x - p->x, p->z - z), old_x = p->x, old_z = p->z;
+        float motion = fminf(1, hypotf(x - p->x, z - p->z) * 3);
+        game_look(g, seat, heading - p->yaw, -p->pitch);
+        Input walk = {.forward = motion};
+        if (g->room == EXPEDITION && policy != RUSH) {
+            Cell here = {(int)roundf(p->x / CELL), (int)roundf(p->z / CELL)};
+            int id = campaign_near_post(g, here);
+            const FieldPost *marks;
+            campaign_posts(g, &marks);
+            if (id && id != g->last_post[seat]) {
+                FieldPost m = marks[id - 1];
+                char move = fieldwork[g->door - 1].moves[m.slot];
+                float tx, tz;
+                campaign_target(g, &tx, &tz);
+                if (hypotf(p->x - tx, p->z - tz) > 14 &&
+                    campaign_surface(g, here.x, here.z) != FEATURE_PAD &&
+                    !(g->field_open && move == 'u' &&
+                      (hypotf(p->x - campaign_vault(g).x * CELL,
+                              p->z - campaign_vault(g).z * CELL) < 4 ||
+                       hypotf(p->x - campaign_home_line(g).x * CELL,
+                              p->z - campaign_home_line(g).z * CELL) < 4)))
+                    walk = mark_input(g, seat, m.at, move, heading, motion);
+            }
+        }
+        if (g->room == EXPEDITION && !campaign_quiet(g) && g->stun < .1f &&
+            (policy == EXPLORE || policy == CAUTIOUS)) {
+            float sx, sz;
+            campaign_sweep(g, &sx, &sz);
+            if (g->field_open || hypotf(sx - p->x, sz - p->z) > 7)
+                campaign_guard(g, &sx, &sz);
+            if (hypotf(sx - p->x, sz - p->z) < 7) {
+                float yaw = atan2f(sx - p->x, p->z - sz);
+                game_look(g, seat, yaw - p->yaw, -p->pitch);
+                walk = (Input){.forward = motion * cosf(heading - yaw),
+                               .side = motion * sinf(heading - yaw),
+                               .buttons = p->previous & FIRE ? 0 : FIRE};
+            }
+        }
+        drive_frame(g, seat, walk);
+        if (hypotf(p->x - old_x, p->z - old_z) > 2)
+            return;
     }
     fprintf(stderr,
             "Stuck day=%d area=%d task=%d phase=%d position=%.1f,%.1f destination=%.1f,%.1f\n",
             g->door, g->area, g->task, g->phase, p->x, p->z, x, z);
     assert(0);
 }
-static void drive_leg(Game *g, int seat)
+static void drive_to_site(Game *g, int seat, float x, float z)
 {
-    float x, z;
-    campaign_target(g, &x, &z);
     Player *p = &g->player[seat];
     Cell target = {(int)roundf(x / CELL), (int)roundf(z / CELL)};
     for (int n = 0; n < MAP_SIZE * MAP_SIZE; n++) {
@@ -37,7 +109,17 @@ static void drive_leg(Game *g, int seat)
         }
         drive_towards(g, seat, next.x * CELL, next.z * CELL, .11f);
     }
+    fprintf(stderr,
+            "Route stopped day %d area %d task %d phase %d policy %d seat %d from %.2f,%.2f to "
+            "%.2f,%.2f\n",
+            g->door, g->area, g->task, g->phase, policy, seat, p->x, p->z, x, z);
     assert(0 && "Compass loop");
+}
+static void drive_leg(Game *g, int seat)
+{
+    float x, z;
+    campaign_target(g, &x, &z);
+    drive_to_site(g, seat, x, z);
 }
 static void perform_set_piece(Game *g, int seat)
 {
@@ -82,6 +164,17 @@ static void perform_set_piece(Game *g, int seat)
 }
 static void drive_action(Game *g, int seat)
 {
+    if (g->task == FIELD_CHECK) {
+        int id = campaign_field_goal(g);
+        assert(id >= 0);
+        const FieldPost *marks;
+        campaign_posts(g, &marks);
+        FieldPost m = marks[id];
+        for (int i = 0; i < 150 && g->task == FIELD_CHECK && campaign_field_goal(g) == id; i++)
+            drive_frame(g, seat,
+                        mark_input(g, seat, m.at, fieldwork[g->door - 1].moves[m.slot], 0, 0));
+        return;
+    }
     if (g->task == SET_PIECE) {
         perform_set_piece(g, seat);
         return;
@@ -125,6 +218,22 @@ static void drive_action(Game *g, int seat)
     }
     drive_frame(g, seat, (Input){.buttons = buttons});
 }
+static void survey_vault(Game *g, int seat)
+{
+    Cell v = campaign_vault(g);
+    char move = fieldwork[g->door - 1].moves[(g->area + 1) % 3];
+    for (int tries = 0; tries < 3 && !g->field_open; tries++) {
+        drive_to_site(g, seat, v.x * CELL, v.z * CELL);
+        for (int i = 0; i < 150 && !g->field_open; i++)
+            drive_frame(g, seat, mark_input(g, seat, v, move, 0, 0));
+    }
+    assert(g->field_open && g->ward);
+    drive_frame(g, seat, (Input){0});
+    drive_frame(g, seat, (Input){.buttons = USE});
+    Cell home = campaign_home_line(g);
+    assert(hypotf(g->player[seat].x - home.x * CELL, g->player[seat].z - home.z * CELL) < 1);
+    returns_used++;
+}
 static void drive_campaign(int day, int seats, int practice)
 {
     Game g;
@@ -141,11 +250,20 @@ static void drive_campaign(int day, int seats, int practice)
         drive_frame(&g, 0, (Input){.buttons = USE});
     }
     assert(g.room == EXPEDITION && g.door == day);
-    journey_frames = 0;
-    int count = 0;
+    journey_frames = awards = prizes = longest_gap = last_action = returns_used = final_stage = 0;
+    last_room = -1;
+    reward_rooms = widest_reward_gap = 0;
+    int count = 0, visited = 0;
     while (g.room == EXPEDITION && count++ < 150) {
         int seat = g.area % seats;
+        if (!(visited & (1 << g.area)) &&
+            (policy == EXPLORE || (policy == CAUTIOUS && g.area == 2))) {
+            survey_vault(&g, seat);
+            visited |= 1 << g.area;
+        }
         int before = g.task, stage = g.phase;
+        if (trace_routes && policy == GUIDED && seats == 1)
+            measure_leg(&g, seat);
         drive_leg(&g, seat);
         if (before == g.task && stage == g.phase)
             drive_action(&g, seat);
@@ -155,8 +273,18 @@ static void drive_campaign(int day, int seats, int practice)
                 g.phase);
     assert(g.room == HALL && g.event == (practice ? REHEARSAL_TICKET : TICKET));
     double minutes = journey_frames / 1800.0;
-    printf("Door %02d %s input replay: %.1f simulated minutes\n", day,
-           seats == 1 ? "solo" : "split", minutes);
-    assert(minutes >= 17 && minutes <= 23);
+    const char *style = policy == GUIDED    ? (seats == 1 ? "solo" : "split")
+                        : policy == EXPLORE ? "explore"
+                        : policy == RUSH    ? "rush"
+                                            : "cautious";
+    printf("Door %02d %s %.2f min | %d marks | %d caches | %d returns | %.1f s quiet | %.1f%% "
+           "climax | %d rooms\n",
+           day, style, minutes, awards, prizes, returns_used, longest_gap / 30.,
+           100. * final_stage / journey_frames, widest_reward_gap);
+    if (policy == GUIDED)
+        assert(minutes >= 17 && minutes <= 23);
+    if (policy == EXPLORE)
+        assert(returns_used == 5);
+    assert(final_stage && awards && final_stage > journey_frames * .75);
     assert(g.completed == (practice ? 0 : 1 << (day - 1)));
 }

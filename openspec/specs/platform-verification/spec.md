@@ -46,3 +46,10 @@ Immersive play SHALL render a readable objective panel in each eye, support snap
 - **GIVEN** a timed WebXR session uses local reference space because floor space is unavailable
 - **WHEN** tracking is lost and returns
 - **THEN** play pauses during loss, resumes with the stereo guide, and records the interruption and reference space
+
+### Requirement: Low-resolution world raster
+The flat-screen renderer SHALL cap the scene at 320 pixels along its long edge, preserve its aspect ratio and present with nearest-neighbour scaling. Browser controls and text SHALL use display resolution. WebXR SHALL request a 0.7 framebuffer scale with eye-specific projections.
+
+#### Scenario: Rotate during local play
+- **WHEN** the browser stage changes from landscape to portrait
+- **THEN** the world canvas changes from at most 320 pixels wide to at most 320 pixels tall and the touch overlay continues to use the full stage

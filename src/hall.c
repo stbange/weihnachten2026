@@ -227,6 +227,13 @@ void game_pack(const Game *g, float out[SNAP_WORDS])
     out[29] = g->stun;
     out[30] = g->charge[0];
     out[31] = g->charge[1];
+    out[38] = g->impressions;
+    out[32] = g->field_open;
+    out[33] = g->ward;
+    for (int i = 0; i < 2; i++) {
+        out[34 + i] = g->last_post[i];
+        out[36 + i] = g->burst[i];
+    }
     out[1] = g->room;
     out[2] = g->open;
     out[3] = g->rehearsal;
@@ -258,9 +265,11 @@ int game_unpack(Game *g, const float in[SNAP_WORDS])
         if (in[i] < 0 || in[i] > limits[i] || in[i] != floorf(in[i]))
             return 0;
     int world = (MAP_SIZE - 1) * CELL;
-    const int extra_limits[] = {4, SET_PIECE, 2, 3, world, world, 120, 6, 1, 1};
+    const int extra_limits[] = {4, FIELD_CHECK, 2, 3,         world,     world, 120, 6, 1,
+                                1, 1,           1, MAX_POSTS, MAX_POSTS, 4,     4,   7};
     for (int i = 22; i < SNAP_WORDS; i++)
-        if (in[i] < 0 || in[i] > extra_limits[i - 22] || (i < 26 && floorf(in[i]) != in[i]))
+        if (in[i] < 0 || in[i] > extra_limits[i - 22] ||
+            ((i < 26 || (i >= 32 && i < 36) || i == 38) && floorf(in[i]) != in[i]))
             return 0;
     int expedition = in[1] == EXPEDITION;
     if (in[0] != WIRE_VERSION || in[9] < 1 || ((expedition || in[7] == TICKET) && in[8] < 1))
@@ -288,6 +297,13 @@ int game_unpack(Game *g, const float in[SNAP_WORDS])
     g->stun = in[29];
     g->charge[0] = in[30];
     g->charge[1] = in[31];
+    g->impressions = in[38];
+    g->field_open = in[32];
+    g->ward = in[33];
+    for (int i = 0; i < 2; i++) {
+        g->last_post[i] = in[34 + i];
+        g->burst[i] = in[36 + i];
+    }
     g->room = (int)in[1];
     g->open = (int)in[2];
     g->rehearsal = (int)in[3];

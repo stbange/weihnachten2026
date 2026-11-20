@@ -16,7 +16,7 @@ The concept preserves the supplied order, from Duke Nukem 3D to the first Red Al
 
 Choose **Playtest Door 01** on the title screen for *House Lights*. Start at the tram terminus, collect and punch tickets, fold paper ushers, and lift reels to the raised booths. The **Cinema tutorial** button opens the original short auditorium exercise.
 
-**Portal almanac → a date → Playtest mission** opens any of the 24 expeditions before December. Each currently has five sectors, shared objectives, a route guide on the floor and a star gate. Field stations ask the party to recover and answer a transmission using two of the door’s tools. Their recordings explain why the hall’s clock stopped. The browser's **Map** shows the destination and both players. Hold Pulse and release for charged tools. For escorts, stay within twelve metres and bring the follower to the dock. Returning to the same door resumes at the start of the last sector reached.
+**Portal almanac → a date → Playtest mission** opens any of the 24 expeditions before December. Each currently has five sectors, shared objectives, a route guide on the floor and a star gate. Field stations ask the party to recover and answer a transmission using two of the door’s tools. Their recordings explain why the hall’s clock stopped. The browser's **Map** shows the destination and both players. Hold Pulse and release for charged tools. Escorts follow the path if you get ahead. Bring them within twelve metres before boarding a shared ride, then lead them to the dock. Returning to the same door resumes at the start of the last sector reached.
 
 Walk through eligible arches in the hall to earn the 24 individual keepsakes. Practice and calendar checkpoints are separate. Read a returned keepsake's story in the almanac. Completing the final date opens the front doors even for someone playing their first evening.
 
@@ -32,6 +32,10 @@ Normal-input solo replays measured 19.3–20.6 simulated minutes across the 24 d
 | WebXR preview | Left stick moves, right stick snap-turns, gaze aims, trigger pulses, grip uses, primary face button lifts |
 
 Choose **Play together** for split screen or a two-browser session. For a direct WebRTC game, the host sends an invitation, the guest sends a reply and the host connects. Both browsers share one authoritative mission. A WebSocket relay option supports networks that block direct connections. Friends can supply their own relay endpoint and use an eight-character room code. The static Pages site serves the game files. [Relay instructions and platform design](design/engineering.md)
+
+The flat-screen scene renders at a maximum of 320 pixels on its long edge. A 16:9 window shows 320×180 world pixels, including both views in split screen. The mobile canvas follows the stage's aspect ratio and the browser draws its controls at display resolution. WebXR requests a stereo framebuffer at 70% of the device's recommended scale.
+
+Each expedition now has a distinct optional ward room with two approaches. Watch its amber sweep, try the action shown on the mint signal and open a passage back to the entrance. Working roadside signals restores lift and gives a short burst of speed. The map guide leads the party to any required signal it missed. All five sectors lead to a quiet shelter and a three-part finale. [Read the design briefs](design/expedition-briefs.md) · [Review the maps, room graphs and five bot runs for each door](design/route-audit.md)
 
 ## Human playtests
 
@@ -74,6 +78,7 @@ Verification uses OpenSpec 2.1.0, GCC/gcov, SDL3, an offscreen Mesa OpenGL drive
 ```sh
 npx --yes @fission-ai/openspec@2.1.0 validate --all --strict --no-interactive
 bash scripts/test-c.sh
+python3 scripts/validate_routes.py build/coverage/replay --map 22 5
 python3 -m pip install -r tests/requirements.txt
 python3 -m playwright install chromium
 python3 tests/web_game.py http://127.0.0.1:8571/

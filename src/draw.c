@@ -39,16 +39,27 @@
                                                             F(void, Clear, (GLbitfield))           \
                                                                 F(void, DrawArrays,                \
                                                                   (GLenum, GLint, GLsizei))
+/* The desktop GL 2.1 compatibility context presents the little raster at window size. */
+#define PRESENT_GL(F)                                                                              \
+    F(void, GenTextures, (GLsizei, GLuint *))                                                      \
+    F(void, DeleteTextures, (GLsizei, const GLuint *)) F(void, BindTexture, (GLenum, GLuint))      \
+        F(void, TexParameteri, (GLenum, GLenum, GLint))                                            \
+            F(void, TexImage2D,                                                                    \
+              (GLenum, GLint, GLint, GLsizei, GLsizei, GLint, GLenum, GLenum, const void *))       \
+                F(void, CopyTexSubImage2D,                                                         \
+                  (GLenum, GLint, GLint, GLint, GLint, GLint, GLsizei, GLsizei))                   \
+                    F(void, Disable, (GLenum)) F(void, Begin, (GLenum)) F(void, End, (void))       \
+                        F(void, TexCoord2f, (GLfloat, GLfloat))                                    \
+                            F(void, Vertex2f, (GLfloat, GLfloat))
+static GLuint presentation;
 #define DECLARE(ret, name, args) static ret(APIENTRY *p##name) args;
 GL_LIST(DECLARE)
+PRESENT_GL(DECLARE)
 #define RESOLVE(ret, name, args)                                                                   \
     p##name = (ret(APIENTRY *) args)SDL_GL_GetProcAddress("gl" #name);                             \
     if (!p##name)                                                                                  \
         return 0;
-static int load_gl(void)
-{
-    GL_LIST(RESOLVE) return 1;
-}
+static int load_gl(void) { GL_LIST(RESOLVE) PRESENT_GL(RESOLVE) return 1; }
 #define LOAD_GL() load_gl()
 #define G(name) p##name
 #define VERSION_V "#version 120\n"
@@ -109,8 +120,8 @@ static const char *frag = VERSION_F
     " float grain=(hash(floor(gl_FragCoord.xy))-.5)*.017;"
     " gl_FragColor=vec4(clamp(lit+grain,0.,1.),1.);}";
 
-static Vertex architecture[150000], actors[4000];
-static Mesh solid = {architecture, 0, 150000}, moving = {actors, 0, 4000};
+static Vertex architecture[150000], actors[ACTOR_VERTICES];
+static Mesh solid = {architecture, 0, 150000}, moving = {actors, 0, ACTOR_VERTICES};
 static GLuint prog, buffers[2];
 static GLint position, normal, colour, camera, clock_id, room_id, flash_id, hand_id, mate_id;
 static GLint beacon_id,watcher_id;
@@ -162,6 +173,13 @@ int draw_init(void)
     mate_id = G(GetUniformLocation)(prog, "mate");
     beacon_id=G(GetUniformLocation)(prog,"beacon");watcher_id=G(GetUniformLocation)(prog,"watcher");
     G(GenBuffers)(2, buffers);
+#ifndef __EMSCRIPTEN__
+    G(GenTextures)(1, &presentation);
+    G(BindTexture)(GL_TEXTURE_2D, presentation);
+    G(TexParameteri)(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    G(TexParameteri)(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    G(TexImage2D)(GL_TEXTURE_2D, 0, GL_RGB, 320, 320, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+#endif
     prev_room = -1;
     return 1;
 }
@@ -183,14 +201,14 @@ void draw_view(const Game *g, int viewer, float time, const float matrix[16], in
 {
     if (g->room != prev_room || g->open != prev_open || g->completed != prev_done ||
         g->projected != prev_projected ||
-        (g->room == EXPEDITION &&
-         (g->area != prev_area || g->door != prev_day || g->task != prev_gate))) {
+        (g->room == EXPEDITION && (g->area != prev_area || g->door != prev_day ||
+                                   (2 * g->task + campaign_feature_active(g)) != prev_gate))) {
         scene_static(&solid, g);
         G(BindBuffer)(GL_ARRAY_BUFFER, buffers[0]);
         G(BufferData)(GL_ARRAY_BUFFER, solid.count * sizeof(Vertex), solid.v, GL_STATIC_DRAW);
         prev_room = g->room;
         prev_area = g->area;
-        prev_gate = g->task;
+        prev_gate = g->room == EXPEDITION ? 2 * g->task + campaign_feature_active(g) : -1;
         prev_day = g->door;
         prev_open = g->open;
         prev_done = g->completed;
@@ -231,8 +249,35 @@ void draw_view(const Game *g, int viewer, float time, const float matrix[16], in
     batch(buffers[1], &moving);
 }
 
+#ifndef __EMSCRIPTEN__
+void draw_present(int w, int h, int drawable_w, int drawable_h)
+{
+    G(BindTexture)(GL_TEXTURE_2D, presentation);
+    G(CopyTexSubImage2D)(GL_TEXTURE_2D, 0, 0, 0, 0, 0, w, h);
+    G(UseProgram)(0);
+    G(Disable)(GL_SCISSOR_TEST);
+    G(Disable)(GL_DEPTH_TEST);
+    G(Viewport)(0, 0, drawable_w, drawable_h);
+    G(Enable)(GL_TEXTURE_2D);
+    float u = w / 320.f, v = h / 320.f;
+    G(Begin)(GL_TRIANGLE_STRIP);
+    G(TexCoord2f)(0, 0);
+    G(Vertex2f)(-1, -1);
+    G(TexCoord2f)(u, 0);
+    G(Vertex2f)(1, -1);
+    G(TexCoord2f)(0, v);
+    G(Vertex2f)(-1, 1);
+    G(TexCoord2f)(u, v);
+    G(Vertex2f)(1, 1);
+    G(End)();
+    G(Disable)(GL_TEXTURE_2D);
+}
+#endif
 void draw_close(void)
 {
+#ifndef __EMSCRIPTEN__
+    G(DeleteTextures)(1, &presentation);
+#endif
     G(DeleteBuffers)(2, buffers);
     G(DeleteProgram)(prog);
 }

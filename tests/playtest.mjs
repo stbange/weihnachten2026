@@ -60,7 +60,9 @@ assert.equal(
   firstClearMedians(other.rows()).find((r) => r.label === '1 / Solo').count,
   1,
 );
-assert.equal(other.rows().length, 5);
+assert.equal(other.import({ format: 1, runs: [{ ...first, id: 'floor-plan', edition: 'floorplans-1' }] }), 1);
+assert.equal(other.rows().length, 6);
+assert.equal(firstClearMedians(other.rows()).find((r) => r.label === '1 / Solo').count, 1);
 console.log(
   'Field timings, paused intervals, first-clear populations, notes and imports passed.',
 );

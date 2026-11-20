@@ -40,7 +40,7 @@ async def run(library, directory):
             assert json.loads(await remote.recv())["ready"] == "guest"
             start = json.loads(await remote.recv())
             assert (
-                len(start) == 32 and start[1] == 2 and start[8] == 3 and start[3] == 1
+                len(start) == 39 and start[1] == 2 and start[8] == 3 and start[3] == 1
             )
             for _ in range(40):
                 await remote.send(json.dumps([0, 0, 1, 0, 0, 0, 0]))

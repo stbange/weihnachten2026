@@ -37,6 +37,8 @@ def home(page):
 def desktop(browser, url, errors):
     context = browser.new_context(viewport={"width": 960, "height": 600})
     page = visit(context, url, 1796079599, errors)
+    page.wait_for_function("document.querySelector('#canvas').width === 320")
+    assert page.evaluate("Math.abs(canvas.width/canvas.height-canvas.clientWidth/canvas.clientHeight)<.02")
     page.locator("#book").click()
     expect(page.locator(".day")).to_have_count(24)
     expect(page.locator(".day.ready")).to_have_count(0)
@@ -53,6 +55,7 @@ def desktop(browser, url, errors):
     page.locator("#atlasOpen").check()
     page.locator("#atlasDoor").select_option("24")
     expect(page.locator("#atlasFeature")).to_contain_text("Chrono")
+    expect(page.locator("#atlasField")).to_contain_text("Sorting die")
     expect(page.locator("#atlasBeats li")).to_have_count(2)
     page.locator("#atlasBack").click()
     page.locator("#close").click()
@@ -83,6 +86,8 @@ def touch(browser, url, errors):
         viewport={"width": 390, "height": 740}, has_touch=True, is_mobile=True
     )
     page = visit(context, url, 1796166000, errors)
+    page.wait_for_function("document.querySelector('#canvas').height === 320")
+    assert page.evaluate("canvas.width<320 && Math.abs(canvas.width/canvas.height-canvas.clientWidth/canvas.clientHeight)<.02")
     page.locator("#practice").tap()
     expect(page.locator("#touch")).to_be_visible()
     expect(page.locator(".viewinfo")).to_contain_text("tap Pulse")
@@ -133,7 +138,7 @@ def simulated_xr(browser, url, errors):
       };
       WebGLRenderingContext.prototype.makeXRCompatible=async()=>{};
       window.XRWebGLLayer=class {
-        constructor(){this.framebuffer=null;}
+        constructor(session,gl,options){if(options.framebufferScaleFactor!==.7)throw Error('XR scale');this.framebuffer=null;}
         getViewport(v){window.eyePasses.add(v.eye);return {x:v.eye==='left'?0:200,y:0,width:200,height:200};}
       };
       class Session extends EventTarget {
@@ -198,7 +203,7 @@ def peers(browser, url, errors, relay_url=None):
     second = browser.new_context(viewport={"width": 760, "height": 480})
     second.add_init_script("""const parse=JSON.parse;JSON.parse=(...args)=>{
         const value=parse(...args);
-        if(Array.isArray(value)&&value.length===32)window.observedFrame=value;
+        if(Array.isArray(value)&&value.length===39)window.observedFrame=value;
         return value;
     };""")
     host = visit(first, url, 1796079600, errors)

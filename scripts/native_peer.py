@@ -13,7 +13,7 @@ import time
 from websockets.asyncio.client import connect
 from websockets.exceptions import ConnectionClosed
 
-WORDS = 32
+WORDS = 39
 FloatPtr = c.POINTER(c.c_float)
 
 

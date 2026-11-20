@@ -16,7 +16,7 @@ enum {
     OBJECTIVE,
     SIGNAL_SENT
 };
-enum { SNAP_WORDS = 32, WIRE_VERSION = 5 };
+enum { SNAP_WORDS = 39, WIRE_VERSION = 6 };
 typedef struct {
     float x, y, z, yaw, pitch, fuel;
     int previous;
@@ -32,6 +32,8 @@ typedef struct {
     int room, seats, open, rehearsal, folded, projected, completed, event, door;
     int area, task, phase, dial;
     float escort_x, escort_z, clock, stun, charge[2], flash[2];
+    int field_open, ward, last_post[2], impressions;
+    float burst[2];
 } Game;
 
 int calendar_open(int64_t epoch);

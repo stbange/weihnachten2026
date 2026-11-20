@@ -4,5 +4,6 @@
 int draw_init(void);
 void draw_view(const Game *g, int viewer, float time, const float matrix[16], int x, int y, int w,
                int h, int held_tool);
+void draw_present(int w, int h, int drawable_w, int drawable_h);
 void draw_close(void);
 #endif

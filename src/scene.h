@@ -1,6 +1,7 @@
 #ifndef LANTERN_SCENE_H
 #define LANTERN_SCENE_H
 #include "hall.h"
+enum { ACTOR_VERTICES = 8192 };
 typedef struct {
     float x, y, z;
 } Vec;

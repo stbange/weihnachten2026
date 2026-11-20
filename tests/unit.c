@@ -186,6 +186,7 @@ static void test_geometry(void)
     camera_matrix(b, (Vec){0, 1, 3}, .3f, .1f, 1.5f);
     assert(!approximately(a[0], b[0]) && a[11] < 0 && a[15] > 0);
 }
+#include "field_inputs.h"
 static void test_active_encounter(Game *g)
 {
     int stage = g->phase;
@@ -238,11 +239,33 @@ static void test_expeditions(void)
         for (int area = 0; area < AREA_COUNT; area++) {
             scene_static(&mesh, &g);
             assert(mesh.count < mesh.capacity);
-            for (int objective = 0; objective < 9 && g.area == area && g.room == EXPEDITION;
+            for (int objective = 0; objective < 22 && g.area == area && g.room == EXPEDITION;
                  objective++) {
                 int task = g.task;
+                if (task == FIELD_CHECK) {
+                    int id = campaign_field_goal(&g);
+                    const FieldPost *marks;
+                    campaign_posts(&g, &marks);
+                    assert(id >= 0);
+                    FieldPost post = marks[id];
+                    Player *p = &g.player[1];
+                    p->x = post.at.x * CELL;
+                    p->z = post.at.z * CELL + 2;
+                    p->y = 0;
+                    p->fuel = 1;
+                    scene_actors(&mesh, &g, 1, 1, 1);
+                    campaign_prompt(&g, 1, prompt, sizeof(prompt));
+                    assert(strstr(prompt, fieldwork[g.door - 1].stations[post.slot]));
+                    for (int j = 0; j < 300 && g.task == task && campaign_field_goal(&g) == id; j++)
+                        once(&g, 1,
+                             mark_input(&g, 1, post.at, fieldwork[g.door - 1].moves[post.slot], 0,
+                                        0));
+                    assert(g.impressions & (1 << post.slot));
+                    continue;
+                }
                 if (task == SET_PIECE) {
                     scene_actors(&mesh, &g, 0, 1, 1);
+                    assert(mesh.count < ACTOR_VERTICES);
                     game_pack(&g, wire);
                     assert(game_unpack(&copy, wire));
                     test_active_encounter(&g);
@@ -265,7 +288,7 @@ static void test_expeditions(void)
                     campaign_prompt(&g, 1, prompt, sizeof(prompt));
                     assert(strstr(prompt, expeditions[day - 1].areas[area]));
                     scene_actors(&mesh, &g, 0, 1, 1);
-                    assert(mesh.count > 0);
+                    assert(mesh.count > 0 && mesh.count < ACTOR_VERTICES);
                     game_pack(&g, wire);
                     assert(game_unpack(&copy, wire));
                     assert(copy.area == area && copy.task == task);
@@ -379,6 +402,10 @@ static void test_floorplans(void)
             assert(campaign_brief(&g)[0]);
             g.task = EXIT_TASK;
             verify_plan(&g);
+            static Vertex solid[150000];
+            Mesh commissioned = {solid, 0, 150000};
+            scene_static(&commissioned, &g);
+            assert(commissioned.count < commissioned.capacity);
             g.task = SET_PIECE;
             g.phase = 3;
             assert(!campaign_valid_step(&g));
@@ -442,6 +469,63 @@ static void test_route_facilities(void)
     once(&g, 1, (Input){.buttons = USE});
     assert(approximately(g.escort_x, b.x * CELL) && approximately(g.escort_z, b.z * CELL));
 }
+static void test_fieldwork(void)
+{
+    for (int day = 1; day <= 24; day++) {
+        Game g, copy;
+        game_start(&g, 2, 24, 0, 0);
+        for (int area = 0; area < AREA_COUNT; area++) {
+            campaign_enter(&g, day, 1, area);
+            Cell v = campaign_vault(&g), h = campaign_home_line(&g);
+            Player *scout = &g.player[1], *mate = &g.player[0];
+            mate->x = h.x * CELL;
+            mate->z = h.z * CELL;
+            mate->previous = 0;
+            once(&g, 0, (Input){.buttons = USE});
+            assert(!g.field_open && mate->x == h.x * CELL);
+            scout->x = v.x * CELL;
+            scout->z = v.z * CELL + 2;
+            char move = fieldwork[day - 1].moves[(area + 1) % 3];
+            char text[512];
+            campaign_prompt(&g, 1, text, sizeof(text));
+            assert(strstr(text, fieldwork[day - 1].prize));
+            for (int tick = 0; tick < 240 && !g.field_open; tick++)
+                once(&g, 1, mark_input(&g, 1, v, move, 0, 0));
+            assert(g.field_open && g.ward);
+            float wire[SNAP_WORDS];
+            game_pack(&g, wire);
+            assert(game_unpack(&copy, wire));
+            assert(copy.field_open && copy.ward);
+            once(&g, 0, (Input){0});
+            once(&g, 0, (Input){.buttons = USE});
+            assert(mate->x == v.x * CELL && mate->z == v.z * CELL);
+            once(&g, 0, (Input){0});
+            once(&g, 0, (Input){.buttons = USE});
+            assert(mate->x == h.x * CELL && mate->z == h.z * CELL);
+            assert(g.task == 0 && g.area == area);
+        }
+    }
+    Game g;
+    game_start(&g, 1, 24, 0, 0);
+    campaign_enter(&g, 8, 1, 0);
+    g.task = 1;
+    g.ward = g.field_open = 1;
+    float x, z;
+    campaign_guard(&g, &x, &z);
+    g.player[0].x = x;
+    g.player[0].z = z;
+    once(&g, 0, (Input){0});
+    assert(!g.ward && g.field_open && g.stun > 0 && g.player[0].x == x);
+    campaign_enter(&g, 24, 1, 4);
+    g.task = MAIL_RUN;
+    Cell a = campaign_pad(&g, 0), b = campaign_pad(&g, 1);
+    g.player[0].previous = 0;
+    g.player[0].x = a.x * CELL;
+    g.player[0].z = a.z * CELL;
+    once(&g, 0, (Input){.buttons = USE});
+    assert(g.task == SHELTER && g.escort_x == b.x * CELL && g.escort_z == b.z * CELL &&
+           g.player[0].x == g.escort_x && g.player[0].z == g.escort_z);
+}
 static void test_chamber_gates(void)
 {
     Game g;
@@ -468,6 +552,7 @@ static void test_chamber_gates(void)
 int main(void)
 {
     test_floorplans();
+    test_fieldwork();
     test_route_facilities();
     test_chamber_gates();
     test_expeditions();

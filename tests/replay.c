@@ -6,6 +6,8 @@
 #include <assert.h>
 #include <math.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 static void advance(Game *g, int seat, Input cmd, int frames)
 {
     Input in[2] = {{0}};
@@ -62,14 +64,28 @@ static void run(int seats, int rehearsal)
     assert(g.event == (rehearsal ? REHEARSAL_TICKET : TICKET));
 }
 #include "campaign_replay.h"
-int main(void)
+int main(int argc, char **argv)
 {
+    if (argc == 5 && strcmp(argv[1], "--map") == 0) {
+        int day = atoi(argv[2]), area = atoi(argv[3]);
+        if (day < 1 || day > 24 || area < 1 || area > 5)
+            return 2;
+        print_sector_map(day, area - 1, atoi(argv[4]) != 0);
+        return 0;
+    }
+    trace_routes = argc == 2 && strcmp(argv[1], "--audit") == 0;
     run(1, 1);
     run(1, 0);
     run(2, 1);
     run(2, 0);
     puts("Four complete input replays passed: solo/split, rehearsal/live.");
-    for(int d=1;d<=24;d++){drive_campaign(d,1,0);drive_campaign(d,2,1);}
+    for (int d = 1; d <= 24; d++) {
+        for (policy = GUIDED; policy <= CAUTIOUS; policy++) {
+            drive_campaign(d, 1, 0);
+            if (policy == GUIDED)
+                drive_campaign(d, 2, 1);
+        }
+    }
     puts("All 24 expeditions cleared through player inputs, solo calendar and split practice.");
     return 0;
 }

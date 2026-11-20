@@ -53,7 +53,7 @@ async def connection(ws):
             if peer is None or not isinstance(message, str):
                 continue
             frame = json.loads(message)
-            count = 32 if room.host is ws else 7
+            count = 39 if room.host is ws else 7
             if isinstance(frame,list) and len(frame)==count and all(type(n) in (int,float) for n in frame):
                 await peer.send(message)
     except (ConnectionClosed, asyncio.TimeoutError, ValueError):

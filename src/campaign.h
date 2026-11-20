@@ -2,7 +2,7 @@
 #define LANTERN_CAMPAIGN_H
 #include "hall.h"
 enum { MAP_SIZE = 97, AREA_COUNT = 5, CELL = 4 };
-enum { EXIT_TASK = 3, TRANSMISSION = 4, SET_PIECE = 5 };
+enum { EXIT_TASK = 3, TRANSMISSION = 4, SET_PIECE = 5, SHELTER = 6, MAIL_RUN = 7, FIELD_CHECK = 8 };
 enum { CITY, WILD, WORKS, VAULT, DOCK };
 enum { PUNCH, SHOT, FLY, ESCORT, BUILD, ROUTE, GRID, CARRY, CHARGE };
 typedef struct {
@@ -32,6 +32,29 @@ typedef struct {
     int action;
     const char *name, *instruction;
 } Encounter;
+typedef struct {
+    const char *forks, *moves, *stations[3], *prize, *shelter;
+} Fieldwork;
+extern const Fieldwork fieldwork[24];
+typedef struct {
+    const char *name, *sightline, *rows[7];
+} WardRoom;
+extern const WardRoom ward_rooms[24];
+enum { MAX_POSTS = 384 };
+typedef struct {
+    Cell at;
+    int slot;
+} FieldPost;
+int campaign_posts(const Game *g, const FieldPost **posts);
+int campaign_near_post(const Game *g, Cell from);
+Cell campaign_vault(const Game *g);
+Cell campaign_home_line(const Game *g);
+Cell campaign_shelter(const Game *g);
+void campaign_sweep(const Game *g, float *x, float *z);
+int campaign_required(const Game *g);
+int campaign_field_goal(const Game *g);
+int campaign_quiet(const Game *g);
+const char *campaign_gesture(char move);
 const Encounter *campaign_encounter(const Game *g);
 void campaign_sight(const Game *g, float *x, float *y, float *z);
 int campaign_cue(const Game *g);

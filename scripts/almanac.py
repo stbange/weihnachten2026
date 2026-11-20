@@ -14,13 +14,24 @@ def quoted_rows(file, size):
 
 def add_floorplans(cards):
     sectors = quoted_rows("floorplans.inc", 7)
+    fieldwork = quoted_rows("fieldwork.inc", 7)
+    wards = quoted_rows("wardrooms.inc", 9)
+    briefs = [line.strip("|").strip().split(" | ") for line in
+              Path("design/expedition-briefs.md").read_text(encoding="utf-8").splitlines()
+              if re.match(r"^\| \d{2} ", line)]
+    gestures = dict(p="aim and pulse", t="pulse on the bright beat", h="lift through the crown",
+                    l="cross at ground height", c="charge and release on the plate", u="press Use")
     encounters = quoted_rows("encounters.inc", 6)
     areas = quoted_rows("expeditions.inc", 10)
     districts = quoted_rows("districts.inc", 2)
     strides = [int(s) for s in re.findall(r"^\{(\d+),", Path("src/districts.inc").read_text(), re.M)]
-    if len(sectors) != 120 or any(len(t) != 24 for t in (areas, encounters, districts, strides)):
+    if len(sectors) != 120 or any(len(t) != 24 for t in (areas, encounters, districts, strides, fieldwork, briefs, wards)):
         raise ValueError("The atlas requires five sectors per door")
     for index, card in enumerate(cards):
+        forks, moves, *names, prize, shelter = fieldwork[index]
+        _, card["purpose"], card["twist"], card["decisions"] = briefs[index]
+        card.update(wardRoom=wards[index][0], wardSightline=wards[index][1], prize=prize, shelter=shelter, marks=[dict(name=name, move=gestures[move])
+                    for name, move in zip(names, moves)])
         card["feature"], card["featureHint"] = districts[index]
         card["stride"] = strides[index]
         card["encounters"] = [dict(name=name, instruction=instruction)
@@ -29,7 +40,8 @@ def add_floorplans(cards):
         for area in range(5):
             spine, _, _, link, order, staging, description = sectors[index*5+area]
             card["sectors"].append(dict(name=areas[index][area+1], brief=description,
-                start=spine[0], exit=spine[-1], link=link,
+                start=spine[0], exit=spine[-1], link=link, fork=forks[3*area:3*area+3],
+                required=[names[i] for i in range(3) if (1, 2, 5, 2, 7)[area] & (1<<i)],
                 tools=[areas[index][6+int(i)] for i in order],
                 encounters=[dict(name=encounters[index][2*int(i)], at=loc,
                                  instruction=encounters[index][2*int(i)+1])
